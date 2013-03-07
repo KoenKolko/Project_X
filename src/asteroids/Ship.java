@@ -26,15 +26,45 @@ public class Ship implements IShip {
 		this.setY(y);
 		this.setXVelocity(xVelocity);
 		this.setYVelocity(yVelocity);
+		this.setVelocity(  calcVelocity(  getXVelocity(), getYVelocity()  )  );
 		this.setRadius(radius);
-		this.setAngle(angle);		
+		this.setAngle(angle);	
+		
+	}
+	
+	public void move (double time) throws IllegalArgumentException {
+		if (time <= 0)
+			throw new IllegalArgumentException("Your time is less then zero!");
+		setX(getX() + (getXVelocity()*time));				// x = x + velocity*time
+		setY(getY() + (getYVelocity()*time));				// y = y + velocity*time
+		
+	}
+	
+	public void turn (double angle) {
+		assert (!Double.isNaN(angle)) : "No valid argument!";
+		setAngle(getAngle() + angle);
+	}
+	
+	public void thrust (double amount) {
+		if(Double.isNaN(amount))
+			return;
+		double vXNew = getXVelocity() + amount*Math.cos(getAngle());		// the new x-velocity
+		double vYNew = getYVelocity() + amount*Math.sin(getAngle());		// the new y-velocity
+		if (calcVelocity(vXNew, vYNew) > C) {								// if (speed > 300 000km/s)
+			double constant = Math.sqrt(  Math.pow(C,2)    /   (  Math.pow(getXVelocity(), 2) + Math.pow(getYVelocity(), 2)  )  );		// constant multiple, so the new speed will be C.
+			vXNew *= constant;
+			vYNew *= constant;	
+		}
+		setXVelocity(vXNew); 
+		setYVelocity(vYNew);
+		setVelocity(  calcVelocity(  getXVelocity(), getYVelocity()  )  );
 	}
 	
 	private boolean isValidRadius (double radius)
 	{
 		return (radius >= 10);
 	}
-
+	
 	public double getX() {
 		return x;
 	}
@@ -95,17 +125,21 @@ public class Ship implements IShip {
 	}
 	
 	/**
-	 * Calculates the velocity of the ship.
+	 * Calculates the velocity of a given x and y velocity.
 	 * 
-	 * @Pre		velocity == getVelocity
-	 * @Post	(new this).getVelocity == Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2))
 	 */
-	public void calcVelocity() {
-		velocity = Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2));
+	public double calcVelocity(double x, double y) {
+		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
 	
 	public double getVelocity() {
-		return velocity;
+		return this.velocity;
+	}
+	
+	public void setVelocity(double velocity) {
+		if (Double.isNaN(velocity))
+			this.velocity = 0;
+		else this.velocity = velocity;
 	}
 }
  
