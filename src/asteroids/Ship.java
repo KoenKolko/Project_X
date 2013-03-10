@@ -141,5 +141,44 @@ public class Ship implements IShip {
 			this.velocity = 0;
 		else this.velocity = velocity;
 	}
+	
+	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
+		if (otherShip == null)
+			throw new IllegalArgumentException("Invalid ship!");
+		return Math.sqrt(Math.pow((this.getX() - otherShip.getX()), 2) - Math.pow((this.getY() - otherShip.getY()), 2));
+	}
+	
+	public boolean overlap(Ship otherShip){
+		return(this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip));
+	}
+	
+	public double getTimeToCollision(Ship otherShip){
+		if(this.overlap(otherShip)){
+			return Double.POSITIVE_INFINITY;
+		}
+		else if( (this.getXVelocity() - otherShip.getXVelocity()) * (this.getX() - otherShip.getX()) + (this.getYVelocity() - otherShip.getYVelocity()) * (this.getY() - otherShip.getY()) >= 0  ){
+			return Double.POSITIVE_INFINITY;
+		}
+		else{
+			return ((this.getVelocity() - otherShip.getVelocity()) * (this.getRadius() - otherShip.getRadius()) + Math.sqrt(this.getDistanceBetween(otherShip))) / this.getVelocity() - otherShip.getVelocity();
+		}
+	}
+	
+	public double[] getCollisionPosition(Ship otherShip)
+	{
+		double timeToCollision = this.getTimeToCollision(otherShip);
+		if(timeToCollision != Double.POSITIVE_INFINITY){
+		double[] positions = new double[4];
+		positions[0] = this.getX() + timeToCollision * this.getXVelocity();
+		positions[1] = this.getY() + timeToCollision * this.getYVelocity();
+		positions[2] = otherShip.getX() + timeToCollision * otherShip.getXVelocity();
+		positions[3] = otherShip.getY() + timeToCollision * otherShip.getYVelocity();
+		return positions;
+		}
+		else{
+			return null;
+		}
+	}
+	
 }
- 
+
