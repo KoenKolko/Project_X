@@ -101,7 +101,7 @@ public class Asteroids extends JFrame {
     Set<IShip> ships = new HashSet<IShip>();
     ships.add(facade.createShip(200, 400, 0, 0, 50, 0));
     ships.add(facade.createShip(700, 400, 0, 0, 50, Math.PI));
-    ships.add(facade.createShip(450, 600, 0, 0, 75, -Math.PI / 2));
+    //ships.add(facade.createShip(450, 600, 0, 0, 75, -Math.PI / 2));
     return ships;
   }
 
@@ -120,7 +120,7 @@ public class Asteroids extends JFrame {
       return;
     } else {
       // <begin>
-      IFacade facade = new asteroids.Facade();
+      IFacade facade = (IFacade) new asteroids.Facade();
       // <end>
       GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
       GraphicsDevice device = env.getDefaultScreenDevice();

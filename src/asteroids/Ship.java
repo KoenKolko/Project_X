@@ -14,11 +14,10 @@ public class Ship implements IShip {
 	private double y;					// y-position of the ship (km)
 	private double xVelocity;			// Velocity in x-direction (km/s)
 	private double yVelocity;			// Velocity in y-direction (km/s)
-	private double velocity;			// Total velocity (km/s)
 	private double radius;				// Radius of the ship (km)
 	private double angle;				// The angle of the ship (radian)
 	private final double C = 300000;	// Speed of light (km/s)
-	
+
 	
 	public Ship(double x, double y, double xVelocity, double yVelocity, double radius, double angle)
 	{		
@@ -26,7 +25,6 @@ public class Ship implements IShip {
 		this.setY(y);
 		this.setXVelocity(xVelocity);
 		this.setYVelocity(yVelocity);
-		this.setVelocity(  calcVelocity(  getXVelocity(), getYVelocity()  )  );
 		this.setRadius(radius);
 		this.setAngle(angle);	
 		
@@ -57,7 +55,6 @@ public class Ship implements IShip {
 		}
 		setXVelocity(vXNew); 
 		setYVelocity(vYNew);
-		setVelocity(  calcVelocity(  getXVelocity(), getYVelocity()  )  );
 	}
 	
 	private boolean isValidRadius (double radius)
@@ -133,34 +130,53 @@ public class Ship implements IShip {
 	}
 	
 	public double getVelocity() {
-		return this.velocity;
+		return calcVelocity(this.getXVelocity(), this.getYVelocity());
 	}
 	
-	public void setVelocity(double velocity) {
-		if (Double.isNaN(velocity))
-			this.velocity = 0;
-		else this.velocity = velocity;
-	}
 	
 	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
-		if (otherShip == null)
+		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		return Math.sqrt(Math.pow((this.getX() - otherShip.getX()), 2) - Math.pow((this.getY() - otherShip.getY()), 2));
+		return Math.sqrt(Math.pow(this.getXDistanceBetween(otherShip), 2) - Math.pow(this.getYDistanceBetween(otherShip), 2)); // The distance between the two centers.
+	}
+	
+	private double getXDistanceBetween(Ship otherShip){
+		return this.getX() - otherShip.getX(); // The x-distance between the two ships.
+	}
+	
+	private double getYDistanceBetween(Ship otherShip){
+		return this.getY() - otherShip.getY(); // The y-distance between the two ships.
+	}
+	
+	private double calcDeltaRSquared(Ship otherShip){
+		return Math.pow((this.getX() - otherShip.getX()),2) + Math.pow((this.getY() - otherShip.getY()),2);
+	}
+	
+	private double calcDeltaVSquared(Ship otherShip){
+		return Math.pow((this.getXVelocity() - otherShip.getXVelocity()),2) + Math.pow((this.getYVelocity() - otherShip.getYVelocity()),2);
+	}
+	
+	private double calcDeltaVDeltaR(Ship otherShip){
+		return (this.getX() * (this.getXVelocity()) - (otherShip.getX() * otherShip.getXVelocity()) + this.getY() * (this.getYVelocity()) - (otherShip.getY() * otherShip.getYVelocity()));
 	}
 	
 	public boolean overlap(Ship otherShip){
-		return(this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip));
-	}
-	
-	public double getTimeToCollision(Ship otherShip){
+		return(this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip)); // If the distance is smaller than the sum of the radii, the ships overlap.
+	}	
+	public double getTimeToCollision(Ship otherShip){		
+		double sigma = this.getRadius() + otherShip.getRadius();
+		double VR = calcDeltaVDeltaR(otherShip);
+		double RR = calcDeltaRSquared(otherShip);
+		double VV = calcDeltaVSquared(otherShip);
+		double d = Math.pow(VR, 2) - ((VV) * (RR - Math.pow(sigma,2)));
 		if(this.overlap(otherShip)){
-			return Double.POSITIVE_INFINITY;
+			return Double.POSITIVE_INFINITY; // The ships overlap.
 		}
-		else if( (this.getXVelocity() - otherShip.getXVelocity()) * (this.getX() - otherShip.getX()) + (this.getYVelocity() - otherShip.getYVelocity()) * (this.getY() - otherShip.getY()) >= 0  ){
-			return Double.POSITIVE_INFINITY;
+		else if(Double.compare(d,0) <= 0) {
+			return Double.POSITIVE_INFINITY; // The ships will not collide.
 		}
 		else{
-			return ((this.getVelocity() - otherShip.getVelocity()) * (this.getRadius() - otherShip.getRadius()) + Math.sqrt(this.getDistanceBetween(otherShip))) / this.getVelocity() - otherShip.getVelocity();
+			return ((VR + Math.sqrt(d))/RR); // Calculate the time to collision.
 		}
 	}
 	
@@ -168,12 +184,10 @@ public class Ship implements IShip {
 	{
 		double timeToCollision = this.getTimeToCollision(otherShip);
 		if(timeToCollision != Double.POSITIVE_INFINITY){
-		double[] positions = new double[4];
-		positions[0] = this.getX() + timeToCollision * this.getXVelocity();
-		positions[1] = this.getY() + timeToCollision * this.getYVelocity();
-		positions[2] = otherShip.getX() + timeToCollision * otherShip.getXVelocity();
-		positions[3] = otherShip.getY() + timeToCollision * otherShip.getYVelocity();
-		return positions;
+			double[] positions = new double[2];
+			positions[0] = this.getX() + timeToCollision * this.getXVelocity();
+			positions[1] = this.getY() + timeToCollision * this.getYVelocity();
+			return positions;
 		}
 		else{
 			return null;
