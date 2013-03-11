@@ -175,6 +175,9 @@ public class Ship implements IShip {
 		else if(Double.compare(d,0) <= 0) {
 			return Double.POSITIVE_INFINITY; // The ships will not collide.
 		}
+		else if(Double.compare(VR,0) >=0){
+			return Double.POSITIVE_INFINITY;
+		}		
 		else{
 			return ((VR + Math.sqrt(d))/RR); // Calculate the time to collision.
 		}
