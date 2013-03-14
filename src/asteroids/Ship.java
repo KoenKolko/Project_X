@@ -1,13 +1,11 @@
 package asteroids;
-//import be.kuleuven.cs.som.annotate.*;
-import java.util.Arrays;
 
 import be.kuleuven.cs.som.annotate.*;
 
 /**
  * A class of ships describing the current state.
  * 
- * @author Yannick & Koen
+ * @author Yannick Horvat & Koen Jacobs
  * @Version 1.0
  *
  */
@@ -156,7 +154,7 @@ public class Ship implements IShip {
 	 */
 	private boolean isValidRadius (double radius)
 	{
-		return (!Double.isNaN(radius) || radius >= 10);
+		return (!Double.isNaN(radius) && radius >= 10);
 	}
 	
 	/**
@@ -181,7 +179,7 @@ public class Ship implements IShip {
 	 */
 	public void setX(double x) throws IllegalArgumentException {
 		if (Double.isNaN(x))
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Invalid x-coordinate");
 		this.x = x;
 	}
 
