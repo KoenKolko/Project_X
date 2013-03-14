@@ -11,7 +11,8 @@ public class Facade implements IFacade {
 	@Override
 	public IShip createShip(double x, double y, double xVelocity,
 			double yVelocity, double radius, double angle) {		
-		return new Ship(x, y, xVelocity, yVelocity, radius, angle);
+		try{ return new Ship(x, y, xVelocity, yVelocity, radius, angle);}
+		catch(ModelException e) { return null;}
 	}
 
 	@Override

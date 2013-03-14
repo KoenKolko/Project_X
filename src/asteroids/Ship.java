@@ -1,5 +1,5 @@
 package asteroids;
-import be.kuleuven.cs.som.annotate.*;
+//import be.kuleuven.cs.som.annotate.*;
 import java.util.Arrays;
 
 /**
@@ -163,7 +163,7 @@ public class Ship implements IShip {
 	 * 		Returns the x-coordinate of the ship.
 	 * 
 	 */
-	@Basic
+	//@Basic
 	public double getX() {
 		return x;
 	}
@@ -179,7 +179,7 @@ public class Ship implements IShip {
 	 */
 	public void setX(double x) throws IllegalArgumentException {
 		if (Double.isNaN(x))
-			throw new IllegalArgumentException("Invalid x-coordinate");
+			throw new IllegalArgumentException();
 		this.x = x;
 	}
 
@@ -188,7 +188,7 @@ public class Ship implements IShip {
 	 * @return
 	 * 		Returns the y-coordinate of the ship.
 	 */
-	@Basic
+	//@Basic
 	public double getY() {
 		return y;
 	}
@@ -213,7 +213,7 @@ public class Ship implements IShip {
 	 * @return
 	 * 		Returns the velocity of the ship in the x-axis.
 	 */
-	@Basic
+	//@Basic
 	public double getXVelocity() {
 		return xVelocity;
 	}
@@ -238,7 +238,7 @@ public class Ship implements IShip {
 	 * @return
 	 * 		Returns the velocity of the ship in the y-axis.
 	 */
-	@Basic
+	//@Basic
 	public double getYVelocity() {
 		return yVelocity;
 	}
@@ -263,7 +263,7 @@ public class Ship implements IShip {
 	 * @return
 	 * 		Returns the angle the ship is faced to.
 	 */
-	@Basic
+	//@Basic
 	public double getAngle() {
 		return angle;
 	}
@@ -286,7 +286,7 @@ public class Ship implements IShip {
 	 * @return
 	 * 		Returns the radius of the ship.
 	 */
-	@Basic
+	//@Basic
 	public double getRadius() {
 		return radius;
 	}
@@ -319,9 +319,9 @@ public class Ship implements IShip {
 	 * @return
 	 * 		Returns the velocity of the ship.
 	 */
-	private double getVelocity() {
-		return calcVelocity(this.getXVelocity(), this.getYVelocity());
-	}
+	//private double getVelocity() {
+		//return calcVelocity(this.getXVelocity(), this.getYVelocity());
+	//}
 	
 	/**
 	 * 
