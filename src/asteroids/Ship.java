@@ -1,5 +1,5 @@
 package asteroids;
-
+import be.kuleuven.cs.som.annotate.*;
 import java.util.Arrays;
 
 /**
@@ -20,7 +20,30 @@ public class Ship implements IShip {
 	private double angle;				// The angle of the ship (radian)
 	private final double C = 300000;	// Speed of light (km/s)
 
-	
+	/**
+	 * Creates a new ship with the given parameters.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param xVelocity
+	 * @param yVelocity
+	 * @param radius
+	 * @param angle
+	 * 
+	 * @post	The x-coordinate is set to the parameter x.
+	 * 			| (new this).getX() == x
+	 * @post 	The y-coordinate is set to the parameter y.
+	 * 			| (new this).getY() == y
+	 * @post 	The velocity on the x-axis is set to the parameter xVelocity.
+	 * 			| (new this).getXVelocity() == xVelocity
+	 * @post	The velocity on the y-axis is set to the parameter yVelocity.
+	 * 			| (new this).getYVelocity() == yVelocity
+	 * @post	The radius of the ship is set to the parameter radius.
+	 * 			| (new this).getRadius() == radius
+	 * @post 	The angle the ship is facing is set to the parameter angle.
+	 * 			| (new this).getAngle() == angle	
+	 * 
+	 */
 	public Ship(double x, double y, double xVelocity, double yVelocity, double radius, double angle)
 	{		
 		this.setX(x);
@@ -32,19 +55,81 @@ public class Ship implements IShip {
 		
 	}
 	
+	/**
+	 * Moves the ship during a given amount of time.
+	 * 
+	 * @param time		The duration of the current move.
+	 * 
+	 * @post	The x-coordinate is set to the new position after move.
+	 * 			| (new this).getX() == getX() + (getXVelocity()*time)
+	 * 
+	 * @post 	The y-coordinate is set to the new position after move.
+	 * 			| (new this).getY() == getY() + (getYVelocity()*time)
+	 * 
+	 * @throws IllegalArgumentException
+	 * 			The time is not a legal parameter for this method.
+	 * 			Double.isNaN(time) || time <= 0
+	 */
 	public void move (double time) throws IllegalArgumentException {
-		if (time <= 0)
-			throw new IllegalArgumentException("Your time is less then zero!");
+		if (!isValidTime(time))
+			throw new IllegalArgumentException();
 		setX(getX() + (getXVelocity()*time));				// x = x + velocity*time
 		setY(getY() + (getYVelocity()*time));				// y = y + velocity*time
 		
 	}
 	
+	/**
+	 * 
+	 * @param time	The time that has to be checked.
+	 * @return	
+	 * 		Returns if the time is valid.
+	 * 		|!(Double.isNaN(time) || time <= 0)  
+	 */
+	public boolean isValidTime (double time) { 
+		return !(Double.isNaN(time) || time <= 0);
+	}
+	
+	
+	/**
+	 * Turns the ship by a given angle.
+	 * 
+	 * @param angle		The angle the ships turns. (radians)
+	 * 
+	 * @pre		The angle is a number.
+	 * 			| isValidAngle(angle)
+	 * @post 	The angle is set to the old angle increased by the parameter angle.
+	 * 			| (new this).getAngle() == getAngle() + angle
+	 */
 	public void turn (double angle) {
-		assert (!Double.isNaN(angle)) : "No valid argument!";
+		assert (isValidAngle(angle)) : "No valid argument!";
 		setAngle(getAngle() + angle);
 	}
 	
+	/**
+	 * 
+	 * @param angle		The angle that has to be checked.
+	 * @return
+	 * 		Returns if the angle is valid.
+	 * 		| !Double.isNaN(angle)
+	 */
+	public boolean isValidAngle (double angle) {
+		return !Double.isNaN(angle);
+	}
+	
+	
+	/**
+	 * 
+	 * @param amount	The amount by which the velocity is increased.
+	 * @post 	If the new velocity is greater than the speed of light (C), then the velocity in the x and y-axis will be adjusted
+	 * 			so that the velocity equals the speed of light (C).
+	 * 			If the new velocity is smaller or equal to speed of light (C), then the new x and y velocities are calculated 
+	 * 			and adjusted.
+	 * 			| if (calcVelocity(vXNew, vYNew) > C)
+	 * 			|	then (new this).calcVelocity(getXVelocity(), getYVelocity()) == C
+	 *			| else 
+	 *			| 	then (new this).getXVelocity() = vXNew && (new this).getYVelocity() = vYNew 
+	 * 			 		
+	 */
 	public void thrust (double amount) {
 		if(Double.isNaN(amount))
 			return;
@@ -59,64 +144,162 @@ public class Ship implements IShip {
 		setYVelocity(vYNew);
 	}
 	
+	/**
+	 * Checks the radius of the ship.
+	 * 
+	 * @param radius	The new radius of this ship.	
+	 * @return	
+	 * 		Returns if the radius is valid.
+	 * 		| !Double.isNaN(radius) || radius >= 10
+	 */
 	private boolean isValidRadius (double radius)
 	{
-		return (radius >= 10);
+		return (!Double.isNaN(radius) || radius >= 10);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * 		Returns the x-coordinate of the ship.
+	 * 
+	 */
+	@Basic
 	public double getX() {
 		return x;
 	}
 
+	/**
+	 * 
+	 * @param x		The new x-coordinate
+	 * @post 		X-position has been set to x.
+	 * 				| (new this).getX() == x
+	 * @throws IllegalArgumentException
+	 * 		The entered x-parameter is invalid.
+	 * 		| Double.isNaN(x)
+	 */
 	public void setX(double x) throws IllegalArgumentException {
 		if (Double.isNaN(x))
 			throw new IllegalArgumentException("Invalid x-coordinate");
 		this.x = x;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * 		Returns the y-coordinate of the ship.
+	 */
+	@Basic
 	public double getY() {
 		return y;
 	}
 
+	/**
+	 * 
+	 * @param y		The new y-coordinate
+	 * @post 		Y-position has been set to y.
+	 * 				| (new this).getY() == y
+	 * @throws IllegalArgumentException
+	 * 		The entered y-parameter is invalid.
+	 * 		| Double.isNaN(y)
+	 */
 	public void setY(double y) throws IllegalArgumentException {
 		if (Double.isNaN(x))
 			throw new IllegalArgumentException("Invalid y-coordinate");
 		this.y = y;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * 		Returns the velocity of the ship in the x-axis.
+	 */
+	@Basic
 	public double getXVelocity() {
 		return xVelocity;
 	}
 
+	/**
+	 * 
+	 * @param xVelocity		The new x-velocity of the ship.
+	 * @post 	If xVelocity is not a number, the velocity is set to zero.
+	 * 			Else, the x-velocity is set to xVelocity.
+	 * 			| if (Double.isNaN(xVelocity))
+	 * 			| 	then (new this).getXVelocity = 0
+	 * 			| else (new this).getXVelocity = xVelocity
+	 */
 	public void setXVelocity(double xVelocity) {
 		if (Double.isNaN(xVelocity))
 			this.xVelocity = 0;
 		else this.xVelocity = xVelocity;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * 		Returns the velocity of the ship in the y-axis.
+	 */
+	@Basic
 	public double getYVelocity() {
 		return yVelocity;
 	}
 
+	/**
+	 * 
+	 * @param yVelocity		The new y-velocity of the ship.
+	 * @post 	If yVelocity is not a number, the velocity is set to zero.
+	 * 			Else, the y-velocity is set to yVelocity.
+	 * 			| if (Double.isNaN(yVelocity))
+	 * 			| 	then (new this).getYVelocity = 0
+	 * 			| else (new this).getYVelocity = yVelocity
+	 */
 	public void setYVelocity(double yVelocity) {
 		if (Double.isNaN(yVelocity))
 			this.yVelocity = 0;
 		else this.yVelocity = yVelocity;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * 		Returns the angle the ship is faced to.
+	 */
+	@Basic
 	public double getAngle() {
 		return angle;
 	}
 
+	/**
+	 * 
+	 * @param angle 	The new angle.
+	 * @pre		The angle has to be valid.
+	 * 			| isValidAngle(angle)
+	 * @post 	The new angle is angle.
+	 * 			| (new this).getAngle() == angle 
+	 */
 	public void setAngle(double angle) {
-		assert (Double.isNaN(angle));
+		assert isValidAngle(angle) : "Wrong angle";
 		this.angle = angle;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * 		Returns the radius of the ship.
+	 */
+	@Basic
 	public double getRadius() {
 		return radius;
 	}
 
+	/**
+	 * 
+	 * @param radius	The new radius.
+	 * @post 	The new radius is equal to radius.
+	 * 			|(new this).getRadius() == radius
+	 * @throws IllegalArgumentException
+	 * 		The parameter radius is invalid.
+	 * 		| !isValidRadius(radius)
+	 */
 	public void setRadius(double radius) throws IllegalArgumentException {
 		if (!isValidRadius(radius))
 			throw new IllegalArgumentException("Invalid radius!");
@@ -127,15 +310,27 @@ public class Ship implements IShip {
 	 * Calculates the velocity of a given x and y velocity.
 	 * 
 	 */
-	public double calcVelocity(double x, double y) {
+	private double calcVelocity(double x, double y) {
 		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
 	
-	public double getVelocity() {
+	/**
+	 * 
+	 * @return
+	 * 		Returns the velocity of the ship.
+	 */
+	private double getVelocity() {
 		return calcVelocity(this.getXVelocity(), this.getYVelocity());
 	}
 	
-	
+	/**
+	 * 
+	 * @param otherShip		The ship to be compared to.
+	 * @return
+	 * 		The distance between this ship and the other ship.
+	 * 		| Math.sqrt(Math.pow(this.getXDistanceBetween(otherShip), 2) + Math.pow(this.getYDistanceBetween(otherShip), 2))
+	 * @throws IllegalArgumentException
+	 */
 	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
@@ -200,7 +395,6 @@ public class Ship implements IShip {
 			double[] positions = new double[2];
 			positions[0] = this.getX() + timeToCollision * this.getXVelocity();
 			positions[1] = this.getY() + timeToCollision * this.getYVelocity();
-		System.out.println(Arrays.toString(positions));
 			return positions;
 		}
 		else{

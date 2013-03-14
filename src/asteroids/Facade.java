@@ -41,7 +41,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getDirection(IShip ship) {
-		return ((Ship) ship).getRadius();
+		return ((Ship) ship).getAngle();
 	}
 
 	@Override
