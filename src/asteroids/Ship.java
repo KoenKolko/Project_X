@@ -203,7 +203,7 @@ public class Ship implements IShip {
 	 * 		| Double.isNaN(y)
 	 */
 	public void setY(double y) throws IllegalArgumentException {
-		if (Double.isNaN(x))
+		if (Double.isNaN(y))
 			throw new IllegalArgumentException("Invalid y-coordinate");
 		this.y = y;
 	}
