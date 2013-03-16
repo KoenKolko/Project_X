@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import asteroids.IShip;
 import asteroids.Ship;
 import asteroids.Util;
 
@@ -17,9 +16,20 @@ public class ShipTest {
 		otherShip = new Ship(100, 100, 30, -15, 20, 0);
 	}
 
+	@SuppressWarnings("unused")
+	@Test (expected=IllegalArgumentException.class)
+	public void testConstructorInvalidRadiusSmall() {
+		Ship testship = new Ship(100, 200, 10, -10, 5, -Math.PI);
+	}
+
+	@SuppressWarnings("unused")
+	@Test (expected=IllegalArgumentException.class)
+	public void testConstructorInvalidRadiusNegative() {
+		Ship testship = new Ship(100, 200, 10, -10, -5, -Math.PI);
+	}
 
 	@Test
-	public void moveTestNormal() {
+	public void moveTest() {
 		Double time = 1.0;
 		ship.move(time);
 		assertEquals(110.0, ship.getX(), Util.EPSILON);
@@ -32,12 +42,38 @@ public class ShipTest {
 		ship.move(negTime);
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void moveTestZeroTime() {
+		Double zeroTime = 0.0;
+		ship.move(zeroTime);
+	}
+	
 	@Test
-	public void turnTestNormal(){
+	public void isValidTimeTest() {
+		double time = 3.0;
+		assertEquals(true, ship.isValidTime(time));
+	}
+	
+	@Test
+	public void isValidTimeBoundaryValues() {
+		double time = -5.0;
+		assertEquals(false, ship.isValidTime(time));
+		time = 0.0;
+		assertEquals(false, ship.isValidTime(time));
+	}
+	
+	
+	
+	@Test
+	public void turnTest(){
 		double angle = Math.PI;
 		ship.turn(angle);
 		assertEquals(0.0,ship.getAngle(),Util.EPSILON);
+		angle = 2*Math.PI;
+		ship.turn(angle);
+		assertEquals(2*Math.PI, ship.getAngle(), Util.EPSILON);
 	}
+	
 	
 	@Test
 	public void thrustTestNormal(){
@@ -47,6 +83,37 @@ public class ShipTest {
 		assertEquals(-10,ship.getYVelocity(),Util.EPSILON);
 		
 	}
+	
+	@Test
+	public void thrustTestSpeedOfLight() {
+		double amount = 500000.0;
+		ship.thrust(amount);
+		assertEquals(300000.0, ship.calcVelocity(ship.getXVelocity(), ship.getYVelocity()), Util.EPSILON);
+	}
+	
+	@Test
+	public void thrustTestNegativeAmount() {
+		double amount = -500;
+		ship.thrust(amount);
+		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
+		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
+	}
+	
+	public void thrustTestZero() {
+		double amount = 0.0;
+		ship.thrust(amount);
+		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
+		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
+	}
+	
+	@Test
+	public void setXTest () {
+		double x = 30.0;
+		ship.setX(x);
+		assertEquals(30.0, ship.getX(), Util.EPSILON);
+		
+	}
+	
 	@Test
 	public void testGetXSetX(){
 		ship.setX(5.0);
@@ -83,19 +150,61 @@ public class ShipTest {
 	}
 	
 	@Test
+	public void testCalcVelocity() {
+		assertEquals(Math.sqrt(128.0), ship.calcVelocity(8.0, 8.0), Util.EPSILON);
+		assertEquals(Math.sqrt(128.0), ship.calcVelocity(8.0, -8.0), Util.EPSILON);
+		assertEquals(Math.sqrt(128.0), ship.calcVelocity(-8.0, 8.0), Util.EPSILON);
+		assertEquals(Math.sqrt(128.0), ship.calcVelocity(-8.0, -8.0), Util.EPSILON);
+	}
+	
+	
+	@Test
 	public void testGetDistanceBetween(){
 		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
 	}
 	
+	@Test (expected=IllegalArgumentException.class) 
+	public void testGetDistanceBetweenNullPointer() {
+		otherShip = null;
+		ship.getDistanceBetween(otherShip);
+	}
+	
+	@Test 
+	public void testGetDistanceBetweenNegativeX() {
+		ship =  new Ship(-100, 200, 10, -10, 20, -Math.PI);
+		otherShip = new Ship(-100, 100, 30, -15, 20, 0);
+		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
+	}
+	
+	@Test 
+	public void testGetDistanceBetweenNegativeY() {
+		ship =  new Ship(100, -200, 10, -10, 20, -Math.PI);
+		otherShip = new Ship(100, -100, 30, -15, 20, 0);
+		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
+	}
+	
+	@Test 
+	public void testGetDistanceBetweenNegativeXY() {
+		ship =  new Ship(-100, -200, 10, -10, 20, -Math.PI);
+		otherShip = new Ship(-100, -100, 30, -15, 20, 0);
+		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
+	}
+	
 	@Test
-	public void testNonOverlap(){
+	public void testOverlapFalse(){
 		assertEquals(false,ship.overlap(otherShip));
 	}
 	
 	@Test
-	public void testOverlap(){
+	public void testOverlapTrue(){
 		Ship overlappingShip = new Ship(105, 190, 10, -10, 20, -Math.PI);
 		assertEquals(true,ship.overlap(overlappingShip));
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testOverlapNullPointer() {
+		otherShip = null;
+		ship.overlap(otherShip);
 	}
 	
 	@Test
@@ -104,7 +213,7 @@ public class ShipTest {
 	}
 	
 	@Test
-	public void testTimeToNoCollision(){
+	public void testTimeToCollisionFalse(){
 		assertEquals(Double.POSITIVE_INFINITY , ship.getTimeToCollision(otherShip), Util.EPSILON);
 		
 	}
@@ -116,6 +225,12 @@ public class ShipTest {
 		assertEquals(3.0, ship.getTimeToCollision(shipToCollide),Util.EPSILON);
 	}
 	
+	@Test (expected=IllegalArgumentException.class)
+	public void testTimeToCollisionNullPointer() {
+		otherShip = null;
+		ship.getTimeToCollision(otherShip);
+	}
+	
 	@Test
 	public void testGetCollisionPosition() {
 		ship =  new Ship(100, 200, -10, 0, 20, -Math.PI);
@@ -124,5 +239,14 @@ public class ShipTest {
 		assertEquals(200, ship.getCollisionPosition(shipToCollide)[1],Util.EPSILON);
 	}
 	
+	@Test
+	public void testGetCollisionPositionNoCollision() {
+		assertEquals(null, ship.getCollisionPosition(otherShip));
+	}
 	
+	@Test (expected=IllegalArgumentException.class)
+	public void testGetCollisionPositionNullPointer() {
+		otherShip = null;
+		ship.getCollisionPosition(otherShip);
+	}
 }

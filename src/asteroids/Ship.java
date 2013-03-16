@@ -120,25 +120,32 @@ public class Ship implements IShip {
 	/**
 	 * 
 	 * @param amount	The amount by which the velocity is increased.
-	 * @post 	If the new velocity is greater than the speed of light (C), then the velocity in the x and y-axis will be adjusted
+	 * @post 	If the given amount is invalid (< 0 or NaN) or the amount is zero, then the velocity will remain unchanged.
+	 * 			Else if the new velocity is greater than the speed of light (C), then the velocity in the x and y-axis will be adjusted
 	 * 			so that the velocity equals the speed of light (C).
-	 * 			If the new velocity is smaller or equal to speed of light (C), then the new x and y velocities are calculated 
+	 * 			Else, the new velocity is smaller or equal to speed of light (C), then the new x and y velocities are calculated 
 	 * 			and adjusted.
+	 * 			| if (Double.isNaN(amount) || amount <= 0)
+	 * 			|	then return;
 	 * 			| if (calcVelocity(vXNew, vYNew) > C)
 	 * 			|	then (new this).calcVelocity(getXVelocity(), getYVelocity()) == C
 	 *			| else 
 	 *			| 	then (new this).getXVelocity() = vXNew && (new this).getYVelocity() = vYNew 
+	 *			|	(new this).calcVelocity(getXVelocity(), getYVelocity()) <= C
 	 * 			 		
 	 */
 	public void thrust (double amount) {
-		if(Double.isNaN(amount))
+		if(Double.isNaN(amount) || amount <= 0)
 			return;
 		double vXNew = getXVelocity() + amount*Math.cos(getAngle());		// the new x-velocity
 		double vYNew = getYVelocity() + amount*Math.sin(getAngle());		// the new y-velocity
 		if (calcVelocity(vXNew, vYNew) > C) {								// if (speed > 300 000km/s)
-			double constant = Math.sqrt(  Math.pow(C,2)    /   (  Math.pow(getXVelocity(), 2) + Math.pow(getYVelocity(), 2)  )  );		// constant multiple, so the new speed will be C.
-			vXNew *= constant;
-			vYNew *= constant;	
+			double constant = Math.sqrt(  Math.pow(C,2)    /   (  Math.pow(getXVelocity(), 2) + Math.pow(getYVelocity(), 2)  )  );
+			System.out.println(constant);		// constant multiple, so the new speed will be C.
+			vXNew = getXVelocity()*constant;
+			System.out.println(vXNew);
+			vYNew = getYVelocity()*constant;	
+			System.out.println(vYNew);
 		}
 		setXVelocity(vXNew); 
 		setYVelocity(vYNew);
@@ -309,19 +316,20 @@ public class Ship implements IShip {
 	/**
 	 * Calculates the velocity of a given x and y velocity.
 	 * 
+	 * @param x		The x-velocity.
+	 * @param y		The y-velocity.
+	 * @return		If the parameters are not a number, return 0.0. 
+	 * 				Else, return the velocity.
+	 *				| if ( Double.isNaN(x) || Double.isNaN(y)
+	 *				| 	then return 0.0
+	 *				| else return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
 	 */
-	private double calcVelocity(double x, double y) {
+	public double calcVelocity(double x, double y) {
+		if (Double.isNaN(x) || Double.isNaN(y))
+			return 0.0;
 		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
 	
-	/**
-	 * 
-	 * @return
-	 * 		Returns the velocity of the ship.
-	 */
-	//private double getVelocity() {
-		//return calcVelocity(this.getXVelocity(), this.getYVelocity());
-	//}
 	
 	/**
 	 * 
@@ -336,7 +344,8 @@ public class Ship implements IShip {
 	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		return Math.sqrt(Math.pow(this.getXDistanceBetween(otherShip), 2) + Math.pow(this.getYDistanceBetween(otherShip), 2)); // The distance between the two centers.
+		return Math.sqrt(Math.pow(this.getXDistanceBetween(otherShip), 2) 
+					+ Math.pow(this.getYDistanceBetween(otherShip), 2)); // The distance between the two centers.
 	}
 	
 	/**
