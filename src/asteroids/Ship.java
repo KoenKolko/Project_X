@@ -3,7 +3,7 @@ package asteroids;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class for a ship describing it's current state.
+ * A class for a ship describing its current state.
  * 
  * @author Yannick Horvat (1ste bachelor Informatica) & Koen Jacobs (1ste bachelor Informatica)
  * Repository: https://github.com/KoenKolko/Project_X.git
