@@ -248,7 +248,7 @@ public class ShipTest {
 	public void testGetCollisionPosition() {
 		ship =  new Ship(100, 200, -10, 0, 20, -Math.PI);
 		Ship shipToCollide =  new Ship(0, 200, 10, 0, 20, -Math.PI);
-		assertEquals(70.0, ship.getCollisionPosition(shipToCollide)[0],Util.EPSILON);
+		assertEquals(50.0, ship.getCollisionPosition(shipToCollide)[0],Util.EPSILON);
 		assertEquals(200, ship.getCollisionPosition(shipToCollide)[1],Util.EPSILON);
 	}
 	
