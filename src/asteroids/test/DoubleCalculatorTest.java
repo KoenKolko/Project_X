@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import asteroids.DoubleCalculator;
-import asteroids.ModelException;
 import asteroids.Util;
 
 public class DoubleCalculatorTest {
