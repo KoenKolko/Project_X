@@ -6,20 +6,20 @@ import be.kuleuven.cs.som.annotate.*;
  * A class for a ship describing it's current state.
  * 
  * @author Yannick Horvat (1ste bachelor Informatica) & Koen Jacobs (1ste bachelor Informatica)
- * https://github.com/KoenKolko/Project_X.git
+ * Repository: https://github.com/KoenKolko/Project_X.git
  * @Version 1.0
  *
  */
 
 public class Ship implements IShip {
 
-	private double x;					// x-position of the ship (km)
-	private double y;					// y-position of the ship (km)
-	private double xVelocity;			// Velocity in x-direction (km/s)
-	private double yVelocity;			// Velocity in y-direction (km/s)
-	private double radius;				// Radius of the ship (km)
-	private double angle;				// The angle of the ship (radian)
-	private final double C = 300000;	// Speed of light (km/s)
+	private double x;										// x-position of the ship (km)
+	private double y;										// y-position of the ship (km)
+	private double xVelocity;								// Velocity in x-direction (km/s)
+	private double yVelocity;								// Velocity in y-direction (km/s)
+	private double radius;									// Radius of the ship (km)
+	private double angle;									// The angle of the ship (radian)
+	private final double C = 300000;						// Speed of light (km/s)
 	private DoubleCalculator calc = new DoubleCalculator(); // A calculator to calc with Doubles.
 
 	/**
@@ -72,14 +72,14 @@ public class Ship implements IShip {
 	 * 
 	 * @throws IllegalArgumentException
 	 * 			The time is not a legal parameter for this method.
-	 * 			Double.isNaN(time) || time <= 0
+	 * 			| !isValidTime(time)
 	 */
 	public void move (double time) throws IllegalArgumentException {
 		if (!isValidTime(time))
 			throw new IllegalArgumentException();
 
-		setX(calc.addDoubles(getX(), calc.multiplyDoubles(getXVelocity(), time)));			// x = x + velocity*time
-		setY(calc.addDoubles(getY(), calc.multiplyDoubles(getYVelocity(), time)));												// y = y + velocity*time
+		setX(calc.addDoubles(getX(), calc.multiplyDoubles(getXVelocity(), time)));					// x = x + velocity*time
+		setY(calc.addDoubles(getY(), calc.multiplyDoubles(getYVelocity(), time)));					// y = y + velocity*time
 
 	}
 
@@ -103,7 +103,7 @@ public class Ship implements IShip {
 	 * @pre		The angle is a number.
 	 * 			| isValidAngle(angle)
 	 * @post 	The angle is set to the old angle increased by the parameter angle.
-	 * 			| (new this).getAngle() == getAngle() + angle
+	 * 			| (new this).getAngle() == (getAngle() + angle)%(2*Math.PI)
 	 */
 	public void turn (double angle) {
 		assert (isValidAngle(angle)) : "No valid argument!";
