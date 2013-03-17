@@ -13,7 +13,7 @@ public class DoubleCalculatorTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented la die da");
+		fail("Not yet implemented");
 	}
 
 }
