@@ -164,6 +164,12 @@ public class ShipTest {
 		assertEquals(Math.sqrt(128.0), ship.calcVelocity(-8.0, -8.0), Util.EPSILON);
 	}
 	
+	@Test
+	public void testCalcVelocityNaN(){
+		double velocity = Double.NaN;
+		assertEquals(0.0, ship.calcVelocity(velocity,velocity), Util.EPSILON);		
+	}
+	
 	
 	@Test
 	public void testGetDistanceBetween(){
