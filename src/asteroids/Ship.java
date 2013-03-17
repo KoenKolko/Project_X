@@ -5,7 +5,8 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class for a ship describing it's current state.
  * 
- * @author Yannick Horvat & Koen Jacobs
+ * @author Yannick Horvat (1ste bachelor Informatica) & Koen Jacobs (1ste bachelor Informatica)
+ * https://github.com/KoenKolko/Project_X.git
  * @Version 1.0
  *
  */

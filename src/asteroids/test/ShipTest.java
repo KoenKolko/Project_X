@@ -42,7 +42,7 @@ public class ShipTest {
 		ship.move(negTime);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void moveTestZeroTime() {
 		Double zeroTime = 0.0;
 		ship.move(zeroTime);
@@ -59,7 +59,7 @@ public class ShipTest {
 		double time = -5.0;
 		assertEquals(false, ship.isValidTime(time));
 		time = 0.0;
-		assertEquals(false, ship.isValidTime(time));
+		assertEquals(true, ship.isValidTime(time));
 	}
 	
 	
