@@ -3,7 +3,7 @@ package asteroids;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class of ships describing the current state.
+ * A class for a ship describing it's current state.
  * 
  * @author Yannick Horvat & Koen Jacobs
  * @Version 1.0
@@ -23,12 +23,12 @@ public class Ship implements IShip {
 	/**
 	 * Creates a new ship with the given parameters.
 	 * 
-	 * @param x
-	 * @param y
-	 * @param xVelocity
-	 * @param yVelocity
-	 * @param radius
-	 * @param angle
+	 * @param x				x-position of the ship (km)
+	 * @param y				y-position of the ship (km)
+	 * @param xVelocity		Velocity in x-direction (km/s)
+	 * @param yVelocity		Velocity in y-direction (km/s)
+	 * @param radius		Radius of the ship (km)
+	 * @param angle			The angle of the ship (radian)
 	 * 
 	 * @post	The x-coordinate is set to the parameter x.
 	 * 			| (new this).getX() == x
@@ -42,6 +42,8 @@ public class Ship implements IShip {
 	 * 			| (new this).getRadius() == radius
 	 * @post 	The angle the ship is facing is set to the parameter angle.
 	 * 			| (new this).getAngle() == angle	
+	 * @post	The radius will be larger then 10
+	 * 			| (new this).getRadius > 10
 	 * 
 	 */
 	public Ship(double x, double y, double xVelocity, double yVelocity, double radius, double angle)
@@ -58,7 +60,7 @@ public class Ship implements IShip {
 	/**
 	 * Moves the ship during a given amount of time.
 	 * 
-	 * @param time		The duration of the current move.
+	 * @param time		The duration of the current move. (seconds)
 	 * 
 	 * @post	The x-coordinate is set to the new position after move.
 	 * 			| (new this).getX() == getX() + (getXVelocity()*time)
@@ -83,17 +85,17 @@ public class Ship implements IShip {
 	 * @param time	The time that has to be checked.
 	 * @return	
 	 * 		Returns if the time is valid.
-	 * 		|!(Double.isNaN(time) || time <= 0)  
+	 * 		| !(Double.isNaN(time) || time < 0)  
 	 */
 	public boolean isValidTime (double time) { 
-		return !(Double.isNaN(time) || time <= 0);
+		return !(Double.isNaN(time) || time < 0);
 	}
 	
 	
 	/**
 	 * Turns the ship by a given angle.
 	 * 
-	 * @param angle		The angle the ships turns. (radians)
+	 * @param angle		The angle the ship will turns. (radians)
 	 * 
 	 * @pre		The angle is a number.
 	 * 			| isValidAngle(angle)
