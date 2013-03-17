@@ -12,7 +12,7 @@ import be.kuleuven.cs.som.annotate.*;
  */
 
 public class Ship implements IShip {
-	
+
 	private double x;					// x-position of the ship (km)
 	private double y;					// y-position of the ship (km)
 	private double xVelocity;			// Velocity in x-direction (km/s)
@@ -20,6 +20,7 @@ public class Ship implements IShip {
 	private double radius;				// Radius of the ship (km)
 	private double angle;				// The angle of the ship (radian)
 	private final double C = 300000;	// Speed of light (km/s)
+	private DoubleCalculator calc = new DoubleCalculator(); // A calculator to calc with Doubles.
 
 	/**
 	 * Creates a new ship with the given parameters.
@@ -55,9 +56,9 @@ public class Ship implements IShip {
 		this.setYVelocity(yVelocity);
 		this.setRadius(radius);
 		this.setAngle(angle);	
-		
+
 	}
-	
+
 	/**
 	 * Moves the ship during a given amount of time.
 	 * 
@@ -76,11 +77,12 @@ public class Ship implements IShip {
 	public void move (double time) throws IllegalArgumentException {
 		if (!isValidTime(time))
 			throw new IllegalArgumentException();
-		setX(getX() + (getXVelocity()*time));				// x = x + velocity*time
-		setY(getY() + (getYVelocity()*time));				// y = y + velocity*time
-		
+
+		setX(calc.addDoubles(getX(), calc.multiplyDoubles(getXVelocity(), time)));			// x = x + velocity*time
+		setY(calc.addDoubles(getY(), calc.multiplyDoubles(getYVelocity(), time)));												// y = y + velocity*time
+
 	}
-	
+
 	/**
 	 * 
 	 * @param time	The time that has to be checked.
@@ -91,8 +93,8 @@ public class Ship implements IShip {
 	public boolean isValidTime (double time) { 
 		return !(Double.isNaN(time) || time < 0);
 	}
-	
-	
+
+
 	/**
 	 * Turns the ship by a given angle.
 	 * 
@@ -105,9 +107,9 @@ public class Ship implements IShip {
 	 */
 	public void turn (double angle) {
 		assert (isValidAngle(angle)) : "No valid argument!";
-		setAngle(getAngle() + angle);
+		setAngle(calc.addDoubles(getAngle(), angle));
 	}
-	
+
 	/**
 	 * 
 	 * @param angle		The angle that has to be checked.
@@ -118,8 +120,8 @@ public class Ship implements IShip {
 	public boolean isValidAngle (double angle) {
 		return !Double.isNaN(angle);
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param amount	The amount by which the velocity is increased.
@@ -140,20 +142,17 @@ public class Ship implements IShip {
 	public void thrust (double amount) {
 		if(Double.isNaN(amount) || amount <= 0)
 			return;
-		double vXNew = getXVelocity() + amount*Math.cos(getAngle());		// the new x-velocity
-		double vYNew = getYVelocity() + amount*Math.sin(getAngle());		// the new y-velocity
-		if (calcVelocity(vXNew, vYNew) > C) {								// if (speed > 300 000km/s)
-			double constant = Math.sqrt(  Math.pow(C,2)    /   (  Math.pow(getXVelocity(), 2) + Math.pow(getYVelocity(), 2)  )  );
-			System.out.println(constant);		// constant multiple, so the new speed will be C.
-			vXNew = getXVelocity()*constant;
-			System.out.println(vXNew);
-			vYNew = getYVelocity()*constant;	
-			System.out.println(vYNew);
+		double vXNew = calc.addDoubles(getXVelocity(), calc.multiplyDoubles(amount, Math.cos(getAngle())));		// the new x-velocity
+		double vYNew = calc.addDoubles(getYVelocity(), calc.multiplyDoubles(amount, Math.sin(getAngle())));		// the new y-velocity
+		if (calcVelocity(vXNew, vYNew) > C){ // if (speed > 300 000km/s)
+			double constant = Math.sqrt(  calc.multiplyDoubles(C, C)    /   calc.addDoubles(calc.multiplyDoubles(getXVelocity(), getXVelocity()), calc.multiplyDoubles(getYVelocity(), getYVelocity()))  ); // constant multiple, so the new speed will be C.
+			vXNew = calc.multiplyDoubles(getXVelocity(), constant);
+			vYNew = calc.multiplyDoubles(getYVelocity(), constant);
 		}
 		setXVelocity(vXNew); 
 		setYVelocity(vYNew);
 	}
-	
+
 	/**
 	 * Checks the radius of the ship.
 	 * 
@@ -166,7 +165,7 @@ public class Ship implements IShip {
 	{
 		return (!Double.isNaN(radius) && radius >= 10);
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -288,7 +287,7 @@ public class Ship implements IShip {
 	 */
 	public void setAngle(double angle) {
 		assert isValidAngle(angle) : "Wrong angle";
-		if (angle > 2*Math.PI)
+		if (angle > 2*Math.PI || angle < -2*Math.PI)
 			angle %= 2*Math.PI;	
 		this.angle = angle;
 	}
@@ -317,7 +316,7 @@ public class Ship implements IShip {
 			throw new IllegalArgumentException("Invalid radius!");
 		this.radius = radius;
 	}
-	
+
 	/**
 	 * Calculates the velocity of a given x and y velocity.
 	 * 
@@ -332,10 +331,10 @@ public class Ship implements IShip {
 	public double calcVelocity(double x, double y) {
 		if (Double.isNaN(x) || Double.isNaN(y))
 			return 0.0;
-		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		return Math.sqrt(calc.multiplyDoubles(x, x)+ calc.multiplyDoubles(y, y));
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param otherShip		The ship to be compared to.
@@ -349,10 +348,10 @@ public class Ship implements IShip {
 	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		return Math.sqrt(Math.pow(this.getXDistanceBetween(otherShip), 2) 
-					+ Math.pow(this.getYDistanceBetween(otherShip), 2)); // The distance between the two centers.
+		return Math.sqrt(calc.addDoubles(calc.multiplyDoubles(this.getXDistanceBetween(otherShip), this.getXDistanceBetween(otherShip)),
+				calc.multiplyDoubles(this.getYDistanceBetween(otherShip), this.getYDistanceBetween(otherShip)))); // The distance between the two centers.
 	}
-	
+
 	/**
 	 * 
 	 * @param otherShip
@@ -360,20 +359,20 @@ public class Ship implements IShip {
 	 * 		Calculates the x-distance between this ship and the other ship.
 	 */
 	private double getXDistanceBetween(Ship otherShip){
-		return this.getX() - otherShip.getX(); // The x-distance between the two ships.
+		return calc.addDoubles(getX(), -otherShip.getX()); // The x-distance between the two ships.
 	}
-	
+
 	/**
 	 * 
 	 * @param otherShip
 	 * @return
 	 * 		Calculates the y-distance between this ship and the other ship.
 	 */
-	
+
 	private double getYDistanceBetween(Ship otherShip){
-		return this.getY() - otherShip.getY(); // The y-distance between the two ships.
+		return calc.addDoubles(getY(), -otherShip.getY()); // The y-distance between the two ships.
 	}
-	
+
 	/**
 	 * 
 	 * @param otherShip
@@ -381,9 +380,9 @@ public class Ship implements IShip {
 	 * 		Calculates delta R squared.
 	 */
 	private double calcDeltaRSquared(Ship otherShip){
-		double deltaX = this.getX() - otherShip.getX();
-		double deltaY = this.getY() - otherShip.getY();
-		return Math.pow(deltaX,2) + Math.pow(deltaY,2);
+		double deltaX = getXDistanceBetween(otherShip);
+		double deltaY = getYDistanceBetween(otherShip);
+		return calc.addDoubles(calc.multiplyDoubles(deltaX, deltaX), calc.multiplyDoubles(deltaY, deltaY));
 	}
 	/**
 	 * 
@@ -392,11 +391,11 @@ public class Ship implements IShip {
 	 * 		Calculates delta V squared.
 	 */
 	private double calcDeltaVSquared(Ship otherShip){
-		double deltaVX = this.getXVelocity() - otherShip.getXVelocity();
-		double deltaVY = this.getYVelocity() - otherShip.getYVelocity();
-		return Math.pow(deltaVX,2) + Math.pow(deltaVY,2);
+		double deltaVX = calc.addDoubles(getXVelocity(), -otherShip.getXVelocity());
+		double deltaVY = calc.addDoubles(getYVelocity(), -otherShip.getYVelocity());
+		return calc.addDoubles(calc.multiplyDoubles(deltaVX, deltaVX), calc.multiplyDoubles(deltaVY, deltaVY));
 	}
-	
+
 	/**
 	 * 
 	 * @param otherShip
@@ -404,13 +403,13 @@ public class Ship implements IShip {
 	 * 		Calculates delta V times delta R.
 	 */
 	private double calcDeltaVDeltaR(Ship otherShip){
-		double deltaX = this.getX() - otherShip.getX();
-		double deltaY = this.getY() - otherShip.getY();
-		double deltaVX = this.getXVelocity() - otherShip.getXVelocity();
-		double deltaVY = this.getYVelocity() - otherShip.getYVelocity();
-		return (deltaVX * deltaX) + (deltaVY * deltaY);
-		}
-	
+		double deltaX = getXDistanceBetween(otherShip);
+		double deltaY = getYDistanceBetween(otherShip);
+		double deltaVX = calc.addDoubles(getXVelocity(), -otherShip.getXVelocity());
+		double deltaVY = calc.addDoubles(getYVelocity(), -otherShip.getYVelocity());
+		return calc.addDoubles(calc.multiplyDoubles(deltaVX, deltaX), calc.multiplyDoubles(deltaVY, deltaY));
+	}
+
 	/**
 	 * 
 	 * @param otherShip		The other ship to be compared to.
@@ -424,9 +423,9 @@ public class Ship implements IShip {
 	public boolean overlap(Ship otherShip){
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		return(this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip)); // If the distance is smaller than the sum of the radii, the ships overlap.
+		return(calc.addDoubles(getRadius(), otherShip.getRadius()) > this.getDistanceBetween(otherShip)); // If the distance is smaller than the sum of the radii, the ships overlap.
 	}	
-	
+
 	/**
 	 * 
 	 * @param otherShip 	The other ship.
@@ -447,25 +446,22 @@ public class Ship implements IShip {
 	public double getTimeToCollision(Ship otherShip){	
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		double sigma = this.getRadius() + otherShip.getRadius();
+		double sigma = calc.addDoubles(getRadius(), otherShip.getRadius());
 		double VR = calcDeltaVDeltaR(otherShip);
 		double RR = calcDeltaRSquared(otherShip);
 		double VV = calcDeltaVSquared(otherShip);
-		double d = Math.pow(VR, 2) - ((VV) * (RR - Math.pow(sigma,2)));
-		if(this.overlap(otherShip)){
+		double d = calc.addDoubles(calc.multiplyDoubles(VR, VR), calc.multiplyDoubles(VV, calc.addDoubles(RR, -calc.multiplyDoubles(sigma, sigma))));	
+		//double d = Math.pow(VR, 2) - ((VV) * (RR - Math.pow(sigma,2)));
+		if(this.overlap(otherShip))
 			return Double.POSITIVE_INFINITY; 	// The ships overlap.
-		}
-		else if(Double.compare(d,0) <= 0) {
+		else if(Double.compare(d,0) <= 0)
 			return Double.POSITIVE_INFINITY; 	// The ships will not collide.
-		}
-		else if(Double.compare(VR,0) >=0){
-			return Double.POSITIVE_INFINITY;
-		}		
-		else{
-			return -( (VR+Math.sqrt(d)) / VV); 	// Calculate the time to collision.
-		}
+		else if(Double.compare(VR,0) >=0)
+			return Double.POSITIVE_INFINITY;		
+		else
+			return calc.addDoubles(-VR, -Math.sqrt(d)) / VV; 	// Calculate the time to collision.
 	}
-	
+
 	/**
 	 * 
 	 * @param otherShip		The ship that could collide with the ship.
@@ -488,13 +484,13 @@ public class Ship implements IShip {
 		double timeToCollision = this.getTimeToCollision(otherShip);
 		if(timeToCollision != Double.POSITIVE_INFINITY){			
 			double[] positions = new double[2];
-			positions[0] = this.getX() + timeToCollision * this.getXVelocity();
-			positions[1] = this.getY() + timeToCollision * this.getYVelocity();
+			positions[0] = calc.addDoubles(getX(), calc.multiplyDoubles(timeToCollision, getXVelocity()));
+			positions[1] = calc.addDoubles(getY(), calc.multiplyDoubles(timeToCollision, getYVelocity()));
 			return positions;
 		}
 		else return null;
-		
+
 	}
-	
+
 }
 
