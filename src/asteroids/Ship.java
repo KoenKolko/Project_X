@@ -472,31 +472,34 @@ public class Ship implements IShip {
 	 * 
 	 * @param otherShip		The ship that could collide with the ship.
 	 * @throws IllegalArgumentException
-	 * 						The other ship doesn't exist.
-	 * 						| otherShip == null
+	 * 		The other ship doesn't exist.
+	 * 		| otherShip == null
 	 * @return
-	 * 						Returns the position where the 2 ships will collide. It returns null if they won't.
-	 * 						| if(timeToCollision != Double.POSITIVE_INFINITY)		
-	 *  					| 	double[] positions = new double[2]
-	 * 						| 	positions[0] = this.getX() + timeToCollision * this.getXVelocity()
-	 *						|	positions[1] = this.getY() + timeToCollision * this.getYVelocity()
-	 *						|	return positions
-	 *						| else return null
+	 * 		Returns the position where the 2 ships will collide. It returns null if they won't.
+	 * 		| if(timeToCollision != Double.POSITIVE_INFINITY)		
+	 *  	| 	double[] positions = new double[2]
+	 * 		| 	positions[0] = (thisX * otherShip.getRadius() + otherX * getRadius())/sumRadii
+	 *		|	positions[1] = (thisY * otherShip.getRadius() + otherY * getRadius())/sumRadii
+	 *		|	return positions
+	 *		| else return null
 	 */
 	public double[] getCollisionPosition(Ship otherShip)
 	{
-		if (otherShip == null) 											// The other ship doesn't exist.
+		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 		double timeToCollision = this.getTimeToCollision(otherShip);
 		if(timeToCollision != Double.POSITIVE_INFINITY){			
 			double[] positions = new double[2];
-			positions[0] = calc.addDoubles(getX(), calc.multiplyDoubles(timeToCollision, getXVelocity()));
-			positions[1] = calc.addDoubles(getY(), calc.multiplyDoubles(timeToCollision, getYVelocity()));
+			double thisX = calc.addDoubles(getX(), calc.multiplyDoubles(timeToCollision, getXVelocity()));
+			double otherX = calc.addDoubles(otherShip.getX(), calc.multiplyDoubles(timeToCollision, otherShip.getXVelocity()));
+			double thisY = calc.addDoubles(getY(), calc.multiplyDoubles(timeToCollision, getYVelocity()));
+			double otherY = calc.addDoubles(otherShip.getY(), calc.multiplyDoubles(timeToCollision, otherShip.getYVelocity()));
+			double sumRadii = this.getRadius() + otherShip.getRadius();
+			positions[0] = (thisX * otherShip.getRadius() + otherX * getRadius())/sumRadii; 
+			positions[1] = (thisY * otherShip.getRadius() + otherY * getRadius())/sumRadii; 
 			return positions;
 		}
 		else return null;
-
 	}
-
 }
 
