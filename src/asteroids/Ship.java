@@ -208,8 +208,8 @@ public class Ship implements IShip {
 	 * @post 		Y-position has been set to y.
 	 * 				| (new this).getY() == y
 	 * @throws IllegalArgumentException
-	 * 		The entered y-parameter is invalid.
-	 * 		| Double.isNaN(y)
+	 * 				The entered y-parameter is invalid.
+	 * 				| Double.isNaN(y)
 	 */
 	public void setY(double y) throws IllegalArgumentException {
 		if (Double.isNaN(y))
@@ -233,8 +233,8 @@ public class Ship implements IShip {
 	 * @post 	If xVelocity is not a number, the velocity is set to zero.
 	 * 			Else, the x-velocity is set to xVelocity.
 	 * 			| if (Double.isNaN(xVelocity))
-	 * 			| 	then (new this).getXVelocity = 0
-	 * 			| else (new this).getXVelocity = xVelocity
+	 * 			| 	then (new this).getXVelocity == 0
+	 * 			| else (new this).getXVelocity == xVelocity
 	 */
 	public void setXVelocity(double xVelocity) {
 		if (Double.isNaN(xVelocity))
@@ -258,8 +258,8 @@ public class Ship implements IShip {
 	 * @post 	If yVelocity is not a number, the velocity is set to zero.
 	 * 			Else, the y-velocity is set to yVelocity.
 	 * 			| if (Double.isNaN(yVelocity))
-	 * 			| 	then (new this).getYVelocity = 0
-	 * 			| else (new this).getYVelocity = yVelocity
+	 * 			| 	then (new this).getYVelocity == 0
+	 * 			| else (new this).getYVelocity == yVelocity
 	 */
 	public void setYVelocity(double yVelocity) {
 		if (Double.isNaN(yVelocity))
@@ -280,10 +280,15 @@ public class Ship implements IShip {
 	/**
 	 * 
 	 * @param angle 	The new angle.
-	 * @pre		The angle has to be valid.
-	 * 			| isValidAngle(angle)
-	 * @post 	The new angle is angle.
-	 * 			| (new this).getAngle() == angle 
+	 * 
+	 * @pre				The angle has to be valid.
+	 * 					| isValidAngle(angle)
+	 * 
+	 * @post 			The new angle is angle.
+	 * 					| if (angle > 2*Math.PI)
+	 * 					| 	then (new this).getAngle() == angle%(2*Math.PI)
+	 * 					| else if angle < -2*Math.PI
+	 * 					| 	then (new this).getAngle() == angle%(-2*Math.PI)
 	 */
 	public void setAngle(double angle) {
 		assert isValidAngle(angle) : "Wrong angle";
@@ -307,11 +312,11 @@ public class Ship implements IShip {
 	/**
 	 * 
 	 * @param radius	The new radius.
-	 * @post 	The new radius is equal to radius.
-	 * 			|(new this).getRadius() == radius
+	 * @post 			The new radius is equal to radius.
+	 * 					|(new this).getRadius() == radius
 	 * @throws IllegalArgumentException
-	 * 		The parameter radius is invalid.
-	 * 		| !isValidRadius(radius)
+	 * 					The parameter radius is invalid.
+	 * 					| !isValidRadius(radius)
 	 */
 	public void setRadius(double radius) throws IllegalArgumentException {
 		if (!isValidRadius(radius))
@@ -324,9 +329,9 @@ public class Ship implements IShip {
 	 * 
 	 * @param x		The x-velocity.
 	 * @param y		The y-velocity.
-	 * @return		If the parameters are not a number, return 0.0. 
+	 * @return		If one of the parameters is not a number, return 0.0. 
 	 * 				Else, return the velocity.
-	 *				| if ( Double.isNaN(x) || Double.isNaN(y)
+	 *				| if ( Double.isNaN(x) || Double.isNaN(y) )
 	 *				| 	then return 0.0
 	 *				| else return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
 	 */
@@ -351,7 +356,7 @@ public class Ship implements IShip {
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 		return Math.sqrt(calc.addDoubles(calc.multiplyDoubles(this.getXDistanceBetween(otherShip), this.getXDistanceBetween(otherShip)),
-				calc.multiplyDoubles(this.getYDistanceBetween(otherShip), this.getYDistanceBetween(otherShip)))); // The distance between the two centers.
+				calc.multiplyDoubles(this.getYDistanceBetween(otherShip), this.getYDistanceBetween(otherShip)))); 								// The distance between the two centers.
 	}
 
 	/**
@@ -416,14 +421,14 @@ public class Ship implements IShip {
 	 * 
 	 * @param otherShip		The other ship to be compared to.
 	 * @throws IllegalArgumentException
-	 * 		The other ship doesn't exist.
-	 * 		| otherShip == null
+	 * 						The other ship doesn't exist.
+	 * 						| otherShip == null
 	 * @return
-	 * 		Returns if the ships overlap each other.
-	 * 		this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip)
+	 * 						Returns if the ships overlap each other.
+	 * 						this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip)
 	 */
 	public boolean overlap(Ship otherShip){
-		if (otherShip == null) // The other ship doesn't exist.
+		if (otherShip == null) 		// The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 		return(calc.addDoubles(getRadius(), otherShip.getRadius()) > this.getDistanceBetween(otherShip)); // If the distance is smaller than the sum of the radii, the ships overlap.
 	}	
@@ -432,18 +437,18 @@ public class Ship implements IShip {
 	 * 
 	 * @param otherShip 	The other ship.
 	 * @throws IllegalArgumentException
-	 * 		The other ship doesn't exist.
-	 * 		| otherShip == null
+	 * 						The other ship doesn't exist.
+	 * 						| otherShip == null
 	 * @return
-	 * 		Returns the time before the ships collide.
-	 * 		| if(this.overlap(otherShip))
-	 *		| 	then return Double.POSITIVE_INFINITY
-	 *		| else if(Double.compare(d,0) <= 0) 
-	 *		| 	then return Double.POSITIVE_INFINITY
-	 *		| else if(Double.compare(VR,0) >=0)
-	 *		| 	then return Double.POSITIVE_INFINITY
-	 *		| else
-	 *		| 	then return -( (VR+Math.sqrt(d)) / VV)
+	 * 						Returns the time before the ships collide.
+	 * 						| if(this.overlap(otherShip))
+	 *						| 	then return Double.POSITIVE_INFINITY
+	 *						| else if(Double.compare(d,0) <= 0) 
+	 *						| 	then return Double.POSITIVE_INFINITY
+	 *						| else if(Double.compare(VR,0) >=0)
+	 *						| 	then return Double.POSITIVE_INFINITY
+	 *						| else
+	 *						| 	then return -( (VR+Math.sqrt(d)) / VV)
 	 */
 	public double getTimeToCollision(Ship otherShip){	
 		if (otherShip == null) // The other ship doesn't exist.
@@ -467,20 +472,20 @@ public class Ship implements IShip {
 	 * 
 	 * @param otherShip		The ship that could collide with the ship.
 	 * @throws IllegalArgumentException
-	 * 		The other ship doesn't exist.
-	 * 		| otherShip == null
+	 * 						The other ship doesn't exist.
+	 * 						| otherShip == null
 	 * @return
-	 * 		Returns the position where the 2 ships will collide. It returns null if they won't.
-	 * 		| if(timeToCollision != Double.POSITIVE_INFINITY)		
-	 *  	| 	double[] positions = new double[2]
-	 * 		| 	positions[0] = this.getX() + timeToCollision * this.getXVelocity()
-	 *		|	positions[1] = this.getY() + timeToCollision * this.getYVelocity()
-	 *		|	return positions
-	 *		| else return null
+	 * 						Returns the position where the 2 ships will collide. It returns null if they won't.
+	 * 						| if(timeToCollision != Double.POSITIVE_INFINITY)		
+	 *  					| 	double[] positions = new double[2]
+	 * 						| 	positions[0] = this.getX() + timeToCollision * this.getXVelocity()
+	 *						|	positions[1] = this.getY() + timeToCollision * this.getYVelocity()
+	 *						|	return positions
+	 *						| else return null
 	 */
 	public double[] getCollisionPosition(Ship otherShip)
 	{
-		if (otherShip == null) // The other ship doesn't exist.
+		if (otherShip == null) 											// The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 		double timeToCollision = this.getTimeToCollision(otherShip);
 		if(timeToCollision != Double.POSITIVE_INFINITY){			
