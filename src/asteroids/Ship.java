@@ -287,8 +287,10 @@ public class Ship implements IShip {
 	 */
 	public void setAngle(double angle) {
 		assert isValidAngle(angle) : "Wrong angle";
-		if (angle > 2*Math.PI || angle < -2*Math.PI)
-			angle %= 2*Math.PI;	
+		if (angle > 2*Math.PI)
+			angle %= 2*Math.PI;
+		else if ( angle < -2*Math.PI)
+			angle %= -2*Math.PI;
 		this.angle = angle;
 	}
 
