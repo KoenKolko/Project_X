@@ -35,7 +35,11 @@ public class ShipTest {
 		assertEquals(110.0, ship.getX(), Util.EPSILON);
 		assertEquals(190.0, ship.getY(), Util.EPSILON);
 	}
-	
+	@Test(expected=IllegalArgumentException.class)
+	public void moveTestNaN(){
+		Double time = Double.NaN;
+		ship.move(time);
+	}
 	@Test(expected=IllegalArgumentException.class)
 	public void moveTestNegativeTime() {
 		Double negTime = -1.0;
@@ -52,6 +56,12 @@ public class ShipTest {
 	public void isValidTimeTest() {
 		double time = 3.0;
 		assertEquals(true, ship.isValidTime(time));
+	}
+	
+	@Test()
+	public void isValidTimeNaN(){
+		Double time = Double.NaN;
+		assertEquals(false, ship.isValidTime(time));
 	}
 	
 	@Test
@@ -73,8 +83,7 @@ public class ShipTest {
 		ship.turn(angle);
 		assertEquals(2*Math.PI, ship.getAngle(), Util.EPSILON);
 	}
-	
-	
+				
 	@Test
 	public void thrustTestNormal(){
 		double amount = 1;
@@ -98,22 +107,20 @@ public class ShipTest {
 		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
 		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
 	}
-	
+	@Test
 	public void thrustTestZero() {
 		double amount = 0.0;
 		ship.thrust(amount);
 		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
 		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
 	}
-	
-	@Test
-	public void setXTest () {
-		double x = 30.0;
-		ship.setX(x);
-		assertEquals(30.0, ship.getX(), Util.EPSILON);
-		
+	@Test()
+	public void thrustTestNaN(){
+		double amount = Double.NaN;
+		ship.thrust(amount);
+		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
+		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
 	}
-	
 	@Test
 	public void testGetXSetX(){
 		ship.setX(5.0);

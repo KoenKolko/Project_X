@@ -450,8 +450,7 @@ public class Ship implements IShip {
 		double VR = calcDeltaVDeltaR(otherShip);
 		double RR = calcDeltaRSquared(otherShip);
 		double VV = calcDeltaVSquared(otherShip);
-		double d = calc.addDoubles(calc.multiplyDoubles(VR, VR), calc.multiplyDoubles(VV, calc.addDoubles(RR, -calc.multiplyDoubles(sigma, sigma))));	
-		//double d = Math.pow(VR, 2) - ((VV) * (RR - Math.pow(sigma,2)));
+		double d = calc.addDoubles(calc.multiplyDoubles(VR, VR), -calc.multiplyDoubles(VV, calc.addDoubles(RR, -calc.multiplyDoubles(sigma, sigma))));
 		if(this.overlap(otherShip))
 			return Double.POSITIVE_INFINITY; 	// The ships overlap.
 		else if(Double.compare(d,0) <= 0)
@@ -459,7 +458,7 @@ public class Ship implements IShip {
 		else if(Double.compare(VR,0) >=0)
 			return Double.POSITIVE_INFINITY;		
 		else
-			return calc.addDoubles(-VR, -Math.sqrt(d)) / VV; 	// Calculate the time to collision.
+			return -(calc.addDoubles(VR, Math.sqrt(d)) / VV); 	// Calculate the time to collision.
 	}
 
 	/**
