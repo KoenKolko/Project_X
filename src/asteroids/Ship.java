@@ -13,14 +13,12 @@ import be.kuleuven.cs.som.annotate.*;
 
 public class Ship implements IShip {
 
-	private double x;										// x-position of the ship (km)
-	private double y;										// y-position of the ship (km)
-	private double xVelocity;								// Velocity in x-direction (km/s)
-	private double yVelocity;								// Velocity in y-direction (km/s)
-	private double radius;									// Radius of the ship (km)
+	
+	private double radius;									// The radius of the ship.
 	private double angle;									// The angle of the ship (radian)
 	private final double C = 300000;						// Speed of light (km/s)
 	private DoubleCalculator calc = new DoubleCalculator(); // A calculator to calc with Doubles.
+	Vector loc;
 
 	/**
 	 * Creates a new ship with the given parameters.
@@ -50,10 +48,7 @@ public class Ship implements IShip {
 	 */
 	public Ship(double x, double y, double xVelocity, double yVelocity, double radius, double angle)
 	{		
-		this.setX(x);
-		this.setY(y);
-		this.setXVelocity(xVelocity);
-		this.setYVelocity(yVelocity);
+		loc = new Vector (x, y, xVelocity, yVelocity);
 		this.setRadius(radius);
 		this.setAngle(angle);	
 
@@ -75,23 +70,8 @@ public class Ship implements IShip {
 	 * 			| !isValidTime(time)
 	 */
 	public void move (double time) throws IllegalArgumentException {
-		if (!isValidTime(time))
-			throw new IllegalArgumentException();
+		loc.movement(time);
 
-		setX(calc.addDoubles(getX(), calc.multiplyDoubles(getXVelocity(), time)));					// x = x + velocity*time
-		setY(calc.addDoubles(getY(), calc.multiplyDoubles(getYVelocity(), time)));					// y = y + velocity*time
-
-	}
-
-	/**
-	 * 
-	 * @param time	The time that has to be checked.
-	 * @return	
-	 * 		Returns if the time is valid.
-	 * 		| !(Double.isNaN(time) || time < 0)  
-	 */
-	public boolean isValidTime (double time) { 
-		return !(Double.isNaN(time) || time < 0);
 	}
 
 
@@ -144,13 +124,13 @@ public class Ship implements IShip {
 			return;
 		double vXNew = calc.addDoubles(getXVelocity(), calc.multiplyDoubles(amount, Math.cos(getAngle())));		// the new x-velocity
 		double vYNew = calc.addDoubles(getYVelocity(), calc.multiplyDoubles(amount, Math.sin(getAngle())));		// the new y-velocity
-		if (calcVelocity(vXNew, vYNew) > C){ // if (speed > 300 000km/s)
+		if (Vector.calcVelocity(vXNew, vYNew) > C){ // if (speed > 300 000km/s)
 			double constant = Math.sqrt(  calc.multiplyDoubles(C, C)    /   calc.addDoubles(calc.multiplyDoubles(getXVelocity(), getXVelocity()), calc.multiplyDoubles(getYVelocity(), getYVelocity()))  ); // constant multiple, so the new speed will be C.
 			vXNew = calc.multiplyDoubles(getXVelocity(), constant);
 			vYNew = calc.multiplyDoubles(getYVelocity(), constant);
 		}
-		setXVelocity(vXNew); 
-		setYVelocity(vYNew);
+		loc.setXVelocity(vXNew); 
+		loc.setYVelocity(vYNew);
 	}
 
 	/**
@@ -164,107 +144,6 @@ public class Ship implements IShip {
 	private boolean isValidRadius (double radius)
 	{
 		return (!Double.isNaN(radius) && radius >= 10);
-	}
-
-	/**
-	 * 
-	 * @return
-	 * 		Returns the x-coordinate of the ship.
-	 * 
-	 */
-	@Basic
-	public double getX() {
-		return x;
-	}
-
-	/**
-	 * 
-	 * @param x		The new x-coordinate
-	 * @post 		X-position has been set to x.
-	 * 				| (new this).getX() == x
-	 * @throws IllegalArgumentException
-	 * 		The entered x-parameter is invalid.
-	 * 		| Double.isNaN(x)
-	 */
-	public void setX(double x) throws IllegalArgumentException {
-		if (Double.isNaN(x))
-			throw new IllegalArgumentException("Invalid x-coordinate");
-		this.x = x;
-	}
-
-	/**
-	 * 
-	 * @return
-	 * 		Returns the y-coordinate of the ship.
-	 */
-	@Basic
-	public double getY() {
-		return y;
-	}
-
-	/**
-	 * 
-	 * @param y		The new y-coordinate
-	 * @post 		Y-position has been set to y.
-	 * 				| (new this).getY() == y
-	 * @throws IllegalArgumentException
-	 * 				The entered y-parameter is invalid.
-	 * 				| Double.isNaN(y)
-	 */
-	public void setY(double y) throws IllegalArgumentException {
-		if (Double.isNaN(y))
-			throw new IllegalArgumentException("Invalid y-coordinate");
-		this.y = y;
-	}
-
-	/**
-	 * 
-	 * @return
-	 * 		Returns the velocity of the ship in the x-axis.
-	 */
-	@Basic
-	public double getXVelocity() {
-		return xVelocity;
-	}
-
-	/**
-	 * 
-	 * @param xVelocity		The new x-velocity of the ship.
-	 * @post 	If xVelocity is not a number, the velocity is set to zero.
-	 * 			Else, the x-velocity is set to xVelocity.
-	 * 			| if (Double.isNaN(xVelocity))
-	 * 			| 	then (new this).getXVelocity == 0
-	 * 			| else (new this).getXVelocity == xVelocity
-	 */
-	public void setXVelocity(double xVelocity) {
-		if (Double.isNaN(xVelocity))
-			this.xVelocity = 0;
-		else this.xVelocity = xVelocity;
-	}
-
-	/**
-	 * 
-	 * @return
-	 * 		Returns the velocity of the ship in the y-axis.
-	 */
-	@Basic
-	public double getYVelocity() {
-		return yVelocity;
-	}
-
-	/**
-	 * 
-	 * @param yVelocity		The new y-velocity of the ship.
-	 * @post 	If yVelocity is not a number, the velocity is set to zero.
-	 * 			Else, the y-velocity is set to yVelocity.
-	 * 			| if (Double.isNaN(yVelocity))
-	 * 			| 	then (new this).getYVelocity == 0
-	 * 			| else (new this).getYVelocity == yVelocity
-	 */
-	public void setYVelocity(double yVelocity) {
-		if (Double.isNaN(yVelocity))
-			this.yVelocity = 0;
-		else this.yVelocity = yVelocity;
 	}
 
 	/**
@@ -324,24 +203,39 @@ public class Ship implements IShip {
 		this.radius = radius;
 	}
 
-	/**
-	 * Calculates the velocity of a given x and y velocity.
-	 * 
-	 * @param x		The x-velocity.
-	 * @param y		The y-velocity.
-	 * @return		If one of the parameters is not a number, return 0.0. 
-	 * 				Else, return the velocity.
-	 *				| if ( Double.isNaN(x) || Double.isNaN(y) )
-	 *				| 	then return 0.0
-	 *				| else return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
-	 */
-	public double calcVelocity(double x, double y) {
-		if (Double.isNaN(x) || Double.isNaN(y))
-			return 0.0;
-		return Math.sqrt(calc.multiplyDoubles(x, x)+ calc.multiplyDoubles(y, y));
+	public double getX() {
+		return loc.getX();
+	}
+	
+	public void setX(double x) {
+		loc.setX(x);
+	}
+	
+	public double getY() {
+		return loc.getY();
+	}
+	
+	public void setY(double y) {
+		loc.setY(y);
+	}
+	
+	public double getXVelocity() {
+		return loc.getXVelocity();
+	}
+	
+	public void setXVelocity(double x) {
+		loc.setXVelocity(x);
 	}
 
+	public double getYVelocity() {
+		return loc.getYVelocity();
+	}
+	
+	public void setYVelocity(double y) {
+		loc.setYVelocity(y);
+	}
 
+	
 	/**
 	 * 
 	 * @param otherShip		The ship to be compared to.
@@ -355,30 +249,9 @@ public class Ship implements IShip {
 	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
 		if (otherShip == null) // The other ship doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		return Math.sqrt(calc.addDoubles(calc.multiplyDoubles(this.getXDistanceBetween(otherShip), this.getXDistanceBetween(otherShip)),
-				calc.multiplyDoubles(this.getYDistanceBetween(otherShip), this.getYDistanceBetween(otherShip)))); 								// The distance between the two centers.
+		return loc.getDistanceBetween(otherShip.loc); 								// The distance between the two centers.
 	}
 
-	/**
-	 * 
-	 * @param otherShip
-	 * @return
-	 * 		Calculates the x-distance between this ship and the other ship.
-	 */
-	private double getXDistanceBetween(Ship otherShip){
-		return calc.addDoubles(getX(), -otherShip.getX()); // The x-distance between the two ships.
-	}
-
-	/**
-	 * 
-	 * @param otherShip
-	 * @return
-	 * 		Calculates the y-distance between this ship and the other ship.
-	 */
-
-	private double getYDistanceBetween(Ship otherShip){
-		return calc.addDoubles(getY(), -otherShip.getY()); // The y-distance between the two ships.
-	}
 
 	/**
 	 * 
@@ -387,8 +260,8 @@ public class Ship implements IShip {
 	 * 		Calculates delta R squared.
 	 */
 	private double calcDeltaRSquared(Ship otherShip){
-		double deltaX = getXDistanceBetween(otherShip);
-		double deltaY = getYDistanceBetween(otherShip);
+		double deltaX = loc.deltaX(otherShip.loc);
+		double deltaY = loc.deltaY(otherShip.loc);
 		return calc.addDoubles(calc.multiplyDoubles(deltaX, deltaX), calc.multiplyDoubles(deltaY, deltaY));
 	}
 	/**
@@ -410,8 +283,8 @@ public class Ship implements IShip {
 	 * 		Calculates delta V times delta R.
 	 */
 	private double calcDeltaVDeltaR(Ship otherShip){
-		double deltaX = getXDistanceBetween(otherShip);
-		double deltaY = getYDistanceBetween(otherShip);
+		double deltaX = loc.deltaX(otherShip.loc);
+		double deltaY = loc.deltaY(otherShip.loc);
 		double deltaVX = calc.addDoubles(getXVelocity(), -otherShip.getXVelocity());
 		double deltaVY = calc.addDoubles(getYVelocity(), -otherShip.getYVelocity());
 		return calc.addDoubles(calc.multiplyDoubles(deltaVX, deltaX), calc.multiplyDoubles(deltaVY, deltaY));

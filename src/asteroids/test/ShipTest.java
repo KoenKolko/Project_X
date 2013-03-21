@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import asteroids.Ship;
 import asteroids.Util;
+import asteroids.Vector;
 
 public class ShipTest {
 	Ship ship;
@@ -97,7 +98,7 @@ public class ShipTest {
 	public void thrustTestSpeedOfLight() {
 		double amount = 500000.0;
 		ship.thrust(amount);
-		assertEquals(300000.0, ship.calcVelocity(ship.getXVelocity(), ship.getYVelocity()), Util.EPSILON);
+		assertEquals(300000.0, Vector.calcVelocity(ship.getXVelocity(), ship.getYVelocity()), Util.EPSILON);
 	}
 	
 	@Test
