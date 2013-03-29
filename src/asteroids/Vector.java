@@ -35,7 +35,7 @@ public class Vector {
 	}
 	
 	public double getDistanceBetween(Vector otherVector) throws IllegalArgumentException {
-		if (otherVector == null) // The other vector doesn't exist.
+		if (otherVector == null) 				// The other vector doesn't exist.
 			throw new IllegalArgumentException("Invalid vector!");
 		return Math.sqrt(calc.addDoubles(calc.multiplyDoubles(deltaX(otherVector), deltaX(otherVector)),
 				calc.multiplyDoubles(deltaY(otherVector), deltaY(otherVector)))); 

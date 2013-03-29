@@ -18,7 +18,7 @@ public class Ship implements IShip {
 	private double angle;									// The angle of the ship (radian)
 	private final double C = 300000;						// Speed of light (km/s)
 	private DoubleCalculator calc = new DoubleCalculator(); // A calculator to calc with Doubles.
-	Vector loc;
+	Vector loc;												// The location of the ship.
 
 	/**
 	 * Creates a new ship with the given parameters.
