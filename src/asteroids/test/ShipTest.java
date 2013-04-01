@@ -105,22 +105,22 @@ public class ShipTest {
 	public void thrustTestNegativeAmount() {
 		double amount = -500;
 		ship.thrust(amount);
-		assertEquals(10.0, ship.getLocation().getX(), Util.EPSILON);
-		assertEquals(-10.0, ship.getLocation().getY(), Util.EPSILON);
+		assertEquals(10.0, ship.getVelocity().getX(), Util.EPSILON);
+		assertEquals(-10.0, ship.getVelocity().getY(), Util.EPSILON);
 	}
 	@Test
 	public void thrustTestZero() {
 		double amount = 0.0;
 		ship.thrust(amount);
-		assertEquals(10.0, ship.getLocation().getX(), Util.EPSILON);
-		assertEquals(-10.0, ship.getLocation().getY(), Util.EPSILON);
+		assertEquals(10.0, ship.getVelocity().getX(), Util.EPSILON);
+		assertEquals(-10.0, ship.getVelocity().getY(), Util.EPSILON);
 	}
 	@Test()
 	public void thrustTestNaN(){
 		double amount = Double.NaN;
 		ship.thrust(amount);
-		assertEquals(10.0, ship.getLocation().getX(), Util.EPSILON);
-		assertEquals(-10.0, ship.getLocation().getY(), Util.EPSILON);
+		assertEquals(10.0, ship.getVelocity().getX(), Util.EPSILON);
+		assertEquals(-10.0, ship.getVelocity().getY(), Util.EPSILON);
 	}
 	
 	@Test

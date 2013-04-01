@@ -70,8 +70,8 @@ public abstract class SpaceObject {
 		if (!newVelocity.isValidVector())
 			this.velocity = new Vector(0,0);
 		else if (newVelocity.getNorm() > C) {
-			double constant = Math.sqrt( Math.pow(C, 2) / Math.pow(newVelocity.getNorm(), 2) );
-			this.velocity = new Vector(velocity.getX()*constant, velocity.getY()*constant);
+			double constant = C / newVelocity.getNorm();
+			this.velocity = newVelocity.multiply(constant);
 		}
 		else this.velocity = newVelocity;
 	}
@@ -82,6 +82,8 @@ public abstract class SpaceObject {
 	}
 	
 	public double getDistanceBetween (SpaceObject other) {
+		if (other == null) 																// The other object doesn't exist.
+			throw new IllegalArgumentException();
 		return getLocation().getDistanceBetween(other.getLocation());
 	}
 	
@@ -134,14 +136,11 @@ public abstract class SpaceObject {
 			Vector locationThis = getLocation().add(getVelocity().multiply(timeToCollision));
 			Vector locationOther = other.getLocation().add(other.getVelocity().multiply(timeToCollision));
 			double sumRadii = this.getRadius() + other.getRadius();
-			locationThis.multiply(other.getRadius());
-			locationOther.multiply(this.getRadius());
-			locationThis.add(locationOther);
-			locationThis.multiply(1/sumRadii);
+			locationOther = locationOther.multiply(this.getRadius());
+			locationThis = locationThis.multiply(other.getRadius()).add(locationOther).multiply(1/sumRadii);
 			return new double[] {locationThis.getX(), locationThis.getY() };
 		}
 		else return null;
-	}
-	
+	}	
 
 }
