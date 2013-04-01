@@ -13,28 +13,28 @@ public class ShipTest {
 	Ship otherShip;
 	@Before
 	public void setUp() throws Exception {
-		ship =  new Ship(100, 200, 10, -10, 20, -Math.PI);
-		otherShip = new Ship(100, 100, 30, -15, 20, 0);
+		ship =  new Ship(new Vector(100,200), new Vector(10,-10), 20, -Math.PI);
+		otherShip = new Ship(new Vector(100,100), new Vector(30,-15), 20, 0);
 	}
 
 	@SuppressWarnings("unused")
 	@Test (expected=IllegalArgumentException.class)
 	public void testConstructorInvalidRadiusSmall() {
-		Ship testship = new Ship(100, 200, 10, -10, 5, -Math.PI);
+		Ship testship = new Ship(new Vector(100,200), new Vector(10,-10), 5, -Math.PI);
 	}
 
 	@SuppressWarnings("unused")
 	@Test (expected=IllegalArgumentException.class)
 	public void testConstructorInvalidRadiusNegative() {
-		Ship testship = new Ship(100, 200, 10, -10, -5, -Math.PI);
+		Ship testship = new Ship(new Vector(100,200), new Vector(10,-10), -5, -Math.PI);
 	}
 
 	@Test
 	public void moveTest() {
 		Double time = 1.0;
 		ship.move(time);
-		assertEquals(110.0, ship.getX(), Util.EPSILON);
-		assertEquals(190.0, ship.getY(), Util.EPSILON);
+		assertEquals(110.0, ship.getLocation().getX(), Util.EPSILON);
+		assertEquals(190.0, ship.getLocation().getY(), Util.EPSILON);
 	}
 	@Test(expected=IllegalArgumentException.class)
 	public void moveTestNaN(){
@@ -89,8 +89,8 @@ public class ShipTest {
 	public void thrustTestNormal(){
 		double amount = 1;
 		ship.thrust(amount);
-		assertEquals(9,ship.getXVelocity(),Util.EPSILON);
-		assertEquals(-10,ship.getYVelocity(),Util.EPSILON);
+		assertEquals(9,ship.getVelocity().getX(),Util.EPSILON);
+		assertEquals(-10,ship.getVelocity().getY(),Util.EPSILON);
 		
 	}
 	
@@ -98,51 +98,29 @@ public class ShipTest {
 	public void thrustTestSpeedOfLight() {
 		double amount = 500000.0;
 		ship.thrust(amount);
-		assertEquals(300000.0, Vector.calcVelocity(ship.getXVelocity(), ship.getYVelocity()), Util.EPSILON);
+		assertEquals(300000.0, ship.getVelocity().getNorm(), Util.EPSILON);
 	}
 	
 	@Test
 	public void thrustTestNegativeAmount() {
 		double amount = -500;
 		ship.thrust(amount);
-		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
-		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
+		assertEquals(10.0, ship.getLocation().getX(), Util.EPSILON);
+		assertEquals(-10.0, ship.getLocation().getY(), Util.EPSILON);
 	}
 	@Test
 	public void thrustTestZero() {
 		double amount = 0.0;
 		ship.thrust(amount);
-		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
-		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
+		assertEquals(10.0, ship.getLocation().getX(), Util.EPSILON);
+		assertEquals(-10.0, ship.getLocation().getY(), Util.EPSILON);
 	}
 	@Test()
 	public void thrustTestNaN(){
 		double amount = Double.NaN;
 		ship.thrust(amount);
-		assertEquals(10.0, ship.getXVelocity(), Util.EPSILON);
-		assertEquals(-10.0, ship.getYVelocity(), Util.EPSILON);
-	}
-	@Test
-	public void testGetXSetX(){
-		ship.setX(5.0);
-		assertEquals(5.0,ship.getX(),Util.EPSILON);
-	}
-	@Test
-	public void testGetYSetY(){
-		ship.setY(2.0);
-		assertEquals(2.0,ship.getY(),Util.EPSILON);
-	}
-	
-	@Test
-	public void testGetXVelocitySetXVelocity(){
-		ship.setXVelocity(5.0);
-		assertEquals(5.0,ship.getXVelocity(),Util.EPSILON);
-	}
-	
-	@Test
-	public void testGetYVelocitySetYVelocity(){
-		ship.setYVelocity(2.0);
-		assertEquals(2.0,ship.getYVelocity(),Util.EPSILON);
+		assertEquals(10.0, ship.getLocation().getX(), Util.EPSILON);
+		assertEquals(-10.0, ship.getLocation().getY(), Util.EPSILON);
 	}
 	
 	@Test
@@ -155,20 +133,6 @@ public class ShipTest {
 	public void testGetRadiusSetRadius(){
 		ship.setRadius(20.0);
 		assertEquals(20.0,ship.getRadius(),Util.EPSILON);
-	}
-	
-	@Test
-	public void testCalcVelocity() {
-		assertEquals(Math.sqrt(128.0), ship.calcVelocity(8.0, 8.0), Util.EPSILON);
-		assertEquals(Math.sqrt(128.0), ship.calcVelocity(8.0, -8.0), Util.EPSILON);
-		assertEquals(Math.sqrt(128.0), ship.calcVelocity(-8.0, 8.0), Util.EPSILON);
-		assertEquals(Math.sqrt(128.0), ship.calcVelocity(-8.0, -8.0), Util.EPSILON);
-	}
-	
-	@Test
-	public void testCalcVelocityNaN(){
-		double velocity = Double.NaN;
-		assertEquals(0.0, ship.calcVelocity(velocity,velocity), Util.EPSILON);		
 	}
 	
 	
@@ -185,22 +149,22 @@ public class ShipTest {
 	
 	@Test 
 	public void testGetDistanceBetweenNegativeX() {
-		ship =  new Ship(-100, 200, 10, -10, 20, -Math.PI);
-		otherShip = new Ship(-100, 100, 30, -15, 20, 0);
+		ship =  new Ship(new Vector(-100,200), new Vector(10,-10), 20, -Math.PI);
+		otherShip = new Ship(new Vector(-100,100), new Vector(30,-15), 20, 0);
 		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
 	}
 	
 	@Test 
 	public void testGetDistanceBetweenNegativeY() {
-		ship =  new Ship(100, -200, 10, -10, 20, -Math.PI);
-		otherShip = new Ship(100, -100, 30, -15, 20, 0);
+		ship =  new Ship(new Vector(100,-200), new Vector(10,-10), 20, -Math.PI);
+		otherShip = new Ship(new Vector(100,-100), new Vector(30,-15), 20, 0);
 		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
 	}
 	
 	@Test 
 	public void testGetDistanceBetweenNegativeXY() {
-		ship =  new Ship(-100, -200, 10, -10, 20, -Math.PI);
-		otherShip = new Ship(-100, -100, 30, -15, 20, 0);
+		ship =  new Ship(new Vector(-100,-200), new Vector(10,-10), 20, -Math.PI);
+		otherShip = new Ship(new Vector(-100,-100), new Vector(30,-15), 20, 0);
 		assertEquals(100.0,ship.getDistanceBetween(otherShip),Util.EPSILON);
 	}
 	
@@ -211,7 +175,7 @@ public class ShipTest {
 	
 	@Test
 	public void testOverlapTrue(){
-		Ship overlappingShip = new Ship(105, 190, 10, -10, 20, -Math.PI);
+		Ship overlappingShip = new Ship(new Vector(105,190), new Vector(10,-10), 20, -Math.PI);
 		assertEquals(true,ship.overlap(overlappingShip));
 	}
 	
@@ -234,8 +198,8 @@ public class ShipTest {
 	
 	@Test
 	public void testTimeToCollision(){
-		ship =  new Ship(100, 200, -10, 0, 20, -Math.PI);
-		Ship shipToCollide =  new Ship(0, 200, 10, 0, 20, -Math.PI);
+		ship =  new Ship(new Vector(100,200), new Vector(-10,0), 20, -Math.PI);
+		Ship shipToCollide =  new Ship(new Vector(0,200), new Vector(10,0), 20, -Math.PI);
 		assertEquals(3.0, ship.getTimeToCollision(shipToCollide),Util.EPSILON);
 	}
 	
@@ -247,8 +211,8 @@ public class ShipTest {
 	
 	@Test
 	public void testGetCollisionPosition() {
-		ship =  new Ship(100, 200, -10, 0, 20, -Math.PI);
-		Ship shipToCollide =  new Ship(0, 200, 10, 0, 20, -Math.PI);
+		ship =  new Ship(new Vector(100,200), new Vector(-10,0), 20, -Math.PI);
+		Ship shipToCollide =  new Ship(new Vector(0,200), new Vector(10,0), 20, -Math.PI);
 		assertEquals(50.0, ship.getCollisionPosition(shipToCollide)[0],Util.EPSILON);
 		assertEquals(200, ship.getCollisionPosition(shipToCollide)[1],Util.EPSILON);
 	}

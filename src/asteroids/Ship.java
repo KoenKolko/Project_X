@@ -11,15 +11,11 @@ import be.kuleuven.cs.som.annotate.*;
  *
  */
 
-public class Ship implements IShip {
+public class Ship extends SpaceObject implements IShip {
 
-	
-	private double radius;									// The radius of the ship.
+
 	private double angle;									// The angle of the ship (radian)
-	private final double C = 300000;						// Speed of light (km/s)
-	private DoubleCalculator calc = new DoubleCalculator(); // A calculator to calc with Doubles.
-	Vector loc;												// The location of the ship.
-
+	
 	/**
 	 * Creates a new ship with the given parameters.
 	 * 
@@ -46,32 +42,45 @@ public class Ship implements IShip {
 	 * 			| (new this).getRadius > 10
 	 * 
 	 */
-	public Ship(double x, double y, double xVelocity, double yVelocity, double radius, double angle)
+	public Ship(Vector coordinates, Vector velocity, double radius, double angle)
 	{		
-		loc = new Vector (x, y, xVelocity, yVelocity);
-		this.setRadius(radius);
+		super(coordinates, velocity, radius);
 		this.setAngle(angle);	
 
 	}
 
-	/**
-	 * Moves the ship during a given amount of time.
-	 * 
-	 * @param time		The duration of the current move. (seconds)
-	 * 
-	 * @post	The x-coordinate is set to the new position after move.
-	 * 			| (new this).getX() == getX() + (getXVelocity()*time)
-	 * 
-	 * @post 	The y-coordinate is set to the new position after move.
-	 * 			| (new this).getY() == getY() + (getYVelocity()*time)
-	 * 
-	 * @throws IllegalArgumentException
-	 * 			The time is not a legal parameter for this method.
-	 * 			| !isValidTime(time)
-	 */
-	public void move (double time) throws IllegalArgumentException {
-		loc.movement(time);
 
+	/**
+	 * 
+	 * @return
+	 * 		Returns the angle the ship is faced to.
+	 */
+	@Basic
+	public double getAngle() {
+		return angle;
+	}
+
+
+	/**
+	 * 
+	 * @param angle 	The new angle.
+	 * 
+	 * @pre				The angle has to be valid.
+	 * 					| isValidAngle(angle)
+	 * 
+	 * @post 			The new angle is angle.
+	 * 					| if (angle > 2*Math.PI)
+	 * 					| 	then (new this).getAngle() == angle%(2*Math.PI)
+	 * 					| else if angle < -2*Math.PI
+	 * 					| 	then (new this).getAngle() == angle%(-2*Math.PI)
+	 */
+	public void setAngle(double angle) {
+		assert isValidAngle(angle) : "Wrong angle";
+		if (angle > 2*Math.PI)
+			angle %= 2*Math.PI;
+		else if ( angle < -2*Math.PI)
+			angle %= -2*Math.PI;
+		this.angle = angle;
 	}
 
 
@@ -87,7 +96,7 @@ public class Ship implements IShip {
 	 */
 	public void turn (double angle) {
 		assert (isValidAngle(angle)) : "No valid argument!";
-		setAngle(calc.addDoubles(getAngle(), angle));
+		setAngle(getAngle() + angle);
 	}
 
 	/**
@@ -122,257 +131,15 @@ public class Ship implements IShip {
 	public void thrust (double amount) {
 		if(Double.isNaN(amount) || amount <= 0)
 			return;
-		double vXNew = calc.addDoubles(getXVelocity(), calc.multiplyDoubles(amount, Math.cos(getAngle())));		// the new x-velocity
-		double vYNew = calc.addDoubles(getYVelocity(), calc.multiplyDoubles(amount, Math.sin(getAngle())));		// the new y-velocity
-		if (Vector.calcVelocity(vXNew, vYNew) > C){ // if (speed > 300 000km/s)
-			double constant = Math.sqrt(  calc.multiplyDoubles(C, C)    /   calc.addDoubles(calc.multiplyDoubles(getXVelocity(), getXVelocity()), calc.multiplyDoubles(getYVelocity(), getYVelocity()))  ); // constant multiple, so the new speed will be C.
-			vXNew = calc.multiplyDoubles(getXVelocity(), constant);
-			vYNew = calc.multiplyDoubles(getYVelocity(), constant);
-		}
-		loc.setXVelocity(vXNew); 
-		loc.setYVelocity(vYNew);
-	}
-
-	/**
-	 * Checks the radius of the ship.
-	 * 
-	 * @param radius	The new radius of this ship.	
-	 * @return	
-	 * 		Returns if the radius is valid.
-	 * 		| !Double.isNaN(radius) || radius >= 10
-	 */
-	private boolean isValidRadius (double radius)
-	{
-		return (!Double.isNaN(radius) && radius >= 10);
-	}
-
-	/**
-	 * 
-	 * @return
-	 * 		Returns the angle the ship is faced to.
-	 */
-	@Basic
-	public double getAngle() {
-		return angle;
-	}
-
-	/**
-	 * 
-	 * @param angle 	The new angle.
-	 * 
-	 * @pre				The angle has to be valid.
-	 * 					| isValidAngle(angle)
-	 * 
-	 * @post 			The new angle is angle.
-	 * 					| if (angle > 2*Math.PI)
-	 * 					| 	then (new this).getAngle() == angle%(2*Math.PI)
-	 * 					| else if angle < -2*Math.PI
-	 * 					| 	then (new this).getAngle() == angle%(-2*Math.PI)
-	 */
-	public void setAngle(double angle) {
-		assert isValidAngle(angle) : "Wrong angle";
-		if (angle > 2*Math.PI)
-			angle %= 2*Math.PI;
-		else if ( angle < -2*Math.PI)
-			angle %= -2*Math.PI;
-		this.angle = angle;
-	}
-
-	/**
-	 * 
-	 * @return
-	 * 		Returns the radius of the ship.
-	 */
-	@Basic
-	public double getRadius() {
-		return radius;
-	}
-
-	/**
-	 * 
-	 * @param radius	The new radius.
-	 * @post 			The new radius is equal to radius.
-	 * 					|(new this).getRadius() == radius
-	 * @throws IllegalArgumentException
-	 * 					The parameter radius is invalid.
-	 * 					| !isValidRadius(radius)
-	 */
-	public void setRadius(double radius) throws IllegalArgumentException {
-		if (!isValidRadius(radius))
-			throw new IllegalArgumentException("Invalid radius!");
-		this.radius = radius;
-	}
-
-	public double getX() {
-		return loc.getX();
-	}
-	
-	public void setX(double x) {
-		loc.setX(x);
-	}
-	
-	public double getY() {
-		return loc.getY();
-	}
-	
-	public void setY(double y) {
-		loc.setY(y);
-	}
-	
-	public double getXVelocity() {
-		return loc.getXVelocity();
-	}
-	
-	public void setXVelocity(double x) {
-		loc.setXVelocity(x);
-	}
-
-	public double getYVelocity() {
-		return loc.getYVelocity();
-	}
-	
-	public void setYVelocity(double y) {
-		loc.setYVelocity(y);
+		double vXNew = getVelocity().getX() + amount * Math.cos(getAngle());		// the new x-velocity
+		double vYNew = getVelocity().getY() + amount * Math.sin(getAngle());		// the new y-velocity
+		Vector newVelocity = new Vector(vXNew, vYNew);
+		setVelocity(newVelocity);
+		
 	}
 
 	
-	/**
-	 * 
-	 * @param otherShip		The ship to be compared to.
-	 * @return
-	 * 		The distance between this ship and the other ship.
-	 * 		| Math.sqrt(Math.pow(this.getXDistanceBetween(otherShip), 2) + Math.pow(this.getYDistanceBetween(otherShip), 2))
-	 * @throws IllegalArgumentException
-	 * 		The other ship doesn't exist.
-	 * 		| otherShip == null
-	 */
-	public double getDistanceBetween(Ship otherShip) throws IllegalArgumentException {
-		if (otherShip == null) // The other ship doesn't exist.
-			throw new IllegalArgumentException("Invalid ship!");
-		return loc.getDistanceBetween(otherShip.loc); 								// The distance between the two centers.
-	}
+	
 
-
-	/**
-	 * 
-	 * @param otherShip
-	 * @return	
-	 * 		Calculates delta R squared.
-	 */
-	private double calcDeltaRSquared(Ship otherShip){
-		double deltaX = loc.deltaX(otherShip.loc);
-		double deltaY = loc.deltaY(otherShip.loc);
-		return calc.addDoubles(calc.multiplyDoubles(deltaX, deltaX), calc.multiplyDoubles(deltaY, deltaY));
-	}
-	/**
-	 * 
-	 * @param otherShip
-	 * @return
-	 * 		Calculates delta V squared.
-	 */
-	private double calcDeltaVSquared(Ship otherShip){
-		double deltaVX = calc.addDoubles(getXVelocity(), -otherShip.getXVelocity());
-		double deltaVY = calc.addDoubles(getYVelocity(), -otherShip.getYVelocity());
-		return calc.addDoubles(calc.multiplyDoubles(deltaVX, deltaVX), calc.multiplyDoubles(deltaVY, deltaVY));
-	}
-
-	/**
-	 * 
-	 * @param otherShip
-	 * @return
-	 * 		Calculates delta V times delta R.
-	 */
-	private double calcDeltaVDeltaR(Ship otherShip){
-		double deltaX = loc.deltaX(otherShip.loc);
-		double deltaY = loc.deltaY(otherShip.loc);
-		double deltaVX = calc.addDoubles(getXVelocity(), -otherShip.getXVelocity());
-		double deltaVY = calc.addDoubles(getYVelocity(), -otherShip.getYVelocity());
-		return calc.addDoubles(calc.multiplyDoubles(deltaVX, deltaX), calc.multiplyDoubles(deltaVY, deltaY));
-	}
-
-	/**
-	 * 
-	 * @param otherShip		The other ship to be compared to.
-	 * @throws IllegalArgumentException
-	 * 						The other ship doesn't exist.
-	 * 						| otherShip == null
-	 * @return
-	 * 						Returns if the ships overlap each other.
-	 * 						this.getRadius() + otherShip.getRadius() > this.getDistanceBetween(otherShip)
-	 */
-	public boolean overlap(Ship otherShip){
-		if (otherShip == null) 		// The other ship doesn't exist.
-			throw new IllegalArgumentException("Invalid ship!");
-		return(calc.addDoubles(getRadius(), otherShip.getRadius()) > this.getDistanceBetween(otherShip)); // If the distance is smaller than the sum of the radii, the ships overlap.
-	}	
-
-	/**
-	 * 
-	 * @param otherShip 	The other ship.
-	 * @throws IllegalArgumentException
-	 * 						The other ship doesn't exist.
-	 * 						| otherShip == null
-	 * @return
-	 * 						Returns the time before the ships collide.
-	 * 						| if(this.overlap(otherShip))
-	 *						| 	then return Double.POSITIVE_INFINITY
-	 *						| else if(Double.compare(d,0) <= 0) 
-	 *						| 	then return Double.POSITIVE_INFINITY
-	 *						| else if(Double.compare(VR,0) >=0)
-	 *						| 	then return Double.POSITIVE_INFINITY
-	 *						| else
-	 *						| 	then return -( (VR+Math.sqrt(d)) / VV)
-	 */
-	public double getTimeToCollision(Ship otherShip){	
-		if (otherShip == null) // The other ship doesn't exist.
-			throw new IllegalArgumentException("Invalid ship!");
-		double sigma = calc.addDoubles(getRadius(), otherShip.getRadius());
-		double VR = calcDeltaVDeltaR(otherShip);
-		double RR = calcDeltaRSquared(otherShip);
-		double VV = calcDeltaVSquared(otherShip);
-		double d = calc.addDoubles(calc.multiplyDoubles(VR, VR), -calc.multiplyDoubles(VV, calc.addDoubles(RR, -calc.multiplyDoubles(sigma, sigma))));
-		if(this.overlap(otherShip))
-			return Double.POSITIVE_INFINITY; 	// The ships overlap.
-		else if(Double.compare(d,0) <= 0)
-			return Double.POSITIVE_INFINITY; 	// The ships will not collide.
-		else if(Double.compare(VR,0) >=0)
-			return Double.POSITIVE_INFINITY;		
-		else
-			return -(calc.addDoubles(VR, Math.sqrt(d)) / VV); 	// Calculate the time to collision.
-	}
-
-	/**
-	 * 
-	 * @param otherShip		The ship that could collide with the ship.
-	 * @throws IllegalArgumentException
-	 * 		The other ship doesn't exist.
-	 * 		| otherShip == null
-	 * @return
-	 * 		Returns the position where the 2 ships will collide. It returns null if they won't.
-	 * 		| if(timeToCollision != Double.POSITIVE_INFINITY)		
-	 *  	| 	double[] positions = new double[2]
-	 * 		| 	positions[0] = (thisX * otherShip.getRadius() + otherX * getRadius())/sumRadii
-	 *		|	positions[1] = (thisY * otherShip.getRadius() + otherY * getRadius())/sumRadii
-	 *		|	return positions
-	 *		| else return null
-	 */
-	public double[] getCollisionPosition(Ship otherShip)
-	{
-		if (otherShip == null) // The other ship doesn't exist.
-			throw new IllegalArgumentException("Invalid ship!");
-		double timeToCollision = this.getTimeToCollision(otherShip);
-		if(timeToCollision != Double.POSITIVE_INFINITY){			
-			double[] positions = new double[2];
-			double thisX = calc.addDoubles(getX(), calc.multiplyDoubles(timeToCollision, getXVelocity()));
-			double otherX = calc.addDoubles(otherShip.getX(), calc.multiplyDoubles(timeToCollision, otherShip.getXVelocity()));
-			double thisY = calc.addDoubles(getY(), calc.multiplyDoubles(timeToCollision, getYVelocity()));
-			double otherY = calc.addDoubles(otherShip.getY(), calc.multiplyDoubles(timeToCollision, otherShip.getYVelocity()));
-			double sumRadii = this.getRadius() + otherShip.getRadius();
-			positions[0] = (thisX * otherShip.getRadius() + otherX * getRadius())/sumRadii; 
-			positions[1] = (thisY * otherShip.getRadius() + otherY * getRadius())/sumRadii; 
-			return positions;
-		}
-		else return null;
-	}
 }
 

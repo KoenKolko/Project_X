@@ -10,31 +10,34 @@ public class Facade implements IFacade {
 
 	@Override
 	public IShip createShip(double x, double y, double xVelocity,double yVelocity, double radius, double angle) throws ModelException {		
-		try { return new Ship(x, y, xVelocity, yVelocity, radius, angle); }
+		try { 
+			Vector location = new Vector (x,y);
+			Vector velocity = new Vector (xVelocity, yVelocity);
+			return new Ship(location, velocity, radius, angle); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occured."); }
 	}
 
 	@Override
 	public double getX(IShip ship) throws ModelException {
-		try { return ((Ship) ship).getX(); }
+		try { return ((Ship) ship).getLocation().getX(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
 	public double getY(IShip ship) throws ModelException {
-		try {return ((Ship) ship).getY();}
+		try {return ((Ship) ship).getLocation().getY();}
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
 	public double getXVelocity(IShip ship) throws ModelException {
-		try {return ((Ship) ship).getXVelocity(); }
+		try {return ((Ship) ship).getVelocity().getX(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
 	public double getYVelocity(IShip ship) throws ModelException {
-		try {return ((Ship) ship).getYVelocity(); }
+		try {return ((Ship) ship).getVelocity().getY(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
@@ -89,7 +92,13 @@ public class Facade implements IFacade {
 
 	@Override
 	public double[] getCollisionPosition(IShip ship1, IShip ship2) throws ModelException{
-		try {return ((Ship) ship1).getCollisionPosition((Ship) ship2);}
+		try {
+			
+//			Vector2 temp = ((Ship) ship1).getCollisionPosition((Ship) ship2);
+//			System.out.println(temp.getX() + " & " + temp.getY());
+//			return new double[] {temp.getX(), temp.getY()};
+			return ((Ship) ship1).getCollisionPosition((Ship) ship2);
+		}
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
