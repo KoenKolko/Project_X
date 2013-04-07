@@ -3,11 +3,12 @@ package asteroids;
 import be.kuleuven.cs.som.annotate.*;
 
 public abstract class SpaceObject {
-	
+
 	private double radius;
+	private double mass; 									// The mass of the ship (kg)
 	private Vector location, velocity;
 	protected static final double C = 300000;						// Speed of light (km/s)
-	
+
 	protected SpaceObject(Vector coordinates, Vector velocity, double radius)
 	{
 		setLocation(coordinates);
@@ -15,6 +16,8 @@ public abstract class SpaceObject {
 		setRadius(radius);
 	}
 	
+	protected SpaceObject() {}
+
 	/**
 	 * 
 	 * @return
@@ -75,18 +78,18 @@ public abstract class SpaceObject {
 		}
 		else this.velocity = newVelocity;
 	}
-	
+
 	public Vector getVelocity () 
 	{
 		return this.velocity;
 	}
-	
+
 	public double getDistanceBetween (SpaceObject other) {
 		if (other == null) 																// The other object doesn't exist.
 			throw new IllegalArgumentException();
 		return getLocation().getDistanceBetween(other.getLocation());
 	}
-	
+
 	public boolean overlap(SpaceObject other){
 		if (other == null) 																	// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
@@ -98,15 +101,15 @@ public abstract class SpaceObject {
 			throw new IllegalArgumentException();
 		setLocation(getLocation().add(getVelocity().multiply(time)));
 	}
-	
+
 	public boolean isValidTime (double time) { 
 		return !(Double.isNaN(time) || time < 0);
 	}
-	
+
 	public double getTimeToCollision(SpaceObject other){	
 		if (other == null) 																// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		
+
 		Vector deltaR = other.getLocation().substract(getLocation());
 		Vector deltaV = other.getVelocity().substract(getVelocity());
 		double sigma = getRadius() + other.getRadius();
@@ -114,7 +117,7 @@ public abstract class SpaceObject {
 		double RR = deltaR.multiply(deltaR);
 		double VV = deltaV.multiply(deltaV);
 		double d = Math.pow(VR, 2) - VV*(RR - Math.pow(sigma, 2));
-		
+
 		if(this.overlap(other))
 			return Double.POSITIVE_INFINITY; 					// The object overlap.
 		else if(Double.compare(d,0) <= 0)
@@ -124,14 +127,14 @@ public abstract class SpaceObject {
 		else
 			return -((VR + Math.sqrt(d)) / VV); 				// Calculate the time to collision.
 	}
-	
+
 	public double[] getCollisionPosition(SpaceObject other)
 	{
 		if (other == null) 									// The other object does not exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		
+
 		double timeToCollision = this.getTimeToCollision(other);
-		
+
 		if(timeToCollision != Double.POSITIVE_INFINITY){			
 			Vector locationThis = getLocation().add(getVelocity().multiply(timeToCollision));
 			Vector locationOther = other.getLocation().add(other.getVelocity().multiply(timeToCollision));
@@ -141,6 +144,29 @@ public abstract class SpaceObject {
 			return new double[] {locationThis.getX(), locationThis.getY() };
 		}
 		else return null;
-	}	
+	}
+
+	// !! Not sure: totally, nominally or defensively?
+	public void setMass (double mass) {
+		if (!isValidMass(mass))
+			throw new IllegalArgumentException();
+		this.mass = mass;
+	}
+	
+	public void setMassWithDensity (double density) {
+		double mass = (4/3) * Math.PI * Math.pow(getRadius(), 3) * density;
+		setMass(mass);
+	}
+
+	public double getMass () {
+		return this.mass;
+	}
+
+	// !! Not sure if private or public?
+	private boolean isValidMass (double mass) {
+		if (Double.isNaN(mass) || mass <= 0)
+			return false;
+		return true;
+	}
 
 }

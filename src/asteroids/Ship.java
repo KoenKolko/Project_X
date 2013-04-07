@@ -15,6 +15,8 @@ public class Ship extends SpaceObject implements IShip {
 
 
 	private double angle;									// The angle of the ship (radian)
+	private boolean thruster;								// If thruster is on --> True, else --> False
+	private double thrusterForce = 1.1 * Math.pow(10,18);	// The force/s of the thruster.
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -42,10 +44,12 @@ public class Ship extends SpaceObject implements IShip {
 	 * 			| (new this).getRadius > 10
 	 * 
 	 */
-	public Ship(Vector coordinates, Vector velocity, double radius, double angle)
+	public Ship(Vector coordinates, Vector velocity, double radius, double angle, double mass)
 	{		
 		super(coordinates, velocity, radius);
 		this.setAngle(angle);	
+		this.setMass(mass);
+		this.setThruster(false);
 
 	}
 
@@ -129,7 +133,7 @@ public class Ship extends SpaceObject implements IShip {
 	 * 			 		
 	 */
 	public void thrust (double amount) {
-		if(Double.isNaN(amount) || amount <= 0)
+		if(!isValidThrust(amount))
 			return;
 		double vXNew = getVelocity().getX() + amount * Math.cos(getAngle());		// the new x-velocity
 		double vYNew = getVelocity().getY() + amount * Math.sin(getAngle());		// the new y-velocity
@@ -138,6 +142,37 @@ public class Ship extends SpaceObject implements IShip {
 		
 	}
 
+	private boolean isValidThrust(double amount) {
+		if (Double.isNaN(amount) || amount <= 0)
+			return false;
+		return true;
+	}
+	
+	
+	
+	public void setThruster (boolean thruster) {
+		this.thruster = thruster;
+	}
+	
+	public boolean getThruster () {
+		return thruster;
+	}
+	
+	public void setThrusterForce (double thrusterForce) {
+		if(!isValidThrusterForce(thrusterForce)) 
+			throw new IllegalArgumentException();
+		this.thrusterForce = thrusterForce;
+	}
+	
+	public double getThrusterForce () {
+		return this.thrusterForce;
+	}
+	
+	private boolean isValidThrusterForce (double thrusterForce) {
+		if (Double.isNaN(thrusterForce))
+			return false;
+		return true;
+	}
 	
 	
 
