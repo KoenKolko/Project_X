@@ -1,4 +1,4 @@
-package asteroids.asteroids.model;
+package asteroids.model;
 
 import java.util.Set;
 

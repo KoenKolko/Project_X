@@ -1,6 +1,6 @@
-package asteroids.asteroids.model;
+package asteroids.model;
 
-import asteroids.IShip;
+
 import asteroids.Vector;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -13,7 +13,7 @@ import be.kuleuven.cs.som.annotate.*;
  *
  */
 
-public class Ship extends SpaceObject implements IShip {
+public class Ship extends SpaceObject {
 
 
 	private double angle;									// The angle of the ship (radian)
