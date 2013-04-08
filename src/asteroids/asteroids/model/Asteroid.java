@@ -1,4 +1,4 @@
-package asteroids.model;
+package asteroids.asteroids.model;
 
 import asteroids.SpaceObject;
 import asteroids.Vector;

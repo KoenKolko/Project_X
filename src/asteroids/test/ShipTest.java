@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import asteroids.Util;
 import asteroids.Vector;
-import asteroids.model.Ship;
+import asteroids.asteroids.model.Ship;
 
 public class ShipTest {
 	Ship ship;
