@@ -10,7 +10,6 @@ import java.awt.geom.Path2D;
 import java.util.Iterator;
 import java.util.Set;
 import javax.swing.JPanel;
-
 import static java.lang.Math.*;
 
 @SuppressWarnings("serial")

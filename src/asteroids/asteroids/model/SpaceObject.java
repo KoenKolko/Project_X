@@ -1,5 +1,6 @@
-package asteroids;
+package asteroids.asteroids.model;
 
+import asteroids.Vector;
 import be.kuleuven.cs.som.annotate.*;
 
 public abstract class SpaceObject {
