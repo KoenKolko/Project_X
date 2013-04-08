@@ -11,8 +11,9 @@ import asteroids.Vector;
 public class Facade implements IFacade {
 
 	@Override
-	public Object createWorld(double width, double height) {		
-		return new World(width, height);
+	public Object createWorld(double width, double height) {
+		Vector dimensions = new Vector(width, height);
+		return new World(dimensions);
 	}
 
 	@Override

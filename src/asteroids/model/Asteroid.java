@@ -15,4 +15,7 @@ public class Asteroid extends SpaceObject {
 		return density;
 	}
 
+	public void removeWorld(){
+		getWorld().removeAsteroid(this);
+	}
 }

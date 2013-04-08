@@ -180,6 +180,9 @@ public abstract class SpaceObject {
 	public void setWorld(World world) throws IllegalArgumentException{
 		if(!this.isValidWorld(world))
 			throw new IllegalArgumentException();
+		if(!(getWorld()==null)){
+			removeWorld();
+		}
 		this.world = world;
 	}
 	
@@ -193,6 +196,9 @@ public abstract class SpaceObject {
 		return true;
 	}
 	
+	public void removeWorld(){
+		this.world = null;
+	}
 
 
 }

@@ -134,11 +134,10 @@ public class Ship extends SpaceObject {
 	 *			|	(new this).calcVelocity(getXVelocity(), getYVelocity()) <= C
 	 * 			 		
 	 */
-	public void thrust (double amount) {
-		if(!isValidThrust(amount))
-			return;
-		double vXNew = getVelocity().getX() + amount * Math.cos(getAngle());		// the new x-velocity
-		double vYNew = getVelocity().getY() + amount * Math.sin(getAngle());		// the new y-velocity
+	public void thrust (double time) {
+		double acceleration = thrusterForce/getMass();
+		double vXNew = getVelocity().getX() + acceleration * Math.cos(getAngle());		// the new x-velocity
+		double vYNew = getVelocity().getY() + acceleration * Math.sin(getAngle());		// the new y-velocity
 		Vector newVelocity = new Vector(vXNew, vYNew);
 		setVelocity(newVelocity);
 		
@@ -149,7 +148,6 @@ public class Ship extends SpaceObject {
 			return false;
 		return true;
 	}
-	
 	
 	
 	public void setThruster (boolean thruster) {
@@ -180,6 +178,8 @@ public class Ship extends SpaceObject {
 		
 	}
 	
-
+	public void removeWorld(){
+		getWorld().removeShip(this);
+	}
 }
 
