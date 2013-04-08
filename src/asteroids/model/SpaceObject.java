@@ -9,6 +9,7 @@ public abstract class SpaceObject {
 	private double mass; 									// The mass of the ship (kg)
 	private Vector location, velocity;
 	protected static final double C = 300000;						// Speed of light (km/s)
+	private World world;
 
 	protected SpaceObject(Vector coordinates, Vector velocity, double radius)
 	{
@@ -170,5 +171,28 @@ public abstract class SpaceObject {
 			return false;
 		return true;
 	}
+
+
+	public World getWorld(){
+		return this.world;
+	}
+
+	public void setWorld(World world) throws IllegalArgumentException{
+		if(!this.isValidWorld(world))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+	
+	public boolean isValidWorld(World world){
+		if(world == null)
+			return false;
+		if(getLocation().getX() + getRadius() > world.getWidth())
+			return false;
+		if(getLocation().getY() + getRadius() > world.getHeigth())
+			return false;
+		return true;
+	}
+	
+
 
 }
