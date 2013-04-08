@@ -1,6 +1,8 @@
-package asteroids;
+package asteroids.model;
 
 import java.util.Set;
+
+import asteroids.CollisionListener;
 
 public class World {
 	

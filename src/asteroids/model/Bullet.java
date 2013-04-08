@@ -1,4 +1,7 @@
-package asteroids;
+package asteroids.model;
+
+import asteroids.SpaceObject;
+import asteroids.Vector;
 
 public class Bullet extends SpaceObject {
 	

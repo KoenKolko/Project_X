@@ -1,7 +1,12 @@
-package asteroids;
+package asteroids.model;
 
 import java.util.Random;
 import java.util.Set;
+
+import asteroids.CollisionListener;
+import asteroids.IFacade;
+import asteroids.ModelException;
+import asteroids.Vector;
 
 public class Facade implements IFacade {
 

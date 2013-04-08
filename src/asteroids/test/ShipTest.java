@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import asteroids.Ship;
 import asteroids.Util;
 import asteroids.Vector;
+import asteroids.model.Ship;
 
 public class ShipTest {
 	Ship ship;

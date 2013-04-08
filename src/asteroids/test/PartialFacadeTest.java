@@ -9,7 +9,7 @@ import asteroids.IFacade;
 import asteroids.IShip;
 import asteroids.ModelException;
 import asteroids.Util;
-import asteroids.Facade;
+import asteroids.model.Facade;
 
 public class PartialFacadeTest {
 
