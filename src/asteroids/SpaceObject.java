@@ -14,6 +14,7 @@ public abstract class SpaceObject {
 		setLocation(coordinates);
 		setVelocity(velocity);
 		setRadius(radius);
+		
 	}
 	
 	protected SpaceObject() {}

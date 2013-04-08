@@ -174,6 +174,9 @@ public class Ship extends SpaceObject implements IShip {
 		return true;
 	}
 	
+	public void fireBullet(){
+		
+	}
 	
 
 }

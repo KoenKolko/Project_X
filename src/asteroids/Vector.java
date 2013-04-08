@@ -73,4 +73,5 @@ public class Vector {
 	{
 		return substract(otherVector).getNorm();
 	}
+	
 }

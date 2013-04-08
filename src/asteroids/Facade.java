@@ -1,105 +1,278 @@
 package asteroids;
 
+import java.util.Random;
+import java.util.Set;
+
 public class Facade implements IFacade {
 
 	@Override
-	public IShip createShip() {
-		// TODO Auto-generated method stub
-		return null;
+	public Object createWorld(double width, double height) {		
+		return new World(width, height);
 	}
 
 	@Override
-	public IShip createShip(double x, double y, double xVelocity,double yVelocity, double radius, double angle) throws ModelException {		
+	public double getWorldWidth(Object world) {
+		return ((World) world).getWidth();
+	}
+
+	@Override
+	public double getWorldHeight(Object world) {
+		return ((World) world).getHeigth();
+	}
+
+	@Override
+	public Set getShips(Object world) {
+		return ((World) world).getShips();
+	}
+
+	@Override
+	public Set getAsteroids(Object world) {
+		return ((World) world).getAsteroids();
+	}
+
+	@Override
+	public Set getBullets(Object world) {
+		return ((World) world).getBullets();
+	}
+
+	@Override
+	public void addShip(Object world, Object ship) {
+		((World) world).addShip((Ship) ship);
+	}
+
+	@Override
+	public void addAsteroid(Object world, Object asteroid) {
+		((World) world).addAsteroid((Asteroid) asteroid);
+	}
+
+	@Override
+	public void removeShip(Object world, Object ship) {
+		((World) world).removeShip((Ship) ship);
+	}
+
+	@Override
+	public void removeAsteroid(Object world, Object asteroid) {
+		((World) world).removeAsteroid((Asteroid) asteroid);
+	}
+
+	@Override
+	public void evolve(Object world, double dt,
+			CollisionListener collisionListener) {
+		((World) world).evolve(dt, collisionListener);
+		
+	}
+
+	@Override
+	public Object createShip(double x, double y, double xVelocity,
+			double yVelocity, double radius, double direction, double mass) {
 		try { 
 			Vector location = new Vector (x,y);
 			Vector velocity = new Vector (xVelocity, yVelocity);
-			return new Ship(location, velocity, radius, angle); }
+			return new Ship(location, velocity, radius, direction, mass); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occured."); }
 	}
 
 	@Override
-	public double getX(IShip ship) throws ModelException {
+	public boolean isShip(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public double getShipX(Object ship) {
 		try { return ((Ship) ship).getLocation().getX(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public double getY(IShip ship) throws ModelException {
+	public double getShipY(Object ship) {
 		try {return ((Ship) ship).getLocation().getY();}
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public double getXVelocity(IShip ship) throws ModelException {
+	public double getShipXVelocity(Object ship) {
 		try {return ((Ship) ship).getVelocity().getX(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+
 	}
 
 	@Override
-	public double getYVelocity(IShip ship) throws ModelException {
+	public double getShipYVelocity(Object ship) {
 		try {return ((Ship) ship).getVelocity().getY(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+
 	}
 
 	@Override
-	public double getRadius(IShip ship) throws ModelException {
+	public double getShipRadius(Object ship) {
 		try { return ((Ship) ship).getRadius(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public double getDirection(IShip ship) throws ModelException {
+	public double getShipDirection(Object ship) {
 		try {return ((Ship) ship).getAngle(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+
 	}
 
 	@Override
-	public void move(IShip ship, double dt) throws ModelException{
-		try {((Ship) ship).move(dt);}
-		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
-		
-	}
-
-	@Override
-	public void thrust(IShip ship, double amount) throws ModelException{
-		try {((Ship) ship).thrust(amount);}		
+	public double getShipMass(Object ship) {
+		try {return ((Ship) ship).getMass(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public void turn(IShip ship, double angle) throws ModelException{
+	public Object getShipWorld(Object ship) {
+		try {return ((Ship) ship).getWorld(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public boolean isShipThrusterActive(Object ship) {
+		try {return ((Ship) ship).getThruster(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public void setThrusterActive(Object ship, boolean active) {
+		try {((Ship) ship).setThruster(active); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public void turn(Object ship, double angle) {
 		try {((Ship) ship).turn(angle);}
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+
 	}
 
 	@Override
-	public double getDistanceBetween(IShip ship1, IShip ship2) throws ModelException{
-		try {return ((Ship) ship1).getDistanceBetween((Ship) ship2);}
+	public void fireBullet(Object ship) {
+		try {((Ship) ship).fireBullet();}
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+
+	}
+
+	@Override
+	public Object createAsteroid(double x, double y, double xVelocity,
+			double yVelocity, double radius) {
+		try { 
+			Vector location = new Vector (x,y);
+			Vector velocity = new Vector (xVelocity, yVelocity);
+			return new Asteroid(location, velocity, radius); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occured."); }
+	}
+
+	@Override
+	public Object createAsteroid(double x, double y, double xVelocity,
+			double yVelocity, double radius, Random random) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAsteroid(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public double getAsteroidX(Object asteroid) {
+		try { return ((Asteroid) asteroid).getLocation().getX(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public boolean overlap(IShip ship1, IShip ship2) throws ModelException{
-		try {return ((Ship) ship1).overlap((Ship) ship2);}
+	public double getAsteroidY(Object asteroid) {
+		try { return ((Asteroid) asteroid).getLocation().getY(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public double getTimeToCollision(IShip ship1, IShip ship2) throws ModelException{
-		try {return ((Ship) ship1).getTimeToCollision((Ship) ship2);}
+	public double getAsteroidXVelocity(Object asteroid) {
+		try {return ((Asteroid) asteroid).getVelocity().getX(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
-	public double[] getCollisionPosition(IShip ship1, IShip ship2) throws ModelException{
-		try {
-			
-//			Vector2 temp = ((Ship) ship1).getCollisionPosition((Ship) ship2);
-//			System.out.println(temp.getX() + " & " + temp.getY());
-//			return new double[] {temp.getX(), temp.getY()};
-			return ((Ship) ship1).getCollisionPosition((Ship) ship2);
-		}
+	public double getAsteroidYVelocity(Object asteroid) {
+		try {return ((Asteroid) asteroid).getVelocity().getY(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+
+	}
+
+	@Override
+	public double getAsteroidRadius(Object asteroid) {
+		try {return ((Asteroid) asteroid).getRadius(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
+
+	@Override
+	public double getAsteroidMass(Object asteroid) {
+		try {return ((Asteroid) asteroid).getMass(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public Object getAsteroidWorld(Object asteroid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isBullets(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public double getBulletX(Object bullet) {
+		try { return ((Bullet) bullet).getLocation().getX(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public double getBulletY(Object bullet) {
+		try { return ((Bullet) bullet).getLocation().getY(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public double getBulletXVelocity(Object bullet) {
+		try {return ((Bullet) bullet).getVelocity().getX(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public double getBulletYVelocity(Object bullet) {
+		try {return ((Bullet) bullet).getVelocity().getX(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public double getBulletRadius(Object bullet) {
+		try {return ((Bullet) bullet).getRadius(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public double getBulletMass(Object bullet) {
+		try {return ((Bullet) bullet).getMass(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public Object getBulletWorld(Object bullet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getBulletSource(Object bullet) {
+		try {return ((Bullet) bullet).getSource(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}	
 
 }
