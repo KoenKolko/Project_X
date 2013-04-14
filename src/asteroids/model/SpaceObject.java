@@ -97,6 +97,7 @@ public abstract class SpaceObject {
 		if (other == null) 																	// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 		return( (getRadius() + other.getRadius()) > this.getDistanceBetween(other)); 		// If the distance is smaller than the sum of the radii, the objects overlap.
+		// Double.compare(x, y) < 0 ???
 	}	
 
 	public void move (double time) {

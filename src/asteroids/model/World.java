@@ -2,6 +2,7 @@ package asteroids.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
@@ -15,9 +16,9 @@ public class World {
 	private static final double minSize = 0;
 	private static final double maxSize = Double.MAX_VALUE;
 	private Vector dimensions;
-	private Set<Ship> allShips;
-	private Set<Asteroid> allAsteroids;
-	private Set<Bullet> allBullets;
+	private Set<Ship> allShips = new HashSet<Ship>();
+	private Set<Asteroid> allAsteroids = new HashSet<Asteroid>();
+	private Set<Bullet> allBullets = new HashSet<Bullet>();
 
 	public World(Vector dimensions){
 		setDimensions(dimensions);
