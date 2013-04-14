@@ -199,6 +199,35 @@ public abstract class SpaceObject {
 	public void removeWorld(){
 		this.world = null;
 	}
+	
+	public double collisionTimeWithBoundaries() {
+		
+		if (this.world == null)
+			return Double.POSITIVE_INFINITY;
+		if (getVelocity().getNorm() == 0)
+			return Double.POSITIVE_INFINITY;
+		
+		double timeToY = collisionWithAxis(getLocation().getY(), getVelocity().getY(), getWorld().getHeigth());
+		double timeToX = collisionWithAxis(getLocation().getX(), getVelocity().getX(), getWorld().getWidth());
+		
+		if (timeToY < timeToX)
+			return timeToY;
+		else return timeToX;
+		
+	}
+	
+	private double collisionWithAxis(double coord, double velocity, double axis) {
+		
+		if (velocity == 0)
+			return Double.POSITIVE_INFINITY;
+		if (velocity > 0)
+			return (axis - coord - this.getRadius()) / velocity;
+		if (velocity < 0)
+			return (0 - coord + this.getRadius()) / velocity;
+		
+		return -1;
+		
+	}
 
 
 }

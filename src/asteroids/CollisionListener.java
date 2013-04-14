@@ -3,7 +3,7 @@ package asteroids;
 /**
  * The listener interface for receiving collision events.
  */
-public interface CollisionListener {
+public interface CollisionListener {	
   /**
    * Invoked when <code>entity</code> is about to collide with a boundary.
    */
