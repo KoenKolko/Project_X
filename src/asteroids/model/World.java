@@ -18,9 +18,7 @@ public class World {
 	private static final double minSize = 0;
 	private static final double maxSize = Double.MAX_VALUE;
 	private Vector dimensions;
-	private Set<Ship> allShips = new HashSet<Ship>();
-	private Set<Asteroid> allAsteroids = new HashSet<Asteroid>();
-	private Set<Bullet> allBullets = new HashSet<Bullet>();
+	private Set<SpaceObject> allObjects = new HashSet<SpaceObject>();
 
 	public World(Vector dimensions){
 		setDimensions(dimensions);
@@ -48,43 +46,60 @@ public class World {
 	}
 
 	public Set<Ship> getShips(){
+		Set<Ship> allShips = new HashSet<Ship>();
+		for (SpaceObject p : getObjects())
+			if (p instanceof Ship)
+				allShips.add((Ship)p);
 		return allShips;
 	}
 
 	public Set<Asteroid> getAsteroids(){
+		Set<Asteroid> allAsteroids = new HashSet<Asteroid>();
+		for (SpaceObject p : getObjects())
+			if (p instanceof Asteroid)
+				allAsteroids.add((Asteroid)p);
 		return allAsteroids;
 	}
 
 	public Set<Bullet> getBullets(){
+		Set<Bullet> allBullets = new HashSet<Bullet>();
+		for (SpaceObject p : getObjects())
+			if (p instanceof Bullet)
+				allBullets.add((Bullet)p);
 		return allBullets;
+	}
+	
+	public Set<SpaceObject> getObjects() {
+		return allObjects;
 	}
 
 	public ArrayList<SpaceObject> getSpaceObjects() {
-		ArrayList<SpaceObject> spaceobjects = new ArrayList<SpaceObject>();
-		spaceobjects.addAll(allShips);
-		spaceobjects.addAll(allAsteroids);
-		spaceobjects.addAll(allBullets);
-		return spaceobjects;
+		return new ArrayList<SpaceObject>(getObjects());
 	}
 
 	public void addShip(Ship ship){
 		ship.setWorld(this);
-		allShips.add(ship);		
+		allObjects.add(ship);		
 	}
 
 	public void addAsteroid(Asteroid asteroid){
 		asteroid.setWorld(this);
-		allAsteroids.add(asteroid);
+		allObjects.add(asteroid);
 	}
-
+	
+	public void removeObject (SpaceObject object) {
+		object.setWorld(null);
+		allObjects.remove(object);
+	}
+	
 	public void removeShip(Ship ship){
 		ship.setWorld(null);
-		allShips.remove(ship);	
+		allObjects.remove(ship);	
 	}
 
 	public void removeAsteroid(Asteroid asteroid){
 		asteroid.setWorld(null);
-		allAsteroids.remove(asteroid);
+		allObjects.remove(asteroid);
 	}
 
 
@@ -162,6 +177,8 @@ public class World {
 	
 			Vector vel2 = new Vector (entity2.getVelocity().getX() - JX/entity2.getMass(), entity2.getVelocity().getY() - JY/entity2.getMass());
 			entity2.setVelocity(vel2);
+			entity1.die();
+			entity2.die();
 		}
 	}
 

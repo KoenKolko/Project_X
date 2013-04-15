@@ -34,7 +34,7 @@ public abstract class SpaceObject {
 
 	/**
 	 * 
-	 * @param radius	The new radius.
+	 * @param radius	The new radius.+
 	 * @post 			The new radius is equal to radius.
 	 * 					|(new this).getRadius() == radius
 	 * @throws IllegalArgumentException
@@ -108,8 +108,9 @@ public abstract class SpaceObject {
 		setLocation(getLocation().add(getVelocity().multiply(time)));
 	}
 
-	public boolean isValidTime (double time) { 
-		return !(Double.isNaN(time) || Double.compare(time, 0) < 0);
+	public boolean isValidTime (double time) {
+		// Double.compare(time, 0) < 0
+		return !(Double.isNaN(time) || time < -0.001);
 	}
 
 	public double getTimeToCollision(SpaceObject other){	
@@ -232,6 +233,13 @@ public abstract class SpaceObject {
 			return (0 - coord + this.getRadius()) / velocity;
 		
 		
+	}
+	
+	
+	public void die () {
+		if (getWorld() == null)
+			return;
+		getWorld().removeObject(this);
 	}
 
 

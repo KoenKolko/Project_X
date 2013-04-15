@@ -80,7 +80,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isShip(Object o) {
-		// TODO Auto-generated method stub
+		if (o instanceof Ship)
+			return true;
 		return false;
 	}
 
@@ -174,13 +175,20 @@ public class Facade implements IFacade {
 	@Override
 	public Object createAsteroid(double x, double y, double xVelocity,
 			double yVelocity, double radius, Random random) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			Vector position = new Vector(x,y);
+			Vector velocity = new Vector(xVelocity,yVelocity);
+			return new Asteroid(position, velocity, radius, random);
+		}
+		catch (RuntimeException exc) {
+			throw new ModelException(exc);
+		}
 	}
 
 	@Override
 	public boolean isAsteroid(Object o) {
-		// TODO Auto-generated method stub
+		if (o instanceof Asteroid)
+			return true;
 		return false;
 	}
 
@@ -223,13 +231,14 @@ public class Facade implements IFacade {
 
 	@Override
 	public Object getAsteroidWorld(Object asteroid) {
-		// TODO Auto-generated method stub
-		return null;
+		try {return ((Asteroid) asteroid).getWorld(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
 	public boolean isBullets(Object o) {
-		// TODO Auto-generated method stub
+		if (o instanceof Bullet)
+			return true;
 		return false;
 	}
 
@@ -271,8 +280,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public Object getBulletWorld(Object bullet) {
-		// TODO Auto-generated method stub
-		return null;
+		try {return ((Bullet) bullet).getWorld(); }
+		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
 	}
 
 	@Override
