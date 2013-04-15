@@ -1,5 +1,6 @@
 package asteroids.model;
 
+import asteroids.Util;
 import asteroids.Vector;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -96,8 +97,9 @@ public abstract class SpaceObject {
 	public boolean overlap(SpaceObject other){
 		if (other == null) 																	// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
-		return( (getRadius() + other.getRadius()) > this.getDistanceBetween(other)); 		// If the distance is smaller than the sum of the radii, the objects overlap.
+		//return( (getRadius() + other.getRadius()) > this.getDistanceBetween(other)); 		// If the distance is smaller than the sum of the radii, the objects overlap.
 		// Double.compare(x, y) < 0 ???
+		return Double.compare(getRadius() + other.getRadius(), this.getDistanceBetween(other)) > 0;
 	}	
 
 	public void move (double time) {
@@ -107,7 +109,7 @@ public abstract class SpaceObject {
 	}
 
 	public boolean isValidTime (double time) { 
-		return !(Double.isNaN(time) || time < 0);
+		return !(Double.isNaN(time) || Double.compare(time, 0) < 0);
 	}
 
 	public double getTimeToCollision(SpaceObject other){	
@@ -128,8 +130,11 @@ public abstract class SpaceObject {
 			return Double.POSITIVE_INFINITY; 					// The object will not collide.
 		else if(Double.compare(VR,0) >=0)
 			return Double.POSITIVE_INFINITY;		
-		else
+		else {
+			System.out.println(-((VR + Math.sqrt(d)) / VV));
 			return -((VR + Math.sqrt(d)) / VV); 				// Calculate the time to collision.
+		}
+
 	}
 
 	public double[] getCollisionPosition(SpaceObject other)
@@ -211,7 +216,7 @@ public abstract class SpaceObject {
 		double timeToY = collisionWithAxis(getLocation().getY(), getVelocity().getY(), getWorld().getHeigth());
 		double timeToX = collisionWithAxis(getLocation().getX(), getVelocity().getX(), getWorld().getWidth());
 		
-		if (timeToY < timeToX)
+		if (Double.compare(timeToY,timeToX) < 0)
 			return timeToY;
 		else return timeToX;
 		
@@ -219,14 +224,13 @@ public abstract class SpaceObject {
 	
 	private double collisionWithAxis(double coord, double velocity, double axis) {
 		
-		if (velocity == 0)
+		if (Util.fuzzyEquals(velocity, 0))
 			return Double.POSITIVE_INFINITY;
 		if (velocity > 0)
 			return (axis - coord - this.getRadius()) / velocity;
-		if (velocity < 0)
+		else
 			return (0 - coord + this.getRadius()) / velocity;
 		
-		return -1;
 		
 	}
 

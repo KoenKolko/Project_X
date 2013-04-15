@@ -142,6 +142,23 @@ public class Ship extends SpaceObject {
 		setVelocity(newVelocity);
 		
 	}
+	
+	public void move (double time) {
+		if (!isValidTime(time))
+			throw new IllegalArgumentException();
+		setLocation(getLocation().add(getVelocity().multiply(time)));
+		thrust();
+	}
+	
+	public void thrust () {
+		
+		if (!thruster)
+			return;
+		double acceleration = getThrusterForce()/getMass();
+		double Vx = getVelocity().getX() + acceleration*Math.cos(getAngle());
+		double Vy = getVelocity().getY() + acceleration*Math.sin(getAngle());
+		setVelocity(new Vector(Vx, Vy));
+	}
 
 	private boolean isValidThrust(double amount) {
 		if (Double.isNaN(amount) || amount <= 0)
