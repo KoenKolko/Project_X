@@ -110,9 +110,9 @@ public class World {
 				collisions.set(pos, temp);
 				double timeEntity = collisions.get(pos).get(0).getTime();
 				// Hier kan mogelijk een bug zitten met de randwaardes van de array.
-				while (timeEntity > collisions.get(pos+1).get(0).getTime())
+				while (pos+1 < collisions.size() && timeEntity > collisions.get(pos+1).get(0).getTime())
 					Collections.swap(collisions, pos++, pos+1);
-				while (timeEntity < collisions.get(pos-1).get(0).getTime())
+				while (pos-1 >= 0 && timeEntity < collisions.get(pos-1).get(0).getTime())
 					Collections.swap(collisions, pos--, pos-1);
 			}
 
@@ -227,22 +227,24 @@ public class World {
 
 		for (int i = 0; i < objects.size(); i++)
 		{
+			ArrayList<Collision> temp = new ArrayList<Collision>();
 			int minTimePos2 = 0;																		// Position of Lowest time to collision in second dimension of collisions.
 			double minTime2 = objects.get(i).collisionTimeWithBoundaries();								// The time of minTimePos2
-			collisions.get(i).add(new Collision(objects.get(i), minTime2));								// Add collision of Object with the boundaries to 'collisions'.
+			temp.add(new Collision(objects.get(i), minTime2));											// Add collision of Object with the boundaries to 'collisions'.
 
 			for (SpaceObject q : objects)																// Add collision with each other Object to 'collisions'.
 				if (objects.get(i) != q)
 				{
 					double time = objects.get(i).getTimeToCollision(q);
-					collisions.get(i).add(new Collision(objects.get(i), q, time));
+					temp.add(new Collision(objects.get(i), q, time));
 					if (time < minTime2)
 					{
 						minTime2 = time;
-						minTimePos2 = collisions.get(i).size() - 1;
+						minTimePos2 = temp.size() - 1;
 					}
 				}
-			Collections.swap(collisions.get(i), 0, minTimePos2);										// Put lowest time in front of ArrayList.
+			Collections.swap(temp, 0, minTimePos2);														// Put lowest time in front of ArrayList.
+			collisions.add(temp);
 			if (minTime2 < minTime1)
 			{
 				minTime1 = minTime2;
