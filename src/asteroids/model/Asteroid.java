@@ -54,9 +54,9 @@ public class Asteroid extends SpaceObject {
 		position = new Vector( getLocation().getX()-radius, getLocation().getY());
 		Asteroid baby2 = new Asteroid(position, velocity, radius);
 		
-		getWorld().removeAsteroid(this);
+		
 		getWorld().addAsteroid(baby1);
 		getWorld().addAsteroid(baby2);
-		
+		getWorld().removeAsteroid(this);
 	}
 }

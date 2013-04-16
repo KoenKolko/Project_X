@@ -135,7 +135,9 @@ public class Ship extends SpaceObject {
 	 * 			 		
 	 */
 	public void thrust (double time) {
-		double acceleration = thrusterForce/getMass();
+		if (!thruster)
+			return;
+		double acceleration = ( (thrusterForce*time)  /  getMass() );
 		double vXNew = getVelocity().getX() + acceleration * Math.cos(getAngle());		// the new x-velocity
 		double vYNew = getVelocity().getY() + acceleration * Math.sin(getAngle());		// the new y-velocity
 		Vector newVelocity = new Vector(vXNew, vYNew);
@@ -147,14 +149,14 @@ public class Ship extends SpaceObject {
 		if (!isValidTime(time))
 			throw new IllegalArgumentException();
 		setLocation(getLocation().add(getVelocity().multiply(time)));
-		thrust();
+		thrust(time);
 	}
 	
 	public void thrust () {
 		
 		if (!thruster)
 			return;
-		double acceleration = getThrusterForce()/getMass();
+		double acceleration = ( getThrusterForce()/getMass() ) / 10;
 		double Vx = getVelocity().getX() + acceleration*Math.cos(getAngle());
 		double Vy = getVelocity().getY() + acceleration*Math.sin(getAngle());
 		setVelocity(new Vector(Vx, Vy));
@@ -192,7 +194,10 @@ public class Ship extends SpaceObject {
 	}
 	
 	public void fireBullet(){
-		
+		System.out.println("lol");
+		Bullet bullet = new Bullet(this);
+		System.out.println("lol2");
+		getWorld().addObject(bullet);
 	}
 	
 	public void removeWorld(){

@@ -55,9 +55,10 @@ public abstract class SpaceObject {
 	 * 		Returns if the radius is valid.
 	 * 		| !Double.isNaN(radius) || radius >= 10
 	 */
-	private boolean isValidRadius (double radius)
+	public boolean isValidRadius (double radius)
 	{
 		return (!Double.isNaN(radius) && radius >= 10);
+		//return (!Double.isNaN(radius));
 	}
 
 	public void setLocation(Vector newVector)
@@ -187,15 +188,12 @@ public abstract class SpaceObject {
 	public void setWorld(World world) throws IllegalArgumentException{
 		if(!this.isValidWorld(world))
 			throw new IllegalArgumentException();
-		if(!(getWorld()==null)){
-			removeWorld();
-		}
 		this.world = world;
 	}
 	
 	public boolean isValidWorld(World world){
 		if(world == null)
-			return false;
+			return true;
 		if(getLocation().getX() + getRadius() > world.getWidth())
 			return false;
 		if(getLocation().getY() + getRadius() > world.getHeigth())
