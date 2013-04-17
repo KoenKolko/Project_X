@@ -107,14 +107,14 @@ public class Collision {
             double m2 = entity2.getMass();
             Vector deltaR = entity1.getLocation().subtract(entity2.getLocation());
             Vector deltaV = entity1.getVelocity().subtract(entity2.getVelocity());
-            double deltaVR = deltaV.multiply(deltaV);
+            double deltaVR = deltaV.multiply(deltaR);
             double J =      (2 * m1 * m2 * deltaVR )  / ( sigma * (m1 + m2) );
+            //System.out.println(deltaVR);
             double Jx = (J * deltaR.getX()) / sigma;
             double Jy = (J * deltaR.getY()) / sigma;
-           
 
-            Vector vel1 = new Vector(entity1.getVelocity().getX() + Jx/m1, entity1.getVelocity().getY() + Jy/m1);
-            Vector vel2 = new Vector(entity2.getVelocity().getX() - Jx/m2, entity2.getVelocity().getY() - Jy/m2);
+            Vector vel1 = new Vector(entity1.getVelocity().getX() - Jx/m1, entity1.getVelocity().getY() - Jy/m1);
+            Vector vel2 = new Vector(entity2.getVelocity().getX() + Jx/m2, entity2.getVelocity().getY() + Jy/m2);
             entity1.setVelocity(vel1);
             entity2.setVelocity(vel2);
 

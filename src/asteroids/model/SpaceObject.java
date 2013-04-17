@@ -130,16 +130,17 @@ public abstract class SpaceObject {
 		double RR = deltaR.multiply(deltaR);
 		double VV = deltaV.multiply(deltaV);
 		double d = Math.pow(VR, 2) - VV*(RR - Math.pow(sigma, 2));
-
+		
+		
 		if(this.overlap(other))
 			return Double.POSITIVE_INFINITY; 					// The object overlap.
 		else if(Double.compare(d,0) <= 0)
 			return Double.POSITIVE_INFINITY; 					// The object will not collide.
 		else if(Double.compare(VR,0) >=0)
 			return Double.POSITIVE_INFINITY;		
-		else 
-			return -((VR + Math.sqrt(d)) / VV); 				// Calculate the time to collision.
-
+		else
+			return -((VR + Math.sqrt(d)) / VV) ; 				// Calculate the time to collision.
+		
 	}
 
 	public double[] getCollisionPosition(SpaceObject other)

@@ -122,10 +122,13 @@ public class World {
 		while(nextCollisionTime <= dt)
 		{
 			
+			
 			moveAllObjects(nextCollisionTime);
 
 			nextCollision.resolve();
+			
 
+			
 			dt -= nextCollisionTime;
 
 			Comparator<Collision> comparatorLocal = new CollisionComparitor();
