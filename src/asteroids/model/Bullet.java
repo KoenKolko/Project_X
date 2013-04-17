@@ -26,17 +26,13 @@ public class Bullet extends SpaceObject {
 		
 		Vector coordinates = source.getLocation();
 		
-		double x = source.getRadius() * Math.cos(source.getAngle());
-		
-		double y = source.getRadius() * Math.sin(source.getAngle());
+		double x = (source.getRadius() + getRadius()) * Math.cos(source.getAngle());
+		double y = (source.getRadius() + getRadius()) * Math.sin(source.getAngle());
 		
 		setLocation(coordinates.add(new Vector(x,y)));
-		setLocation(coordinates.add(new Vector(source.getRadius()+1,0)));
-		
 		setVelocity(calcVelocity());
 		
 		setRadius(3.0);
-		System.out.println("binnen");
 		setMassWithDensity(getDensity());
 	}
 	

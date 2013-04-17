@@ -194,10 +194,9 @@ public class Ship extends SpaceObject {
 	}
 	
 	public void fireBullet(){
-		System.out.println("lol");
 		Bullet bullet = new Bullet(this);
-		System.out.println("lol2");
-		getWorld().addObject(bullet);
+		if ( bullet.fitsInWorld(getWorld()) )
+			getWorld().addObject(bullet);
 	}
 	
 	public void removeWorld(){

@@ -68,7 +68,7 @@ public class World {
 				allBullets.add((Bullet)p);
 		return allBullets;
 	}
-	
+
 	public Set<SpaceObject> getObjects() {
 		Set<SpaceObject> set = new HashSet<SpaceObject>(getSpaceObjects());
 		return set;
@@ -77,28 +77,29 @@ public class World {
 	public ArrayList<SpaceObject> getSpaceObjects() {
 		return allObjects;
 	}
-	
+
 	public void addObject (SpaceObject object) {
+		boolean valid = true;
 		object.setWorld(this);
-		allObjects.add(object);
+		if (object instanceof Bullet) 
+			for (SpaceObject p : getObjects())
+				if (object.overlap(p) && ((Bullet) object).getSource() != p)
+				{
+					p.die();
+					object.die();
+					valid = false;
+				}
+		if (valid)
+			allObjects.add(object);
+
 	}
 
-	public void addShip(Ship ship){
-		ship.setWorld(this);
-		allObjects.add(ship);		
-	}
 
-	public void addAsteroid(Asteroid asteroid){
-		asteroid.setWorld(this);
-		allObjects.add(asteroid);
-	}
-	
 	public void removeObject (SpaceObject object) {
-		System.out.println("TROLOLOLOL");
 		object.setWorld(null);
 		allObjects.remove(object);
 	}
-	
+
 	public void removeShip(Ship ship){
 		ship.setWorld(null);
 		allObjects.remove(ship);	
@@ -112,7 +113,7 @@ public class World {
 
 
 	public void evolve(double dt, CollisionListener collisionListener) {
-		
+
 		Comparator<Collision> comparator = new CollisionComparitor();
 		PriorityQueue<Collision> pq = new PriorityQueue<Collision>(2, comparator);
 		for(SpaceObject p : getSpaceObjects())
@@ -120,8 +121,11 @@ public class World {
 			pq.add(new Collision(p, p.collisionTimeWithBoundaries()));
 			for(SpaceObject q : getSpaceObjects())
 			{
-				Collision collision = new Collision(p,q, p.getTimeToCollision(q));
-				pq.add(collision);
+				if (! ( ( p instanceof Ship && q instanceof Bullet && ((Bullet) q).getSource() == p ) || ( q instanceof Ship && p instanceof Bullet && ((Bullet) p).getSource() == q ) ) )
+				{
+					Collision collision = new Collision(p,q, p.getTimeToCollision(q));
+					pq.add(collision);
+				}
 			}
 		}
 		Collision nearestCollision = pq.poll();
@@ -130,13 +134,13 @@ public class World {
 		{
 			//System.out.println(firstCollisionTime);
 			for(SpaceObject object : getSpaceObjects()) object.move(firstCollisionTime);
-			
+
 			resolve(nearestCollision);
-			
+
 			System.out.println(firstCollisionTime + "LOL");
-			
+
 			dt -= firstCollisionTime;
-			
+
 			Comparator<Collision> comparatorLocal = new CollisionComparitor();
 			PriorityQueue<Collision> pqLocal = new PriorityQueue<Collision>(2, comparatorLocal);
 			for(SpaceObject p : getSpaceObjects())
@@ -144,22 +148,25 @@ public class World {
 				pqLocal.add(new Collision(p, p.collisionTimeWithBoundaries()));
 				for(SpaceObject q : getSpaceObjects())
 				{
-					Collision collision = new Collision(p,q, p.getTimeToCollision(q));
-					pqLocal.add(collision);
+					if (! ( ( p instanceof Ship && q instanceof Bullet && ((Bullet) q).getSource() == p ) || ( q instanceof Ship && p instanceof Bullet && ((Bullet) p).getSource() == q ) ) )
+					{
+						Collision collision = new Collision(p,q, p.getTimeToCollision(q));
+						pqLocal.add(collision);
+					}
 				}
 			}
 			nearestCollision = pqLocal.poll();
 			firstCollisionTime = nearestCollision.getTime();
 		}
-		
-		
+
+
 		for(SpaceObject object : getSpaceObjects()) object.move(dt);
 	}
 	private void resolve (Collision collision) {
-	
+
 		SpaceObject entity1 = collision.getEntity1();
 		SpaceObject entity2 = collision.getEntity2();
-	
+
 		// Option 1: Entity1 collides with boundaries.
 		if (entity2 == null)
 		{
@@ -168,49 +175,69 @@ public class World {
 				Vector temp = entity1.getVelocity();
 				entity1.setVelocity(new Vector(-temp.getX(), temp.getY()));
 			}
-	
+
 			else 
 			{
 				Vector temp = entity1.getVelocity();
 				entity1.setVelocity(new Vector(temp.getX(), -temp.getY()));
 			}
-	
+
+			if (entity1 instanceof Bullet)
+				((Bullet) entity1).increaseCollisionCounter();
+
 		}
 		// Option 2: Entity1 collides with Entity2.
 		else 
 		{
-			System.out.println(entity1.getVelocity().getNorm() + " " + entity2.getVelocity().getNorm());
-			double sigma = entity1.getRadius() + entity2.getRadius();
-			Vector deltaR = entity1.getLocation().substract(entity2.getLocation());
-			Vector deltaV = entity1.getVelocity().substract(entity2.getVelocity());
-			double deltaVR = deltaR.multiply(deltaV);
-			double J = 	(2*entity1.getMass()*entity2.getMass()  * deltaVR  )  / 
-						( sigma*(entity1.getMass()+entity2.getMass()) );
-			double JX = (J*deltaR.getX())		/		sigma;
-			double JY = (J*deltaR.getY())		/		sigma;
-	
-			Vector vel1 = new Vector (entity1.getVelocity().getX() + ( JX/entity1.getMass() ), entity1.getVelocity().getY() + ( JY/entity1.getMass() ));
-			Vector vel2 = new Vector (entity2.getVelocity().getX() - ( JX/entity2.getMass() ), entity2.getVelocity().getY() - ( JY/entity2.getMass() ));
-			entity1.setVelocity(vel2);
-			entity2.setVelocity(vel1);
-			
-			System.out.println(entity1.getVelocity().getNorm() + " " + entity2.getVelocity().getNorm());
-			
-			
 			if (entity1 instanceof Bullet || entity2 instanceof Bullet)
 			{
 				entity1.die();
 				entity2.die();
 			}
-			
+
 			if ( (entity1 instanceof Ship && entity2 instanceof Ship) || (entity1 instanceof Asteroid && entity2 instanceof Asteroid))
+			{
+				setBounceVelocity(entity1, entity2);
 				return;
-		
+			}
+
 			if (entity1 instanceof Asteroid && entity2 instanceof Ship)
 				entity2.die();
 			if (entity2 instanceof Asteroid && entity1 instanceof Ship)
 				entity1.die();
+
+
 		}
+	}
+
+	private void setBounceVelocity (SpaceObject entity1, SpaceObject entity2) {
+		System.out.println("setBounceVelocity");
+		//		double sigma = entity1.getRadius() + entity2.getRadius();
+		//		double m1 = entity1.getMass();
+		//		double m2 = entity2.getMass();
+		//		Vector deltaR = entity1.getLocation().subtract(entity2.getLocation());
+		//		Vector deltaV = entity1.getVelocity().subtract(entity2.getVelocity());
+		//		double deltaRx = entity1.getLocation().getX() - entity2.getLocation().getX();
+		//		double deltaRy = entity1.getLocation().getY() - entity2.getLocation().getY();
+		//		double deltaVx = entity1.getVelocity().getX() - entity2.getLocation().getX();
+		//		double deltaVy = entity1.getVelocity().getY() - entity2.getLocation().getY();
+		//		
+		//		
+		//		double deltaVR = (deltaRx * deltaVx) + (deltaRy * deltaVy) ;
+		//		
+		//		double J = 	(2 * m1 * m2 * deltaVR )  / ( sigma * (m1 + m2) );
+		//		double JX = (J*deltaRx )		/		sigma;
+		//		double JY = (J*deltaRy)			/		sigma;
+		//
+		//		Vector vel1 = new Vector (entity1.getVelocity().getX() + ( JX/m1 ), entity1.getVelocity().getY() + ( JY/m1 ));
+		//		Vector vel2 = new Vector (entity2.getVelocity().getX() - ( JX/m2 ), entity2.getVelocity().getY() - ( JY/m2 ));
+		//		
+		//		entity1.setVelocity(vel2);
+		//		entity2.setVelocity(vel1);
+
+		entity1.setVelocity(entity1.getVelocity().multiply(-1));
+		entity2.setVelocity(entity2.getVelocity().multiply(-1));
+
 	}
 
 	public void evolve2(double dt, CollisionListener collisionListener) {
@@ -267,26 +294,26 @@ public class World {
 		}
 
 		double time = dt-timePassed;
-		
+
 		for (SpaceObject p 	: getSpaceObjects()		) 		p.move(time);
 
 	}
 
 	private ArrayList<ArrayList<Collision>> createCollisionArray() {
-	
+
 		ArrayList<ArrayList<Collision>> 	collisions 		= 	new ArrayList<ArrayList<Collision>>();	// 2D ArrayList with all the collisions.
 		ArrayList<SpaceObject> 				objects 		= 	getSpaceObjects();						// List of all the SpaceObjects in this World.
-	
+
 		int minTimePos1 = -1;																			// Position of Lowest time to collision in first dimension of collisions.
 		double minTime1 = Double.POSITIVE_INFINITY;														// The time of minTimePos1
-	
+
 		for (int i = 0; i < objects.size(); i++)
 		{
 			ArrayList<Collision> temp = new ArrayList<Collision>();
 			int minTimePos2 = 0;																		// Position of Lowest time to collision in second dimension of collisions.
 			double minTime2 = objects.get(i).collisionTimeWithBoundaries();								// The time of minTimePos2
 			temp.add(new Collision(objects.get(i), minTime2));											// Add collision of Object with the boundaries to 'collisions'.
-	
+
 			for (SpaceObject q : objects)																// Add collision with each other Object to 'collisions'.
 				if (objects.get(i) != q)
 				{
@@ -309,7 +336,7 @@ public class World {
 		}
 		Collections.swap(collisions, 0, minTimePos1);													// Put lowest time in front of ArrayList in first dimension.
 		return collisions;
-	
+
 	}
 
 	private void resolveCollision (Collision collision, double timePassed) {
@@ -338,10 +365,10 @@ public class World {
 		else 
 		{
 			double sigma = Math.sqrt( 	Math.pow(entity1.getRadius()*entity1.getVelocity().getX() - entity2.getRadius()*entity2.getVelocity().getX(), 2)   +
-										Math.pow(entity1.getRadius()*entity1.getVelocity().getY() - entity2.getRadius()*entity2.getVelocity().getY(), 2)
-									);
+					Math.pow(entity1.getRadius()*entity1.getVelocity().getY() - entity2.getRadius()*entity2.getVelocity().getY(), 2)
+					);
 			double J = 	(2*entity1.getMass()*entity2.getMass()  * ( (entity2.getVelocity().getNorm()-entity1.getVelocity().getNorm()) * (entity2.getRadius()-entity1.getRadius()) ) )  / 
-						( sigma*(entity1.getMass()+entity2.getMass()) );
+					( sigma*(entity1.getMass()+entity2.getMass()) );
 			double JX = (J*(entity2.getLocation().getX()-entity1.getLocation().getX()))		/		sigma;
 			double JY = (J*(entity2.getLocation().getY()-entity1.getLocation().getY()))		/		sigma;
 
@@ -350,23 +377,23 @@ public class World {
 
 			Vector vel2 = new Vector (entity2.getVelocity().getX() - JX/entity2.getMass(), entity2.getVelocity().getY() - JY/entity2.getMass());
 			entity2.setVelocity(vel2);
-			
-			
+
+
 			System.out.println("Die 1");
 			entity1.die();
 			System.out.println("Die 2");
 			entity2.die();
 		}
 	}
-	
+
 	private ArrayList<Collision> createCollisionListForEntity(SpaceObject object, double timePassed) {
 		// zit een fout :)
 		ArrayList<Collision> temp = new ArrayList<Collision>();
-	
+
 		int minTimePos = 0;
 		double minTime = object.collisionTimeWithBoundaries();
 		temp.add(new Collision(object, minTime+timePassed));
-	
+
 		for (SpaceObject q : getSpaceObjects())
 			if (object != q)
 			{
@@ -380,8 +407,8 @@ public class World {
 				}
 			}
 		Collections.swap(temp, 0, minTimePos);
-	
-	
+
+
 		return temp;
 	}
 

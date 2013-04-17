@@ -118,8 +118,8 @@ public abstract class SpaceObject {
 		if (other == null) 																// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 
-		Vector deltaR = other.getLocation().substract(getLocation());
-		Vector deltaV = other.getVelocity().substract(getVelocity());
+		Vector deltaR = other.getLocation().subtract(getLocation());
+		Vector deltaV = other.getVelocity().subtract(getVelocity());
 		double sigma = getRadius() + other.getRadius();
 		double VR = deltaV.multiply(deltaR);
 		double RR = deltaR.multiply(deltaR);
@@ -132,10 +132,8 @@ public abstract class SpaceObject {
 			return Double.POSITIVE_INFINITY; 					// The object will not collide.
 		else if(Double.compare(VR,0) >=0)
 			return Double.POSITIVE_INFINITY;		
-		else {
-			System.out.println(-((VR + Math.sqrt(d)) / VV));
+		else 
 			return -((VR + Math.sqrt(d)) / VV); 				// Calculate the time to collision.
-		}
 
 	}
 
@@ -194,9 +192,7 @@ public abstract class SpaceObject {
 	public boolean isValidWorld(World world){
 		if(world == null)
 			return true;
-		if(getLocation().getX() + getRadius() > world.getWidth())
-			return false;
-		if(getLocation().getY() + getRadius() > world.getHeigth())
+		if(!fitsInWorld(world))
 			return false;
 		return true;
 	}
@@ -240,5 +236,15 @@ public abstract class SpaceObject {
 		getWorld().removeObject(this);
 	}
 
+	public boolean fitsInWorld(World world) {
+		double x = getLocation().getX();
+		double y = getLocation().getY();
+		double rad = getRadius();
+		
+		if (x-rad < 0 || y-rad < 0 || x+rad > world.getWidth() || y+rad > world.getHeigth() )
+			return false;
+		else return true;
+		
+	}
 
 }

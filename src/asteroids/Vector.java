@@ -29,7 +29,7 @@ public class Vector {
 		return new Vector(x1+x2, y1+y2);
 	}
 	
-	public Vector substract (Vector otherVector)
+	public Vector subtract (Vector otherVector)
 	{
 		return this.add(  new Vector(  -otherVector.getX(), -otherVector.getY()  )  );
 	}
@@ -71,7 +71,7 @@ public class Vector {
 	
 	public double getDistanceBetween (Vector otherVector)
 	{
-		return substract(otherVector).getNorm();
+		return subtract(otherVector).getNorm();
 	}
 	
 }

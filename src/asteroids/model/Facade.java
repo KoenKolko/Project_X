@@ -43,12 +43,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public void addShip(Object world, Object ship) {
-		((World) world).addShip((Ship) ship);
+		((World) world).addObject((Ship) ship);
 	}
 
 	@Override
 	public void addAsteroid(Object world, Object asteroid) {
-		((World) world).addAsteroid((Asteroid) asteroid);
+		((World) world).addObject((Asteroid) asteroid);
 	}
 
 	@Override

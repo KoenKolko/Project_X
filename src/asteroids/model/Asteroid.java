@@ -38,25 +38,26 @@ public class Asteroid extends SpaceObject {
 	
 	public void die () {
 		if (getWorld() == null || getRadius() < 30)
+			{
 			super.die();
+			return;
+			}
 		
 		double radius = getRadius()/2;
 		
 		// Create baby 1
 		double angle = random.nextDouble();
-		Vector velocity = new Vector(1.5*getVelocity().getNorm() * Math.cos(angle) , 1.5*getVelocity().getNorm() * Math.sin(angle));
-		// Hier kan een fout zitten als de baby spawnt buiten de boundaries.
+		Vector velocity1 = new Vector(1.5*getVelocity().getNorm() * Math.cos(angle) , 1.5*getVelocity().getNorm() * Math.sin(angle));
 		Vector position = new Vector( getLocation().getX()+radius, getLocation().getY());
-		Asteroid baby1 = new Asteroid(position, velocity, radius);
+		Asteroid baby1 = new Asteroid(position, velocity1, radius);
 		
 		// Create baby2
-		velocity = getVelocity().multiply(-1.5);
+		Vector velocity2 = velocity1.multiply(-1);
 		position = new Vector( getLocation().getX()-radius, getLocation().getY());
-		Asteroid baby2 = new Asteroid(position, velocity, radius);
-		
-		
-		getWorld().addAsteroid(baby1);
-		getWorld().addAsteroid(baby2);
+		Asteroid baby2 = new Asteroid(position, velocity2, radius);
+			
+		getWorld().addObject(baby1);
+		getWorld().addObject(baby2);
 		getWorld().removeAsteroid(this);
 	}
 }
