@@ -8,6 +8,7 @@ public class Bullet extends SpaceObject {
 	private Ship source;										// The ship that fired the bullet.
 	private int collisionCounter = 0;		
 	public static int MAX_COLLISIONS_WITH_BOUNDARIES = 2;
+	public static double SPEED = 250.0;
 	
 
 	
@@ -18,10 +19,9 @@ public class Bullet extends SpaceObject {
 	}
 	
 	public Bullet (Ship source) {
-		//super();
+		
 		if (source == null)
 			return;
-		
 		setSource(source);
 		
 		Vector coordinates = source.getLocation();
@@ -31,7 +31,6 @@ public class Bullet extends SpaceObject {
 		
 		setLocation(coordinates.add(new Vector(x,y)));
 		setVelocity(calcVelocity());
-		
 		setRadius(3.0);
 		setMassWithDensity(getDensity());
 	}
@@ -43,9 +42,8 @@ public class Bullet extends SpaceObject {
 	}
 	
 	private Vector calcVelocity() {
-		double speed = 250.0;
-		double x = speed * Math.cos(getSource().getAngle());
-		double y = speed * Math.sin(getSource().getAngle());
+		double x = SPEED * Math.cos(getSource().getAngle());
+		double y = SPEED * Math.sin(getSource().getAngle());
 		return new Vector(x,y);
 	}
 	
@@ -53,25 +51,24 @@ public class Bullet extends SpaceObject {
 		return density;
 	}
 	
+	public Ship getSource () {
+		return source;
+	}
+
 	public void setSource(Ship source) {
 		if (source == null)
 			throw new IllegalArgumentException();
 		this.source = source;
 	}
 	
-	public Ship getSource () {
-		return source;
+	public int getCollisionCounter() {
+		return collisionCounter;
 	}
-	
-	
+
 	public void increaseCollisionCounter() {
 		collisionCounter++;
 		if (getCollisionCounter() == MAX_COLLISIONS_WITH_BOUNDARIES)
 			super.die();
-	}
-	
-	public int getCollisionCounter() {
-		return collisionCounter;
 	}
 	
 }

@@ -15,7 +15,7 @@ public class Asteroid extends SpaceObject {
 		setMassWithDensity(getDensity());
 		setRandom(random);
 	}
-	
+
 	public Asteroid (Vector coordinates, Vector velocity, double radius) {
 		this (coordinates, velocity, radius, new Random());
 	}
@@ -24,10 +24,6 @@ public class Asteroid extends SpaceObject {
 		return density;
 	}
 
-	public void removeWorld(){
-		getWorld().removeAsteroid(this);
-	}
-	
 	public Random getRandom() {
 		return random;
 	}
@@ -35,29 +31,29 @@ public class Asteroid extends SpaceObject {
 	public void setRandom(Random random) {
 		this.random = random;
 	}
-	
+
 	public void die () {
 		if (getWorld() == null || getRadius() < 30)
-			{
+		{
 			super.die();
 			return;
-			}
-		
+		}
+
 		double radius = getRadius()/2;
-		
+
 		// Create baby 1
 		double angle = random.nextDouble();
 		Vector velocity1 = new Vector(1.5*getVelocity().getNorm() * Math.cos(angle) , 1.5*getVelocity().getNorm() * Math.sin(angle));
 		Vector position = new Vector( getLocation().getX()+radius, getLocation().getY());
 		Asteroid baby1 = new Asteroid(position, velocity1, radius);
-		
+
 		// Create baby2
 		Vector velocity2 = velocity1.multiply(-1);
 		position = new Vector( getLocation().getX()-radius, getLocation().getY());
 		Asteroid baby2 = new Asteroid(position, velocity2, radius);
-			
+
 		getWorld().addObject(baby1);
 		getWorld().addObject(baby2);
-		getWorld().removeAsteroid(this);
+		getWorld().removeObject(this);
 	}
 }

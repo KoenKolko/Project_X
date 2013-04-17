@@ -1,5 +1,8 @@
 package asteroids;
 
+import asteroids.model.Asteroid;
+import asteroids.model.Bullet;
+import asteroids.model.Ship;
 import asteroids.model.SpaceObject;
 
 public class Collision {
@@ -52,6 +55,70 @@ public class Collision {
 	public void setEntity2(SpaceObject entity2) {
 		this.entity2 = entity2;
 	}
+	
+	public void resolve () {
+	
+	// Option 1: Entity1 collides with boundaries.
+			if (entity2 == null)
+			{
+				if (Util.fuzzyEquals(entity1.getLocation().getX()+entity1.getRadius(), entity1.getWorld().getWidth())	||	Util.fuzzyEquals(entity1.getLocation().getX()-entity1.getRadius(), 0.0) )
+				{
+					Vector temp = entity1.getVelocity();
+					entity1.setVelocity(new Vector(-temp.getX(), temp.getY()));
+				}
+
+				else 
+				{
+					Vector temp = entity1.getVelocity();
+					entity1.setVelocity(new Vector(temp.getX(), -temp.getY()));
+				}
+
+				if (entity1 instanceof Bullet)
+					((Bullet) entity1).increaseCollisionCounter();
+
+			}
+			// Option 2: Entity1 collides with Entity2.
+			else 
+			{
+				if (entity1 instanceof Bullet || entity2 instanceof Bullet)
+				{
+					entity1.die();
+					entity2.die();
+				}
+
+				if ( (entity1 instanceof Ship && entity2 instanceof Ship) || (entity1 instanceof Asteroid && entity2 instanceof Asteroid))
+				{
+					setBounceVelocity();
+					return;
+				}
+
+				if (entity1 instanceof Asteroid && entity2 instanceof Ship)
+					entity2.die();
+				if (entity2 instanceof Asteroid && entity1 instanceof Ship)
+					entity1.die();
+
+
+			}
+		}
+
+		private void setBounceVelocity () {
+			double sigma = entity1.getRadius() + entity2.getRadius();
+            double m1 = entity1.getMass();
+            double m2 = entity2.getMass();
+            Vector deltaR = entity1.getLocation().subtract(entity2.getLocation());
+            Vector deltaV = entity1.getVelocity().subtract(entity2.getVelocity());
+            double deltaVR = deltaV.multiply(deltaV);
+            double J =      (2 * m1 * m2 * deltaVR )  / ( sigma * (m1 + m2) );
+            double Jx = (J * deltaR.getX()) / sigma;
+            double Jy = (J * deltaR.getY()) / sigma;
+           
+
+            Vector vel1 = new Vector(entity1.getVelocity().getX() + Jx/m1, entity1.getVelocity().getY() + Jy/m1);
+            Vector vel2 = new Vector(entity2.getVelocity().getX() - Jx/m2, entity2.getVelocity().getY() - Jy/m2);
+            entity1.setVelocity(vel1);
+            entity2.setVelocity(vel2);
+
+		}
 	
 	
 }

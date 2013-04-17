@@ -12,12 +12,17 @@ public abstract class SpaceObject {
 	protected static final double C = 300000;						// Speed of light (km/s)
 	private World world;
 
-	protected SpaceObject(Vector coordinates, Vector velocity, double radius)
+	protected SpaceObject(Vector coordinates, Vector velocity, double radius, double mass)
 	{
 		setLocation(coordinates);
 		setVelocity(velocity);
 		setRadius(radius);
-		
+		setMass(mass);
+	}
+	
+	protected SpaceObject(Vector coordinates, Vector velocity, double radius)
+	{
+		this(coordinates, velocity, radius, 1.0);
 	}
 	
 	protected SpaceObject() {}
@@ -61,6 +66,11 @@ public abstract class SpaceObject {
 		//return (!Double.isNaN(radius));
 	}
 
+	public Vector getLocation()
+	{
+		return this.location;
+	}
+
 	public void setLocation(Vector newVector)
 	{
 		if (!newVector.isValidVector())
@@ -68,9 +78,9 @@ public abstract class SpaceObject {
 		this.location = newVector;
 	}
 
-	public Vector getLocation()
+	public Vector getVelocity () 
 	{
-		return this.location;
+		return this.velocity;
 	}
 
 	public void setVelocity(Vector newVelocity)
@@ -82,11 +92,6 @@ public abstract class SpaceObject {
 			this.velocity = newVelocity.multiply(constant);
 		}
 		else this.velocity = newVelocity;
-	}
-
-	public Vector getVelocity () 
-	{
-		return this.velocity;
 	}
 
 	public double getDistanceBetween (SpaceObject other) {
@@ -104,14 +109,14 @@ public abstract class SpaceObject {
 	}	
 
 	public void move (double time) {
-		if (!isValidTime(time))
+		if (!isValidMoveTime(time))
 			throw new IllegalArgumentException();
 		setLocation(getLocation().add(getVelocity().multiply(time)));
 	}
 
-	public boolean isValidTime (double time) {
+	public boolean isValidMoveTime (double time) {
 		// Double.compare(time, 0) < 0
-		return !(Double.isNaN(time) || time < -0.001);
+		return !(Double.isNaN(time) || Double.compare(time, 0) < 0);
 	}
 
 	public double getTimeToCollision(SpaceObject other){	
@@ -155,6 +160,38 @@ public abstract class SpaceObject {
 		else return null;
 	}
 
+	public double collisionTimeWithBoundaries() {
+		
+		if (this.world == null)
+			return Double.POSITIVE_INFINITY;
+		if (getVelocity().getNorm() == 0)
+			return Double.POSITIVE_INFINITY;
+		
+		double timeToY = collisionWithAxis(getLocation().getY(), getVelocity().getY(), getWorld().getHeigth());
+		double timeToX = collisionWithAxis(getLocation().getX(), getVelocity().getX(), getWorld().getWidth());
+		
+		if (Double.compare(timeToY,timeToX) < 0)
+			return timeToY;
+		else return timeToX;
+		
+	}
+
+	private double collisionWithAxis(double coord, double velocity, double axis) {
+		
+		if (Util.fuzzyEquals(velocity, 0))
+			return Double.POSITIVE_INFINITY;
+		if (velocity > 0)
+			return (axis - coord - this.getRadius()) / velocity;
+		else
+			return (0 - coord + this.getRadius()) / velocity;
+		
+		
+	}
+
+	public double getMass () {
+		return this.mass;
+	}
+
 	// !! Not sure: totally, nominally or defensively?
 	public void setMass (double mass) {
 		if (!isValidMass(mass))
@@ -165,10 +202,6 @@ public abstract class SpaceObject {
 	public void setMassWithDensity (double density) {
 		double mass = (4/3) * Math.PI * Math.pow(getRadius(), 3) * density;
 		setMass(mass);
-	}
-
-	public double getMass () {
-		return this.mass;
 	}
 
 	// !! Not sure if private or public?
@@ -189,6 +222,10 @@ public abstract class SpaceObject {
 		this.world = world;
 	}
 	
+	public void removeWorld() {
+		setWorld(null);
+	}
+	
 	public boolean isValidWorld(World world){
 		if(world == null)
 			return true;
@@ -197,45 +234,7 @@ public abstract class SpaceObject {
 		return true;
 	}
 	
-	public void removeWorld(){
-		this.world = null;
-	}
 	
-	public double collisionTimeWithBoundaries() {
-		
-		if (this.world == null)
-			return Double.POSITIVE_INFINITY;
-		if (getVelocity().getNorm() == 0)
-			return Double.POSITIVE_INFINITY;
-		
-		double timeToY = collisionWithAxis(getLocation().getY(), getVelocity().getY(), getWorld().getHeigth());
-		double timeToX = collisionWithAxis(getLocation().getX(), getVelocity().getX(), getWorld().getWidth());
-		
-		if (Double.compare(timeToY,timeToX) < 0)
-			return timeToY;
-		else return timeToX;
-		
-	}
-	
-	private double collisionWithAxis(double coord, double velocity, double axis) {
-		
-		if (Util.fuzzyEquals(velocity, 0))
-			return Double.POSITIVE_INFINITY;
-		if (velocity > 0)
-			return (axis - coord - this.getRadius()) / velocity;
-		else
-			return (0 - coord + this.getRadius()) / velocity;
-		
-		
-	}
-	
-	
-	public void die () {
-		if (getWorld() == null)
-			return;
-		getWorld().removeObject(this);
-	}
-
 	public boolean fitsInWorld(World world) {
 		double x = getLocation().getX();
 		double y = getLocation().getY();
@@ -245,6 +244,12 @@ public abstract class SpaceObject {
 			return false;
 		else return true;
 		
+	}
+
+	public void die () {
+		if (getWorld() == null)
+			return;
+		getWorld().removeObject(this);
 	}
 
 }

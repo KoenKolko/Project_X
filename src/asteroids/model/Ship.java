@@ -48,9 +48,8 @@ public class Ship extends SpaceObject {
 	 */
 	public Ship(Vector coordinates, Vector velocity, double radius, double angle, double mass)
 	{		
-		super(coordinates, velocity, radius);
+		super(coordinates, velocity, radius, mass);
 		this.setAngle(angle);	
-		this.setMass(mass);
 		this.setThruster(false);
 
 	}
@@ -117,6 +116,11 @@ public class Ship extends SpaceObject {
 	}
 
 
+	public void move (double time) {
+		super.move(time);
+		thrust(time);
+	}
+	
 	/**
 	 * 
 	 * @param amount	The amount by which the velocity is increased.
@@ -145,46 +149,25 @@ public class Ship extends SpaceObject {
 		
 	}
 	
-	public void move (double time) {
-		if (!isValidTime(time))
-			throw new IllegalArgumentException();
-		setLocation(getLocation().add(getVelocity().multiply(time)));
-		thrust(time);
-	}
-	
-	public void thrust () {
-		
-		if (!thruster)
-			return;
-		double acceleration = ( getThrusterForce()/getMass() ) / 10;
-		double Vx = getVelocity().getX() + acceleration*Math.cos(getAngle());
-		double Vy = getVelocity().getY() + acceleration*Math.sin(getAngle());
-		setVelocity(new Vector(Vx, Vy));
-	}
-
-	private boolean isValidThrust(double amount) {
-		if (Double.isNaN(amount) || amount <= 0)
-			return false;
-		return true;
-	}
-	
-	
-	public void setThruster (boolean thruster) {
-		this.thruster = thruster;
-	}
 	
 	public boolean getThruster () {
 		return thruster;
 	}
-	
-	public void setThrusterForce (double thrusterForce) {
-		if(!isValidThrusterForce(thrusterForce)) 
-			throw new IllegalArgumentException();
-		this.thrusterForce = thrusterForce;
+
+
+	public void setThruster (boolean thruster) {
+		this.thruster = thruster;
 	}
 	
 	public double getThrusterForce () {
 		return this.thrusterForce;
+	}
+
+
+	public void setThrusterForce (double thrusterForce) {
+		if(!isValidThrusterForce(thrusterForce)) 
+			throw new IllegalArgumentException();
+		this.thrusterForce = thrusterForce;
 	}
 	
 	private boolean isValidThrusterForce (double thrusterForce) {
@@ -192,15 +175,12 @@ public class Ship extends SpaceObject {
 			return false;
 		return true;
 	}
-	
+
+
 	public void fireBullet(){
 		Bullet bullet = new Bullet(this);
 		if ( bullet.fitsInWorld(getWorld()) )
 			getWorld().addObject(bullet);
-	}
-	
-	public void removeWorld(){
-		getWorld().removeShip(this);
 	}
 }
 
