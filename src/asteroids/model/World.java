@@ -77,15 +77,26 @@ public class World {
 
 	public void addObject (SpaceObject object) {
 		boolean valid = true;
-		object.setWorld(this);
+		object.setWorld(this); 
 		for (SpaceObject p : getObjects())
+		{
 			if (object instanceof Bullet) 
+			{
 				if (object.overlap(p) && ((Bullet) object).getSource() != p)
 				{
 					p.die();
 					object.die();
 					valid = false;
 				}
+			}
+			
+			else
+			{
+				if (object.overlap(p))
+					valid = false;
+			}
+		}
+
 		if (valid)
 			allObjects.add(object);
 

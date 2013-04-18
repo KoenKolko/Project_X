@@ -33,7 +33,9 @@ public class Asteroid extends SpaceObject {
 	}
 
 	public void die () {
-		if (getWorld() == null || getRadius() < 30)
+		World world = getWorld();
+		
+		if (world == null || getRadius() < 30)
 		{
 			super.die();
 			return;
@@ -51,9 +53,9 @@ public class Asteroid extends SpaceObject {
 		Vector velocity2 = velocity1.multiply(-1);
 		position = new Vector( getLocation().getX()-radius, getLocation().getY());
 		Asteroid baby2 = new Asteroid(position, velocity2, radius);
-
-		getWorld().addObject(baby1);
-		getWorld().addObject(baby2);
-		getWorld().removeObject(this);
+		
+		world.removeObject(this);
+		world.addObject(baby1);
+		world.addObject(baby2);
 	}
 }
