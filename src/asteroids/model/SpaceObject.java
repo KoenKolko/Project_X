@@ -136,7 +136,7 @@ public abstract class SpaceObject {
 			return Double.POSITIVE_INFINITY; 					// The object overlap.
 		else if(Double.compare(d,0) <= 0)
 			return Double.POSITIVE_INFINITY; 					// The object will not collide.
-		else if(Double.compare(VR,0) >=0)
+		else if(Double.compare(VR,0) >= 0)
 			return Double.POSITIVE_INFINITY;		
 		else
 			return -((VR + Math.sqrt(d)) / VV) ; 				// Calculate the time to collision.

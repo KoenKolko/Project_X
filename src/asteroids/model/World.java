@@ -137,7 +137,7 @@ public class World {
 			moveAllObjects(nextCollisionTime);
 
 			nextCollision.resolve();
-
+			//collisionListener.objectCollision(entity1, entity2, x, y);
 
 
 			dt -= nextCollisionTime;

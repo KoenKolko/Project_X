@@ -18,7 +18,7 @@ public class Ship extends SpaceObject {
 
 	private double angle;									// The angle of the ship (radian)
 	private boolean thruster;								// If thruster is on --> True, else --> False
-	private final double THRUSTER_FORCE = 1.1 * Math.pow(10,18);	// The force/s of the thruster.
+	private final double THRUSTER_FORCE = 1.1E18;	// The force/s of the thruster.
 	
 	/**
 	 * Creates a new ship with the given parameters.
