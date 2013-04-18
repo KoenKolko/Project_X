@@ -18,7 +18,7 @@ public class Ship extends SpaceObject {
 
 	private double angle;									// The angle of the ship (radian)
 	private boolean thruster;								// If thruster is on --> True, else --> False
-	private double thrusterForce = 1.1 * Math.pow(10,18);	// The force/s of the thruster.
+	private final double THRUSTER_FORCE = 1.1 * Math.pow(10,18);	// The force/s of the thruster.
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -141,7 +141,7 @@ public class Ship extends SpaceObject {
 	public void thrust (double time) {
 		if (!thruster)
 			return;
-		double acceleration = ( (thrusterForce*time)  /  getMass() );
+		double acceleration = ( (THRUSTER_FORCE*time)  /  getMass() );
 		double vXNew = getVelocity().getX() + acceleration * Math.cos(getAngle());		// the new x-velocity
 		double vYNew = getVelocity().getY() + acceleration * Math.sin(getAngle());		// the new y-velocity
 		Vector newVelocity = new Vector(vXNew, vYNew);
@@ -159,24 +159,6 @@ public class Ship extends SpaceObject {
 		this.thruster = thruster;
 	}
 	
-	public double getThrusterForce () {
-		return this.thrusterForce;
-	}
-
-
-	public void setThrusterForce (double thrusterForce) {
-		if(!isValidThrusterForce(thrusterForce)) 
-			throw new IllegalArgumentException();
-		this.thrusterForce = thrusterForce;
-	}
-	
-	private boolean isValidThrusterForce (double thrusterForce) {
-		if (Double.isNaN(thrusterForce))
-			return false;
-		return true;
-	}
-
-
 	public void fireBullet(){
 		Bullet bullet = new Bullet(this);
 		if ( bullet.fitsInWorld(getWorld()) )
