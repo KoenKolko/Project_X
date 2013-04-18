@@ -9,7 +9,7 @@ public abstract class SpaceObject {
 	private double radius;
 	private double mass; 									// The mass of the ship (kg)
 	private Vector location, velocity;
-	protected static final double C = 300000;						// Speed of light (km/s)
+	protected final double C = 300000;						// Speed of light (km/s)
 	private World world;
 
 	protected SpaceObject(Vector coordinates, Vector velocity, double radius, double mass)

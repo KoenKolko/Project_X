@@ -12,8 +12,8 @@ import asteroids.Vector;
 import asteroids.CollisionListener;
 
 public class World {
-	private static final double minSize = 0;
-	private static final double maxSize = Double.MAX_VALUE;
+	private final double MIN_SIZE = 0;
+	private final double MAX_SIZE = Double.MAX_VALUE;
 	private Vector dimensions;
 	private ArrayList<SpaceObject> allObjects = new ArrayList<SpaceObject>();
 
@@ -22,10 +22,10 @@ public class World {
 	}
 
 	private boolean isValidDimensions(Vector dimensions){
-		return(	dimensions.getX() >= minSize && 
-				dimensions.getX() <= maxSize && 
-				dimensions.getY() >= minSize && 
-				dimensions.getY() <= maxSize);
+		return(	dimensions.getX() >= MIN_SIZE && 
+				dimensions.getX() <= MAX_SIZE && 
+				dimensions.getY() >= MIN_SIZE && 
+				dimensions.getY() <= MAX_SIZE);
 	}
 
 	public void setDimensions(Vector dimensions){
@@ -78,8 +78,8 @@ public class World {
 	public void addObject (SpaceObject object) {
 		boolean valid = true;
 		object.setWorld(this);
-		if (object instanceof Bullet) 
-			for (SpaceObject p : getObjects())
+		for (SpaceObject p : getObjects())
+			if (object instanceof Bullet) 
 				if (object.overlap(p) && ((Bullet) object).getSource() != p)
 				{
 					p.die();
@@ -96,7 +96,7 @@ public class World {
 		object.removeWorld();
 		allObjects.remove(object);
 	}
-	
+
 	public void moveAllObjects (double time) {
 		for(SpaceObject object : getSpaceObjects()) object.move(time);
 	}
@@ -115,20 +115,20 @@ public class World {
 					Collision collision = new Collision(p,q, p.getTimeToCollision(q));
 					pq.add(collision);
 				}
-			
+
 		}
 		Collision nextCollision = pq.poll();
 		double nextCollisionTime = nextCollision.getTime();
 		while(nextCollisionTime <= dt)
 		{
-			
-			
+
+
 			moveAllObjects(nextCollisionTime);
 
 			nextCollision.resolve();
-			
 
-			
+
+
 			dt -= nextCollisionTime;
 
 			Comparator<Collision> comparatorLocal = new CollisionComparitor();
@@ -150,7 +150,7 @@ public class World {
 
 		moveAllObjects(dt);
 	}
-	
+
 
 	public void evolve2(double dt, CollisionListener collisionListener) {
 
