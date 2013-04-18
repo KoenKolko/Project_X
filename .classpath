@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Annotations"/>
-	<classpathentry kind="lib" path="D:/ECLIPS/Workspace1/AnnotationsDoclets.jar/AnnotationsDoclets.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Yannick/Dropbox/INF/2de semester/OGP/AnnotationsDoclets.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Koen/Desktop/AnnotationsDoclets.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
