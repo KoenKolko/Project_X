@@ -320,40 +320,61 @@ public abstract class SpaceObject {
 	 * @post
 	 * 			(new this).mass = mass
 	 * @throws IllegalArgumentException
-	 * 		|if(!isValidMas(
+	 * 		|if(!isValidMass()
 	 */
 	public void setMass (double mass) {
 		if (!isValidMass(mass))
 			throw new IllegalArgumentException();
 		this.mass = mass;
 	}
-
+	/**
+	 * 
+	 * @param density The new density
+	 * @post
+	 * 		|(new this.getMass() == (4/3) * Math.PI * Math.pow(getRadius(), 3) * density
+	 */
 	public void setMassWithDensity (double density) {
 		double mass = (4/3) * Math.PI * Math.pow(getRadius(), 3) * density;
 		setMass(mass);
 	}
-
+	
 	private boolean isValidMass (double mass) {
 		if (Double.isNaN(mass) || mass <= 0 || mass == Double.POSITIVE_INFINITY)
 			return false;
 		return true;
 	}
 
-
+	/**
+	 * 
+	 * @return world
+	 */
 	public World getWorld(){
 		return this.world;
 	}
 
-
+	/**
+	 * 
+	 * @param world 	The world this object will be placed in.
+	 * @post
+	 * 		|(new this).getWorld = world
+	 */
 	public void setWorld(World world) {
 		this.world = world;
 	}
-
+	/**
+	 * @post
+	 * 		|this.getWorld() == null
+	 * 
+	 */
 	public void removeWorld() {
 		setWorld(null);
 	}
 
-
+	/**
+	 * 
+	 * @param world		The world to check.
+	 * @return !(getLocation().getX() - getRadius() < 0 || getLocation().getY() - getRadius() < 0 || getLocation().getX() + getRadius() > world.getWidth() || getLocation().getY() + getRadius() > world.getHeigth() 
+	 */
 	public boolean fitsInWorld(World world) {
 
 		if (world == null)
@@ -370,6 +391,10 @@ public abstract class SpaceObject {
 	}
 
 	// Total
+	/**
+	 * @effect
+	 * 		|getWorld.removeObject(this)
+	 */
 	public void die () {
 		if (getWorld() == null)
 			return;
