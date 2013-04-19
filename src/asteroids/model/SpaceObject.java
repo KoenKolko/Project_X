@@ -11,6 +11,19 @@ public abstract class SpaceObject {
 	protected World world;
 	protected static double C = 300000;						// Speed of light (km/s)
 
+	/**
+	 * 
+	 * @param coordinates
+	 * @param velocity
+	 * @param radius
+	 * @param mass
+	 * 
+	 * @post
+	 * 		|location in subclasses.
+	 * 		|velocity in subclasses.
+	 * 		|radius in subclasses.
+	 * 		|mass in subclasses.	 * 
+	 */
 	protected SpaceObject(Vector coordinates, Vector velocity, double radius, double mass)
 	{
 		setLocation(coordinates);
@@ -18,12 +31,12 @@ public abstract class SpaceObject {
 		setRadius(radius);
 		setMass(mass);
 	}
-	
+
 	protected SpaceObject(Vector coordinates, Vector velocity, double radius)
 	{
 		this(coordinates, velocity, radius, 1.0);
 	}
-	
+
 	protected SpaceObject() {}
 
 	/**
@@ -53,12 +66,12 @@ public abstract class SpaceObject {
 	}
 
 	/**
-	 * Checks the radius of the ship.
+	 * Checks the radius of the spaceObject.
 	 * 
-	 * @param radius	The new radius of this ship.	
+	 * @param radius	The new radius of this spaceObject.	
 	 * @return	
 	 * 		Returns if the radius is valid.
-	 * 		| !Double.isNaN(radius) || radius >= 10
+	 * 		| !Double.isNaN(radius) || radius >= 0
 	 */
 	public boolean isValidRadius (double radius)
 	{
@@ -66,13 +79,24 @@ public abstract class SpaceObject {
 			return false;
 		return true;
 	}
-
+	/**
+	 * 
+	 * @return location
+	 */
 	public Vector getLocation()
 	{
 		return this.location;
 	}
-
-	//Defensively
+	/**
+	 * 
+	 * @param newVector
+	 * 
+	 * @post 
+	 * 		|(new this).getLocation = newVector
+	 * @throws IllegalArgumentException
+	 * 		if !isValidLocation(newVector)
+	 * 		
+	 */
 	public void setLocation(Vector newVector)
 	{
 		if (!isValidLocation(newVector))
@@ -81,38 +105,58 @@ public abstract class SpaceObject {
 	}
 
 	private boolean isValidLocation(Vector newLocation) {
-		if (!newLocation.isValidVector())
+		if (newLocation == null)
 			return false;
 		return true;
 	}
 
+	/**
+	 * 
+	 * @return velocity
+	 */
 	public Vector getVelocity () 
 	{
 		return this.velocity;
 	}
-	
+
 	//Total
+	/**
+	 * 
+	 * @param newVelocity The new velocity
+	 * 
+	 * @post The new velocity will not be higher than C
+	 * 
+	 * @effect
+	 * 		|(new this).getVelocity == newVelocity
+	 */
 	public void setVelocity(Vector newVelocity)
 	{
 		if (!isValidVelocity(newVelocity))
 			this.velocity = new Vector(0,0);
-		
+
 		else if (newVelocity.getNorm() > C) 
 		{
 			double constant = C / newVelocity.getNorm();
 			this.velocity = newVelocity.multiply(constant);
 		}
-		
+
 		else this.velocity = newVelocity;
 	}
-	
+
 	private boolean isValidVelocity (Vector newVelocity) {
-		if (!newVelocity.isValidVector())
+		if (newVelocity == null)
 			return false;
 		return true;
 	}
 
 	// Defensively
+	/**
+	 * 
+	 * @param other The spaceObject to get the distance to.
+	 * @return getLocation().getDistanceBetween(other.getLocation()
+	 * @throws IllegalArgumentException
+	 * 		|if(other == null)
+	 */
 	public double getDistanceBetween (SpaceObject other) {
 		if (other == null) 																				// The other object doesn't exist.
 			throw new IllegalArgumentException();
@@ -120,6 +164,13 @@ public abstract class SpaceObject {
 	}
 
 	// Defensively
+	/**
+	 * 
+	 * @param other The spaceObject to check overlap with
+	 * @return Double.compare(getRadius() + other.getRadius(), this.getDistanceBetween(other)) > 0
+	 * @throws IllegalArgumentException
+	 * 		|if(other == null)
+	 */
 	public boolean overlap(SpaceObject other){
 		if (other == null) 																				// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
@@ -127,19 +178,46 @@ public abstract class SpaceObject {
 	}	
 
 	// Total
+	/**
+	 * 
+	 * @param time	The time to move this object
+	 * 
+	 * @effect 
+	 * 		|setLocation(getLocation().add(getVelocity().multiply(time)))
+	 */
 	public void move (double time) {
 		if (!isValidMoveTime(time))
 			time = 0.0;
 		setLocation(getLocation().add(getVelocity().multiply(time)));
 	}
-
+	/**
+	 * 
+	 * @param time The time to check
+	 * @return 	(Double.isNaN(time) || Double.compare(time, 0) < 0 || time == Double.POSITIVE_INFINITY || time == Double.NEGATIVE_INFINITY)
+	 */
 	public boolean isValidMoveTime (double time) {
 		if (Double.isNaN(time) || Double.compare(time, 0) < 0 || time == Double.POSITIVE_INFINITY || time == Double.NEGATIVE_INFINITY)
 			return false;
 		return true;
 	}
 
-	// Defensively
+	/**
+	 *
+	 * @param other The other spaceObject to check.
+	 * @throws IllegalArgumentException
+	 * The other spaceObject doesn't exist.
+	 * | other == null
+	 * @return
+	 * Returns the time before the spaceObjects collide.
+	 * | if(this.overlap(other))
+	 * | then return Double.POSITIVE_INFINITY
+	 * | else if(Double.compare(d,0) <= 0)
+	 * | then return Double.POSITIVE_INFINITY
+	 * | else if(Double.compare(VR,0) >=0)
+	 * | then return Double.POSITIVE_INFINITY
+	 * | else
+	 * | then return -( (VR+Math.sqrt(d)) / VV)
+	 */
 	public double getTimeToCollision(SpaceObject other){	
 		if (other == null) 																// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
@@ -151,8 +229,8 @@ public abstract class SpaceObject {
 		double RR = deltaR.multiply(deltaR);
 		double VV = deltaV.multiply(deltaV);
 		double d = Math.pow(VR, 2) - VV*(RR - Math.pow(sigma, 2));
-		
-		
+
+
 		if(this.overlap(other))
 			return Double.POSITIVE_INFINITY; 							// The object overlap.
 		else if(Double.compare(d,0) <= 0)
@@ -161,10 +239,24 @@ public abstract class SpaceObject {
 			return Double.POSITIVE_INFINITY;		
 		else
 			return -((VR + Math.sqrt(d)) / VV) ; 						// Calculate the time to collision.
-		
+
 	}
 
-	// Defensively
+	/**
+	 *
+	 * @param other The spaceObject that could collide with the ship.
+	 * @throws IllegalArgumentException
+	 * The other spaceObject doesn't exist.
+	 * | other == null
+	 * @return
+	 * Returns the position where the 2 spaceObjects will collide. It returns null if they won't.
+	 * | if(timeToCollision != Double.POSITIVE_INFINITY)
+	 * | double[] positions = new double[2]
+	 * | positions[0] = (thisX * other.getRadius() + otherX * getRadius())/sumRadii
+	 * | positions[1] = (thisY * other.getRadius() + otherY * getRadius())/sumRadii
+	 * | return positions
+	 * | else return null
+	 */
 	public double[] getCollisionPosition(SpaceObject other)
 	{
 		if (other == null) 												// The other object does not exist.
@@ -181,51 +273,61 @@ public abstract class SpaceObject {
 			locationThis 			= 	locationThis.multiply(other.getRadius()).add(locationOther).multiply(1/sumRadii);
 			return new double[] {locationThis.getX(), locationThis.getY() };
 		}
-		
+
 		else return null;
 	}
 
 
 	public double collisionTimeWithBoundaries() {
-		
+
 		if (this.world == null)
 			return Double.POSITIVE_INFINITY;
 		if ( Util.fuzzyEquals(getVelocity().getNorm(), 0.0) )
 			return Double.POSITIVE_INFINITY;
-		
+
 		double timeToY = collisionWithAxis(getLocation().getY(), getVelocity().getY(), getWorld().getHeigth());
 		double timeToX = collisionWithAxis(getLocation().getX(), getVelocity().getX(), getWorld().getWidth());
-		
+
 		if (Double.compare(timeToY,timeToX) < 0)
 			return timeToY;
 		else return timeToX;
-		
+
 	}
 
-	
+
 	private double collisionWithAxis(double coord, double velocity, double axis) {
-		
+
 		if (Util.fuzzyEquals(velocity, 0))
 			return Double.POSITIVE_INFINITY;
 		if (velocity > 0)
 			return (axis - coord - this.getRadius()) / velocity;
 		else
 			return (0 - coord + this.getRadius()) / velocity;
-		
-		
-	}
 
+
+	}
+	/**
+	 * 
+	 * @return mass
+	 */
 	public double getMass () {
 		return this.mass;
 	}
 
-	// Defensively
+	/**
+	 * 
+	 * @param mass 		The mass to set.
+	 * @post
+	 * 			(new this).mass = mass
+	 * @throws IllegalArgumentException
+	 * 		|if(!isValidMas(
+	 */
 	public void setMass (double mass) {
 		if (!isValidMass(mass))
 			throw new IllegalArgumentException();
 		this.mass = mass;
 	}
-	
+
 	public void setMassWithDensity (double density) {
 		double mass = (4/3) * Math.PI * Math.pow(getRadius(), 3) * density;
 		setMass(mass);
@@ -242,29 +344,29 @@ public abstract class SpaceObject {
 		return this.world;
 	}
 
-	
+
 	public void setWorld(World world) {
 		this.world = world;
 	}
-	
+
 	public void removeWorld() {
 		setWorld(null);
 	}
-	
-	
+
+
 	public boolean fitsInWorld(World world) {
-		
+
 		if (world == null)
 			return false;
-		
+
 		double x 	= 	getLocation().getX();
 		double y 	= 	getLocation().getY();
 		double rad 	= 	getRadius();
-		
+
 		if (x-rad < 0 || y-rad < 0 || x+rad > world.getWidth() || y+rad > world.getHeigth() )
 			return false;
 		else return true;
-		
+
 	}
 
 	// Total

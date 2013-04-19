@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import asteroids.CollisionListener;
 import asteroids.Vector;
 import asteroids.model.Ship;
 import asteroids.model.World;

@@ -23,28 +23,23 @@ public class Ship extends SpaceObject {
 	/**
 	 * Creates a new ship with the given parameters.
 	 * 
-	 * @param x				x-position of the ship (km)
-	 * @param y				y-position of the ship (km)
-	 * @param xVelocity		Velocity in x-direction (km/s)
-	 * @param yVelocity		Velocity in y-direction (km/s)
+	 * @param coordinates	Position of the ship (km,km)
+	 * @param velocity		Velocity of the ship (km/s)
 	 * @param radius		Radius of the ship (km)
 	 * @param angle			The angle of the ship (radian)
-	 * 
-	 * @post	The x-coordinate is set to the parameter x.
-	 * 			| (new this).getX() == x
-	 * @post 	The y-coordinate is set to the parameter y.
-	 * 			| (new this).getY() == y
-	 * @post 	The velocity on the x-axis is set to the parameter xVelocity.
-	 * 			| (new this).getXVelocity() == xVelocity
-	 * @post	The velocity on the y-axis is set to the parameter yVelocity.
-	 * 			| (new this).getYVelocity() == yVelocity
+	 * @param mass			The mass of the ship (kg)
+	 * @post	The coordinates are set to the parameter coordinates.
+	 * 			| (new this).getCoordinates() == coordinates
+	 * @post 	The velocity of the ship is set to the parameter velocity.
+	 * 			| (new this).getXVelocity() == velocity
 	 * @post	The radius of the ship is set to the parameter radius.
 	 * 			| (new this).getRadius() == radius
 	 * @post 	The angle the ship is facing is set to the parameter angle.
 	 * 			| (new this).getAngle() == angle	
-	 * @post	The radius will be larger then 10
-	 * 			| (new this).getRadius > 10
-	 * 
+	 * @post 	The mass of the ship is set to the parameter weight.
+	 * 			| (new this).getAngle() == angle
+	 * @post 	The thruster of the ship is turned off
+	 * 			| (new this).getThruster() == false 
 	 */
 	public Ship(Vector coordinates, Vector velocity, double radius, double angle, double mass)
 	{		
@@ -121,6 +116,12 @@ public class Ship extends SpaceObject {
 	}
 
 	// Total
+	/**
+	 * @effect 
+	 * 		move(time)
+	 * @effect
+	 * 		thrust(time)
+	 */
 	public void move (double time) {
 		super.move(time);
 		thrust(time);
@@ -128,19 +129,18 @@ public class Ship extends SpaceObject {
 	
 	/**
 	 * 
-	 * @param amount	The amount by which the velocity is increased.
-	 * @post 	If the given amount is invalid (< 0 or NaN) or the amount is zero, then the velocity will remain unchanged.
-	 * 			Else if the new velocity is greater than the speed of light (C), then the velocity in the x and y-axis will be adjusted
-	 * 			so that the velocity equals the speed of light (C).
-	 * 			Else, the new velocity is smaller or equal to speed of light (C), then the new x and y velocities are calculated 
-	 * 			and adjusted.
-	 * 			| if (Double.isNaN(amount) || amount <= 0)
+	 * @param time	The time during which the velocity is increased.
+	 * @post 	If the given time is invalid (<= 0 or NaN) or the thruster is off, then the velocity will remain unchanged.
+	 * 			Else the x- and y-velocities are calculated and adjusted.
+	 * 			| if (Double.isNaN(amount) || amount <= 0 || !getThruster)
 	 * 			|	then return;
-	 * 			| if (calcVelocity(vXNew, vYNew) > C)
-	 * 			|	then (new this).calcVelocity(getXVelocity(), getYVelocity()) == C
-	 *			| else 
-	 *			| 	then (new this).getXVelocity() = vXNew && (new this).getYVelocity() = vYNew 
-	 *			|	(new this).calcVelocity(getXVelocity(), getYVelocity()) <= C
+	 * 			| else
+	 * 			|	double acceleration = ( (THRUSTER_FORCE*time)  /  getMass() )
+	 *			|	double vXNew = getVelocity().getX() + acceleration * Math.cos(getAngle())
+	 *			|	double vYNew = getVelocity().getY() + acceleration * Math.sin(getAngle())
+	 *			|	Vector newVelocity = new Vector(vXNew, vYNew);
+	 *@effect
+	 *		setVelocity(newVelocity) 	
 	 * 			 		
 	 */
 	// Total 
@@ -159,16 +159,33 @@ public class Ship extends SpaceObject {
 		return super.isValidMoveTime(time);
 	}
 	
-	
+	/**
+	 * 
+	 * @return whether the thruster is on
+	 * 		| thruster
+	 */
 	public boolean getThruster () {
-		return this.thruster;
+		return thruster;
 	}
 
-
+	/**
+	 * 
+	 * @param thruster 		The new state of the thruster.
+	 * 
+	 * @post	The thruster is set to its new state.
+	 * 		|	this.thruster = thruster;
+	 * 			
+	 */
 	public void setThruster (boolean thruster) {
 		this.thruster = thruster;
 	}
-	
+	/**
+	 * A bullet is created from this ship and fired.
+	 * Bullet bullet = new Bullet(this);
+	 * @post The bullet is fired
+	 * 		|	if ( bullet.fitsInWorld(getWorld()) )
+			|	getWorld().addObject(bullet);
+	 */
 	public void fireBullet(){
 		Bullet bullet = new Bullet(this);
 		if ( bullet.fitsInWorld(getWorld()) )

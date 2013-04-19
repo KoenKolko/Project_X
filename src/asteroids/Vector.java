@@ -6,11 +6,11 @@ public class Vector {
 	private final double Y;
 	
 	public Vector(double x, double y) 
-	{
-		if (!isValidVector())
-			throw new IllegalArgumentException();
+	{		
 		this.X = x;
 		this.Y = y;
+		if (!isValidVector())
+			throw new IllegalArgumentException();
 	}
 	
 	public double getX() {
@@ -36,6 +36,8 @@ public class Vector {
 	
 	public Vector subtract (Vector otherVector)
 	{
+		if (otherVector == null)
+			return this;
 		return this.add(  new Vector(  -otherVector.getX(), -otherVector.getY()  )  );
 	}
 	
@@ -64,11 +66,11 @@ public class Vector {
 		return Math.sqrt( Math.pow(getX(), 2) + Math.pow(getY(), 2) );
 	}
 	
-	public boolean isValidVector() 
+	private boolean isValidVector() 
 	{
 		if (Double.isNaN(getX()) || Double.isNaN(getY())) 
 			return false;
-		if (getX() == Double.POSITIVE_INFINITY || getX() == Double.NEGATIVE_INFINITY || getY() == Double.POSITIVE_INFINITY || getY() == Double.NEGATIVE_INFINITY)
+		if (Double.isInfinite(getX()) || Double.isInfinite(getY()))
 			return false;
 		return true;
 	}

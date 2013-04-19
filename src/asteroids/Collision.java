@@ -13,6 +13,10 @@ public class Collision {
 
 	// Constructor for collision with 2 objects
 	public Collision (SpaceObject entity1, SpaceObject entity2, double timeToCollision) {
+
+		if (!isValidTime(timeToCollision))
+			throw new IllegalArgumentException();
+
 		this.time = timeToCollision;
 		this.entity1 = entity1;
 		this.entity2 = entity2;
@@ -21,9 +25,18 @@ public class Collision {
 
 	// Constructor for collision with boundaries of a world.
 	public Collision (SpaceObject entity1, double timeToCollisionWithBoundaries) {
+		if (!isValidTime(timeToCollisionWithBoundaries))
+			throw new IllegalArgumentException();
+
 		this.time = timeToCollisionWithBoundaries;
 		this.entity1 = entity1;
 		this.entity2 = null;
+	}
+
+	private boolean isValidTime (double time) {
+		if (Double.compare(time, 0) < 0)
+			return false;
+		return true;
 	}
 
 
@@ -61,7 +74,7 @@ public class Collision {
 
 		if (entity1 == null)
 			return;
-		
+
 		// Option 1: Entity1 collides with boundaries.
 		if (entity2 == null)
 		{
@@ -85,7 +98,7 @@ public class Collision {
 		// Option 2: Entity1 collides with Entity2.
 		else 
 		{
-		
+
 			if (entity1 instanceof Bullet || entity2 instanceof Bullet)
 			{
 				entity1.die();

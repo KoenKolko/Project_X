@@ -8,6 +8,7 @@ import asteroids.IFacade;
 import asteroids.ModelException;
 import asteroids.Vector;
 
+@SuppressWarnings("rawtypes")
 public class Facade implements IFacade {
 
 	@Override
@@ -35,7 +36,7 @@ public class Facade implements IFacade {
 	public Set getAsteroids(Object world) {
 		return ((World) world).getAsteroids();
 	}
-
+	
 	@Override
 	public Set getBullets(Object world) {
 		return ((World) world).getBullets();
