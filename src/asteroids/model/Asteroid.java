@@ -6,7 +6,7 @@ import asteroids.Vector;
 
 public class Asteroid extends SpaceObject {
 
-	private final double density = 2.65 * Math.pow(10, 12);		// The mass density of the asteroid. (kg/km^3)
+	private static double DENSITY = 2.65E12;		// The mass density of the asteroid. (kg/km^3)
 	private Random random;
 
 	/**
@@ -27,7 +27,7 @@ public class Asteroid extends SpaceObject {
 	 */
 	public Asteroid (Vector coordinates, Vector velocity, double radius, Random random) {
 		super (coordinates, velocity, radius);
-		setMassWithDensity(getDensity());
+		setMassWithDensity(DENSITY);
 		setRandom(random);
 	}
 	/**
@@ -41,7 +41,7 @@ public class Asteroid extends SpaceObject {
 	 * @return density
 	 */	
 	public double getDensity() {
-		return density;
+		return DENSITY;
 	}
 	/**
 	 * @return random
@@ -90,15 +90,15 @@ public class Asteroid extends SpaceObject {
 		double radius = getRadius()/2;
 
 		// Create baby 1
-		double angle = random.nextDouble();
-		Vector velocity1 = new Vector(1.5*getVelocity().getNorm() * Math.cos(angle) , 1.5*getVelocity().getNorm() * Math.sin(angle));
-		Vector position1 = new Vector( getLocation().getX()+radius, getLocation().getY());
-		Asteroid baby1 = new Asteroid(position1, velocity1, radius);
+		double 		angle 		= random.nextDouble();
+		Vector 		velocity1 	= new Vector(1.5*getVelocity().getNorm() * Math.cos(angle) , 1.5*getVelocity().getNorm() * Math.sin(angle));
+		Vector 		position1 	= new Vector( getLocation().getX()+radius, getLocation().getY());
+		Asteroid 	baby1 		= new Asteroid(position1, velocity1, radius);
 
 		// Create baby2
-		Vector velocity2 = velocity1.multiply(-1);
-		Vector position2 = new Vector( getLocation().getX()-radius, getLocation().getY());
-		Asteroid baby2 = new Asteroid(position2, velocity2, radius);
+		Vector 		velocity2 	= velocity1.multiply(-1);
+		Vector 		position2 	= new Vector( getLocation().getX()-radius, getLocation().getY());
+		Asteroid 	baby2 		= new Asteroid(position2, velocity2, radius);
 		
 		world.removeObject(this);
 		world.addObject(baby1);

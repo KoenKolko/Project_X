@@ -5,6 +5,12 @@ public class Vector {
 	private final double X;
 	private final double Y;
 	
+	/**
+	 * 
+	 * @param x		The x-coordinate
+	 * @param y		The y-coordinate
+	 * 
+	 */
 	public Vector(double x, double y) 
 	{		
 		this.X = x;
@@ -21,6 +27,7 @@ public class Vector {
 		return this.Y;
 	}
 	
+	// Adds another vector (otherVector) to this vector and returns the resulting vector.
 	public Vector add (Vector otherVector)
 	{
 		if (otherVector == null)
@@ -34,6 +41,7 @@ public class Vector {
 		return new Vector(x1+x2, y1+y2);
 	}
 	
+	// Subtracts another vector (otherVector) from this vector and returns the resulting vector.
 	public Vector subtract (Vector otherVector)
 	{
 		if (otherVector == null)
@@ -41,6 +49,7 @@ public class Vector {
 		return this.add(  new Vector(  -otherVector.getX(), -otherVector.getY()  )  );
 	}
 	
+	// Multiplies another vector (otherVector) with this vector and returns the result.
 	public double multiply (Vector otherVector) 
 	{
 		if (otherVector == null)
@@ -54,6 +63,7 @@ public class Vector {
 		return x1*x2 + y1*y2;
 	}
 	
+	// Multiplies a constant with this vector and returns the resulting vector.
 	public Vector multiply (double constant)
 	{
 		if (!isValidConstant(constant))

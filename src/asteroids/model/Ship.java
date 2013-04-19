@@ -18,7 +18,7 @@ public class Ship extends SpaceObject {
 
 	private double angle;									// The angle of the ship (radian)
 	private boolean thruster;								// If thruster is on --> True, else --> False
-	private final double THRUSTER_FORCE = 1.1E18;			// The force/s of the thruster.
+	private static double THRUSTER_FORCE = 1.1E18;			// The force/s of the thruster.
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -93,7 +93,7 @@ public class Ship extends SpaceObject {
 	 * 		| !Double.isNaN(angle)
 	 */
 	public boolean isValidAngle (double angle) {
-		if (Double.isNaN(angle) || angle == Double.POSITIVE_INFINITY || angle == Double.NEGATIVE_INFINITY)
+		if (Double.isNaN(angle) || Double.isInfinite(angle))
 			return false;
 		return true;
 	}
@@ -148,9 +148,9 @@ public class Ship extends SpaceObject {
 		if (!getThruster() || !isValidThrustTime(time))
 			return;
 		double acceleration = ( (THRUSTER_FORCE*time)  /  getMass() );
-		double vXNew = getVelocity().getX() + acceleration * Math.cos(getAngle());		// the new x-velocity
-		double vYNew = getVelocity().getY() + acceleration * Math.sin(getAngle());		// the new y-velocity
-		Vector newVelocity = new Vector(vXNew, vYNew);
+		double vXNew 		= getVelocity().getX() + acceleration * Math.cos(getAngle());		// the new x-velocity
+		double vYNew 		= getVelocity().getY() + acceleration * Math.sin(getAngle());		// the new y-velocity
+		Vector newVelocity 	= new Vector(vXNew, vYNew);
 		setVelocity(newVelocity);
 		
 	}

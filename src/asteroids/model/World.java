@@ -174,6 +174,7 @@ public class World {
 	}
 
 
+	// Optimized version of evolve: alpha
 	public void evolve2(double dt, CollisionListener collisionListener) {
 
 		ArrayList<ArrayList<Collision>> 	collisions 	= createCollisionArray();								// Create a 2D ArrayList of Collisions.

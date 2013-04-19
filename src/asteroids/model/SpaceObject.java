@@ -9,7 +9,7 @@ public abstract class SpaceObject {
 	protected double radius, mass; 									// The mass of the ship (kg)
 	protected Vector location, velocity;
 	protected World world;
-	protected static double C = 300000;						// Speed of light (km/s)
+	protected static double C = 300000;								// Speed of light (km/s)
 
 	/**
 	 * 
@@ -137,10 +137,10 @@ public abstract class SpaceObject {
 		else if (newVelocity.getNorm() > C) 
 		{
 			double constant = C / newVelocity.getNorm();
-			this.velocity = newVelocity.multiply(constant);
+			this.velocity 	= newVelocity.multiply(constant);
 		}
 
-		else this.velocity = newVelocity;
+		else this.velocity 	= newVelocity;
 	}
 
 	private boolean isValidVelocity (Vector newVelocity) {
@@ -222,13 +222,13 @@ public abstract class SpaceObject {
 		if (other == null) 																// The other object doesn't exist.
 			throw new IllegalArgumentException("Invalid ship!");
 
-		Vector deltaR = other.getLocation().subtract(getLocation());
-		Vector deltaV = other.getVelocity().subtract(getVelocity());
-		double sigma = getRadius() + other.getRadius();
-		double VR = deltaV.multiply(deltaR);
-		double RR = deltaR.multiply(deltaR);
-		double VV = deltaV.multiply(deltaV);
-		double d = Math.pow(VR, 2) - VV*(RR - Math.pow(sigma, 2));
+		Vector deltaR 	= other.getLocation().subtract(getLocation());
+		Vector deltaV 	= other.getVelocity().subtract(getVelocity());
+		double sigma 	= getRadius() + other.getRadius();
+		double VR 		= deltaV.multiply(deltaR);
+		double RR 		= deltaR.multiply(deltaR);
+		double VV 		= deltaV.multiply(deltaV);
+		double d 		= Math.pow(VR, 2) - VV*(RR - Math.pow(sigma, 2));
 
 
 		if(this.overlap(other))
@@ -277,7 +277,7 @@ public abstract class SpaceObject {
 		else return null;
 	}
 
-
+	// Returns the collision time with the next boundary
 	public double collisionTimeWithBoundaries() {
 
 		if (this.world == null)
