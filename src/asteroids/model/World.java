@@ -12,8 +12,8 @@ import asteroids.Vector;
 import asteroids.CollisionListener;
 
 public class World {
-	private final double MIN_SIZE = 0;
-	private final double MAX_SIZE = Double.MAX_VALUE;
+	private static double MIN_SIZE = 0;
+	private static double MAX_SIZE = Double.MAX_VALUE;
 	private Vector dimensions;
 	private ArrayList<SpaceObject> allObjects = new ArrayList<SpaceObject>();
 
@@ -75,9 +75,13 @@ public class World {
 		return allBullets;
 	}
 
+	// Defensively
 	public void addObject (SpaceObject object) {
+		if (object == null || !object.fitsInWorld(this))
+			throw new IllegalArgumentException();
 		boolean valid = true;
 		object.setWorld(this); 
+		
 		for (SpaceObject p : getObjects())
 		{
 			if (object instanceof Bullet) 
@@ -103,7 +107,10 @@ public class World {
 	}
 
 
+	// Defensively
 	public void removeObject (SpaceObject object) {
+		if (object == null)
+			throw new IllegalArgumentException();
 		object.removeWorld();
 		allObjects.remove(object);
 	}
@@ -113,8 +120,12 @@ public class World {
 	}
 
 
+	// Defensively
 	public void evolve(double dt, CollisionListener collisionListener) {
 
+		if (!isValidEvolveTime(dt))
+			throw new IllegalArgumentException();
+		
 		Comparator<Collision> comparator = new CollisionComparitor();
 		PriorityQueue<Collision> pq = new PriorityQueue<Collision>(2, comparator);
 		for(SpaceObject p : getSpaceObjects())
@@ -346,6 +357,12 @@ public class World {
 		}
 
 		return currentPos;
+	}
+	
+	public boolean isValidEvolveTime (double time) {
+		if (Double.isNaN(time) || time == Double.POSITIVE_INFINITY || Double.compare(time, 0) < 0)
+			return false;
+		return true;
 	}
 
 

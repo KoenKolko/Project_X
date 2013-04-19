@@ -13,8 +13,8 @@ public class ShipTest {
 	Ship otherShip;
 	@Before
 	public void setUp() throws Exception {
-		ship =  new Ship(new Vector(100,200), new Vector(10,-10), 20, -Math.PI);
-		otherShip = new Ship(new Vector(100,100), new Vector(30,-15), 20, 0);
+		ship 		=  	new Ship(new Vector(100,200), new Vector(10,-10), 20, -Math.PI);
+		otherShip 	= 	new Ship(new Vector(100,100), new Vector(30,-15), 20, 0);
 	}
 
 	@SuppressWarnings("unused")

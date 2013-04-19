@@ -56,8 +56,12 @@ public class Collision {
 		this.entity2 = entity2;
 	}
 
+	// Total?
 	public void resolve () {
 
+		if (entity1 == null)
+			return;
+		
 		// Option 1: Entity1 collides with boundaries.
 		if (entity2 == null)
 		{
@@ -103,17 +107,17 @@ public class Collision {
 		}
 	}
 
+	// Sets a new velocity between 2 objects when they collide with each other.
 	private void setBounceVelocity () {
-		double sigma = entity1.getRadius() + entity2.getRadius();
-		double m1 = entity1.getMass();
-		double m2 = entity2.getMass();
-		Vector deltaR = entity1.getLocation().subtract(entity2.getLocation());
-		Vector deltaV = entity1.getVelocity().subtract(entity2.getVelocity());
-		double deltaVR = deltaV.multiply(deltaR);
-		double J =      (2 * m1 * m2 * deltaVR )  / ( sigma * (m1 + m2) );
-		//System.out.println(deltaVR);
-		double Jx = (J * deltaR.getX()) / sigma;
-		double Jy = (J * deltaR.getY()) / sigma;
+		double sigma 	= 	entity1.getRadius() + entity2.getRadius();
+		double m1 		= 	entity1.getMass();
+		double m2 		= 	entity2.getMass();
+		Vector deltaR 	= 	entity1.getLocation().subtract(entity2.getLocation());
+		Vector deltaV 	= 	entity1.getVelocity().subtract(entity2.getVelocity());
+		double deltaVR 	= 	deltaV.multiply(deltaR);
+		double J 		= 	(2 * m1 * m2 * deltaVR )  / ( sigma * (m1 + m2) );
+		double Jx 		= 	(J * deltaR.getX()) / sigma;
+		double Jy 		= 	(J * deltaR.getY()) / sigma;
 
 		Vector vel1 = new Vector(entity1.getVelocity().getX() - Jx/m1, entity1.getVelocity().getY() - Jy/m1);
 		Vector vel2 = new Vector(entity2.getVelocity().getX() + Jx/m2, entity2.getVelocity().getY() + Jy/m2);
@@ -122,10 +126,4 @@ public class Collision {
 
 	}
 
-	public Vector collisionPositionBetweenObjects () {
-		// Calculate the distance between the 2 centres:
-		double d = entity1.getLocation().getDistanceBetween(entity2.getLocation());
-		return null;
-		
-	}
 }

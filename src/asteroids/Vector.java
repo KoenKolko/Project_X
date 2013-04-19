@@ -7,6 +7,8 @@ public class Vector {
 	
 	public Vector(double x, double y) 
 	{
+		if (!isValidVector())
+			throw new IllegalArgumentException();
 		this.X = x;
 		this.Y = y;
 	}
@@ -21,6 +23,9 @@ public class Vector {
 	
 	public Vector add (Vector otherVector)
 	{
+		if (otherVector == null)
+			return this;
+		
 		double x1, x2, y1, y2;
 		x1 = this.getX();
 		x2 = otherVector.getX();
@@ -36,17 +41,21 @@ public class Vector {
 	
 	public double multiply (Vector otherVector) 
 	{
+		if (otherVector == null)
+			throw new IllegalArgumentException();
+		
 		double x1, x2, y1, y2;
 		x1 = this.getX();
 		x2 = otherVector.getX();
 		y1 = this.getY();
 		y2 = otherVector.getY();
-		
 		return x1*x2 + y1*y2;
 	}
 	
 	public Vector multiply (double constant)
 	{
+		if (!isValidConstant(constant))
+			return this;
 		return new Vector( getX()*constant, getY()*constant);
 	}
 	
@@ -58,6 +67,14 @@ public class Vector {
 	public boolean isValidVector() 
 	{
 		if (Double.isNaN(getX()) || Double.isNaN(getY())) 
+			return false;
+		if (getX() == Double.POSITIVE_INFINITY || getX() == Double.NEGATIVE_INFINITY || getY() == Double.POSITIVE_INFINITY || getY() == Double.NEGATIVE_INFINITY)
+			return false;
+		return true;
+	}
+	
+	public boolean isValidConstant (double constant) {
+		if (Double.isNaN(constant) || Double.isInfinite(constant))
 			return false;
 		return true;
 	}

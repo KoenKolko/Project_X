@@ -18,7 +18,7 @@ public class Ship extends SpaceObject {
 
 	private double angle;									// The angle of the ship (radian)
 	private boolean thruster;								// If thruster is on --> True, else --> False
-	private final double THRUSTER_FORCE = 1.1E18;	// The force/s of the thruster.
+	private final double THRUSTER_FORCE = 1.1E18;			// The force/s of the thruster.
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -79,6 +79,7 @@ public class Ship extends SpaceObject {
 	 * 					| else if angle < -2*Math.PI
 	 * 					| 	then (new this).getAngle() == angle%(-2*Math.PI)
 	 */
+	// Nominal
 	public void setAngle(double angle) {
 		assert isValidAngle(angle) : "Wrong angle";
 		if (angle > 2*Math.PI)
@@ -86,6 +87,20 @@ public class Ship extends SpaceObject {
 		else if ( angle < -2*Math.PI)
 			angle %= -2*Math.PI;
 		this.angle = angle;
+	}
+
+
+	/**
+	 * 
+	 * @param angle		The angle that has to be checked.
+	 * @return
+	 * 		Returns if the angle is valid.
+	 * 		| !Double.isNaN(angle)
+	 */
+	public boolean isValidAngle (double angle) {
+		if (Double.isNaN(angle) || angle == Double.POSITIVE_INFINITY || angle == Double.NEGATIVE_INFINITY)
+			return false;
+		return true;
 	}
 
 
@@ -99,23 +114,13 @@ public class Ship extends SpaceObject {
 	 * @post 	The angle is set to the old angle increased by the parameter angle.
 	 * 			| (new this).getAngle() == (getAngle() + angle)%(2*Math.PI)
 	 */
+	// Nominal
 	public void turn (double angle) {
 		assert (isValidAngle(angle)) : "No valid argument!";
 		setAngle(getAngle() + angle);
 	}
 
-	/**
-	 * 
-	 * @param angle		The angle that has to be checked.
-	 * @return
-	 * 		Returns if the angle is valid.
-	 * 		| !Double.isNaN(angle)
-	 */
-	public boolean isValidAngle (double angle) {
-		return !Double.isNaN(angle);
-	}
-
-
+	// Total
 	public void move (double time) {
 		super.move(time);
 		thrust(time);
@@ -138,8 +143,9 @@ public class Ship extends SpaceObject {
 	 *			|	(new this).calcVelocity(getXVelocity(), getYVelocity()) <= C
 	 * 			 		
 	 */
+	// Total 
 	public void thrust (double time) {
-		if (!thruster)
+		if (!getThruster() || !isValidThrustTime(time))
 			return;
 		double acceleration = ( (THRUSTER_FORCE*time)  /  getMass() );
 		double vXNew = getVelocity().getX() + acceleration * Math.cos(getAngle());		// the new x-velocity
@@ -149,9 +155,13 @@ public class Ship extends SpaceObject {
 		
 	}
 	
+	public boolean isValidThrustTime (double time) {
+		return super.isValidMoveTime(time);
+	}
+	
 	
 	public boolean getThruster () {
-		return thruster;
+		return this.thruster;
 	}
 
 
