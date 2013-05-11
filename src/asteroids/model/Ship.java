@@ -19,6 +19,8 @@ public class Ship extends SpaceObject {
 	private double angle;									// The angle of the ship (radian)
 	private boolean thruster;								// If thruster is on --> True, else --> False
 	private static double THRUSTER_FORCE = 1.1E18;			// The force/s of the thruster.
+	private static int MAX_BULLETS_IN_WORLD = 3;
+	private int bulletsInWorldCounter = 0;
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -188,8 +190,23 @@ public class Ship extends SpaceObject {
 	 */
 	public void fireBullet(){
 		Bullet bullet = new Bullet(this);
-		if ( bullet.fitsInWorld(getWorld()) )
+		if ( bullet.fitsInWorld(getWorld()) && getBulletsInWorldCounter() < MAX_BULLETS_IN_WORLD )
+		{
 			getWorld().addObject(bullet);
+			increaseBulletsInWorldCounter();
+		}
+	}
+	
+	public void increaseBulletsInWorldCounter () {
+		bulletsInWorldCounter++;
+	}
+	
+	public void decreaseBulletsInWorldCounter () {
+		bulletsInWorldCounter--;
+	}
+	
+	public int getBulletsInWorldCounter() {
+		return bulletsInWorldCounter;
 	}
 }
 

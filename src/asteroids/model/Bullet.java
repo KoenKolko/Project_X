@@ -98,7 +98,12 @@ public class Bullet extends SpaceObject {
 	public void increaseCollisionCounter() {
 		collisionCounter++;
 		if (getCollisionCounter() == MAX_COLLISIONS_WITH_BOUNDARIES)
-			super.die();
+			die();
+	}
+	
+	public void die() {
+		getSource().decreaseBulletsInWorldCounter();
+		super.die();
 	}
 	
 }
