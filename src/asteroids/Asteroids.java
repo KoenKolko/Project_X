@@ -110,11 +110,12 @@ public class Asteroids<World, Ship, Asteroid, Bullet> extends JFrame {
     repaint();
     menu.requestFocusInWindow();
     pack();
+    
     menu.repaint();
   }
 
   public static void main(final String[] args) {
-    boolean tryFullscreen = false;
+    boolean tryFullscreen = true;
     boolean enableSound = false;
     for(String arg : args) {
       if(arg.equals("-window")) {
