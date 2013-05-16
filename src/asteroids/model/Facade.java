@@ -1,5 +1,8 @@
 package asteroids.model;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Random;
 import java.util.Set;
 
@@ -289,6 +292,43 @@ public class Facade implements IFacade {
 	public Object getBulletSource(Object bullet) {
 		try {return ((Bullet) bullet).getSource(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
+	}
+
+	@Override
+	public ParseOutcome parseProgram(String text) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ParseOutcome loadProgramFromStream(InputStream stream)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ParseOutcome loadProgramFromUrl(URL url) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isTypeCheckingSupported() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public TypeCheckOutcome typeCheckProgram(Object program) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setShipProgram(Object ship, Object program) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 
