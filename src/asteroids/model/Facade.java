@@ -289,6 +289,7 @@ public class Facade implements IFacade {
 	public Object getBulletSource(Object bullet) {
 		try {return ((Bullet) bullet).getSource(); }
 		catch (IllegalArgumentException e) { throw new ModelException("An error has occurred."); }
-	}	
+	}
+	
 
 }
