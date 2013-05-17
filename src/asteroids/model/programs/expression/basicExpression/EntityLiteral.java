@@ -1,12 +1,13 @@
-package asteroids.model.programs.expression;
+package asteroids.model.programs.expression.basicExpression;
 
 import asteroids.model.SpaceObject;
+import asteroids.model.programs.expression.BasicExpression;
 
-public class Entity extends BasicExpression {
+public class EntityLiteral extends BasicExpression {
 
 	private SpaceObject value;
 	
-	public Entity(int line, int column, SpaceObject spaceObject) {
+	public EntityLiteral(int line, int column, SpaceObject spaceObject) {
 		super(line, column);
 		setValue(spaceObject);
 	}
