@@ -1,5 +1,7 @@
 package asteroids.model.programs.statement.actionStatement;
 
+
+import asteroids.model.Ship;
 import asteroids.model.programs.statement.ActionStatement;
 
 public class DisableThruster extends ActionStatement {
@@ -11,7 +13,10 @@ public class DisableThruster extends ActionStatement {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		Ship ship = getShip();
+		if (ship == null)
+			throw new RuntimeException();
+		ship.setThruster(false);
 		
 	}
 

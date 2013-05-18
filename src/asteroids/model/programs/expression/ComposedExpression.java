@@ -12,10 +12,7 @@ public abstract class ComposedExpression extends Expression {
 	}
 	
 	public ComposedExpression(int line, int column, Expression e1) {
-		super(line, column);
-		setE1(e1);
-		setE2(null);
-		
+		this(line, column, e1, null);
 	}
 
 	public Expression getE1() {
