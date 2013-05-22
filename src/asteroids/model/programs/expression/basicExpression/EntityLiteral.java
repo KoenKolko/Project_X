@@ -11,6 +11,10 @@ public class EntityLiteral extends BasicExpression {
 		super(line, column);
 		setValue(spaceObject);
 	}
+	
+	public String toString() {
+		return "SpaceObject";
+	}
 
 	public SpaceObject getValue() {
 		return value;

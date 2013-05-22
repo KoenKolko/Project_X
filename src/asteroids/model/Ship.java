@@ -2,6 +2,7 @@ package asteroids.model;
 
 
 import asteroids.Vector;
+import asteroids.model.programs.Program;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -21,6 +22,7 @@ public class Ship extends SpaceObject {
 	private static double THRUSTER_FORCE = 1.1E18;			// The force/s of the thruster.
 	private static int MAX_BULLETS_IN_WORLD = 3;
 	private int bulletsInWorldCounter = 0;
+	private Program program = null;
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -207,6 +209,16 @@ public class Ship extends SpaceObject {
 	
 	public int getBulletsInWorldCounter() {
 		return bulletsInWorldCounter;
+	}
+
+
+	public Program getProgram() {
+		return program;
+	}
+
+
+	public void setProgram(Program program) {
+		this.program = program;
 	}
 }
 

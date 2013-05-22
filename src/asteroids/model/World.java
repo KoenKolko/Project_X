@@ -14,6 +14,7 @@ import asteroids.CollisionListener;
 public class World {
 	private static double MIN_SIZE = 0;
 	private static double MAX_SIZE = Double.MAX_VALUE;
+	private static double TIME_FOR_COMMANDS = 0.2;
 	private Vector dimensions;
 	private ArrayList<SpaceObject> allObjects = new ArrayList<SpaceObject>();
 
@@ -118,6 +119,14 @@ public class World {
 	public void moveAllObjects (double time) {
 		for(SpaceObject object : getSpaceObjects()) object.move(time);
 	}
+	
+	public void executeAllPrograms (double time) {
+		int timesToExecute = (int) (time/TIME_FOR_COMMANDS);
+		for(Ship ship : getShips()) 
+			if (ship.getProgram() != null)
+				for (int i = 0; i < timesToExecute; i++)
+					ship.getProgram().executeNextCommand();
+	}
 
 
 	// Defensively
@@ -167,10 +176,13 @@ public class World {
 			}
 			nextCollision = pqLocal.poll();
 			nextCollisionTime = nextCollision.getTime();
+			
+			executeAllPrograms(nextCollisionTime);
 		}
 
 
 		moveAllObjects(dt);
+		executeAllPrograms(dt);
 	}
 
 

@@ -10,6 +10,10 @@ public class DoubleLiteral extends BasicExpression {
 		super(line, column);
 		setValue(d);
 	}
+	
+	public String toString() {
+		return Double.toString(getValue());
+	}
 
 	public double getValue() {
 		return value;

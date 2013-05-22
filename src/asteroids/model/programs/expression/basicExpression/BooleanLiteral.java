@@ -10,6 +10,10 @@ public class BooleanLiteral extends BasicExpression {
 		super(line, column);
 		setValue(b);
 	}
+	
+	public String toString() {
+		return Boolean.toString(getValue());
+	}
 
 	public Boolean getValue() {
 		return value;

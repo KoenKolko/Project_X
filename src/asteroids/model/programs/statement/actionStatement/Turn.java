@@ -19,8 +19,7 @@ public class Turn extends ActionStatement {
 	}
 
 	@Override
-	public void execute() {
-		Ship ship = getShip();
+	public void execute(Ship ship) {
 		if (ship == null)
 			throw new RuntimeException();
 		ship.turn(getAngle());

@@ -14,6 +14,9 @@ public abstract class ComposedExpression extends Expression {
 	public ComposedExpression(int line, int column, Expression e1) {
 		this(line, column, e1, null);
 	}
+	
+	public abstract Expression getLiteral();
+	public abstract String toString();
 
 	public Expression getE1() {
 		return e1;

@@ -1,5 +1,6 @@
 package asteroids.model.programs.statement.basicStatement;
 
+import asteroids.model.Ship;
 import asteroids.model.programs.statement.BasicStatement;
 
 public class Foreach extends BasicStatement {
@@ -10,7 +11,7 @@ public class Foreach extends BasicStatement {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Ship ship) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,15 +1,26 @@
 package asteroids.model;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import org.antlr.v4.runtime.RecognitionException;
 
 import asteroids.CollisionListener;
 import asteroids.IFacade;
 import asteroids.ModelException;
 import asteroids.Vector;
+import asteroids.model.programs.Program;
+import asteroids.model.programs.Type;
+import asteroids.model.programs.expression.Expression;
+import asteroids.model.programs.parsing.ProgramFactoryImpl;
+import asteroids.model.programs.parsing.ProgramParser;
+import asteroids.model.programs.statement.Statement;
 
 @SuppressWarnings("rawtypes")
 public class Facade implements IFacade {
@@ -296,21 +307,36 @@ public class Facade implements IFacade {
 
 	@Override
 	public ParseOutcome parseProgram(String text) {
-		// TODO Auto-generated method stub
-		return null;
+		ProgramFactoryImpl factory = new ProgramFactoryImpl();
+	    ProgramParser<Expression, Statement, Type> parser = new ProgramParser<>(factory);
+	    try {
+	        parser.parse(text);
+	        List<String> errors = parser.getErrors();
+	        if(! errors.isEmpty()) {
+	          return ParseOutcome.failure(errors.get(0));
+	        } else {
+	          return ParseOutcome.success(new Program(parser.getGlobals(), parser.getStatement())); 
+	        }
+	    } catch(RecognitionException e) {
+	      return ParseOutcome.failure(e.getMessage());
+	    }
 	}
 
 	@Override
 	public ParseOutcome loadProgramFromStream(InputStream stream)
 			throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		String string = "";
+		while (stream.available() != 0)
+			string += stream.read();
+		stream.close();
+		return parseProgram(string);
+		
 	}
 
 	@Override
 	public ParseOutcome loadProgramFromUrl(URL url) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		InputStream input = url.openStream();
+		return loadProgramFromStream(input);
 	}
 
 	@Override
@@ -327,9 +353,11 @@ public class Facade implements IFacade {
 
 	@Override
 	public void setShipProgram(Object ship, Object program) {
-		// TODO Auto-generated method stub
+		if (!(ship instanceof Ship) || !(program instanceof Program))
+			throw new IllegalArgumentException();
+		((Program)program).setShip((Ship)ship);
+		((Ship)ship).setProgram((Program)program);
 		
-	}
-	
+	}	
 
 }

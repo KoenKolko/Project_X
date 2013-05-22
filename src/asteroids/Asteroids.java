@@ -153,7 +153,8 @@ public class Asteroids<World, Ship, Asteroid, Bullet, Program> extends JFrame {
   public static void main(final String[] args) {
     boolean tryFullscreen = true;
     boolean enableSound = true;
-    URL aiProgramUrl = Asteroids.class.getClassLoader().getResource("asteroids/resources/program.txt"); 
+    URL aiProgramUrl = Asteroids.class.getClassLoader().getResource("asteroids/resources/program.txt");
+    System.out.println(aiProgramUrl.getPath());
     for(int i = 0; i < args.length; i++) {
       String arg = args[i];
       if(arg.equals("-window")) {
@@ -193,7 +194,7 @@ public class Asteroids<World, Ship, Asteroid, Bullet, Program> extends JFrame {
       return;
     }
     // <begin>
-    IFacade<asteroids.model.World, asteroids.model.Ship, asteroids.model.Asteroid, asteroids.model.Bullet, asteroids.model.programs.Program> facade = new asteroids.model.Facade();
+    IFacade<asteroids.model.World, asteroids.model.Ship, asteroids.model.Asteroid, asteroids.model.Bullet, asteroids.model.programs.Code> facade = new asteroids.model.Facade();
     // <end>
     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice screen = env.getDefaultScreenDevice();

@@ -7,5 +7,7 @@ public abstract class BasicExpression extends Expression {
 		super(line, column);
 		
 	}
+	
+	public abstract String toString();
 
 }
