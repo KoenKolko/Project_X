@@ -1,37 +1,35 @@
 package asteroids.model.programs;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import asteroids.model.Ship;
 import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.statement.Statement;
-import asteroids.model.programs.statement.basicStatement.Assignment;
 import asteroids.model.programs.statement.basicStatement.Sequence;
 
 public class Program {
-	
+
 	private Map<String, Expression> values 	= new HashMap<String, Expression>();
 	private Ship ship;
-	ArrayList<Statement> statements 		= new ArrayList<Statement>();
-	private int statementIndex 				= 0;
-	
+	private Sequence initialSequence 		= null;
+	private Sequence sequence	 			= null;
+
 	public Program (Map<String, Type> globals, Statement statement) {
 		if (!(statement instanceof Sequence))
 			throw new IllegalArgumentException();
-		for (Statement s : ((Sequence)statement).getStatements())
-			getStatements().add(s);
-		
+		System.out.println(((Sequence)statement).getStatements().size());
+		setSequence((Sequence)statement);
+		setInitialSequence(getSequence());
 	}
-	
+
 	public void executeNextCommand() {
-		Statement newStatement = getStatements().get(getStatementIndex());
-		if (newStatement instanceof Assignment)
-			getValues().put( ((Assignment)newStatement).getString(), ((Assignment)newStatement).getExpression());
-		
-		else newStatement.execute(getShip());
-		incrStatementIndex();
+		if (getSequence().getStatements().size() == 0)
+			setSequence(getInitialSequence());
+		getSequence().getStatements().get(0).execute(getShip());
+		if (!(getSequence().getStatements().get(1) instanceof Sequence))
+			throw new IllegalArgumentException();
+		setSequence((Sequence)getSequence().getStatements().get(1));
 	}
 
 	public Map<String, Expression> getValues() {
@@ -50,24 +48,20 @@ public class Program {
 		this.ship = ship;
 	}
 
-	public ArrayList<Statement> getStatements() {
-		return statements;
+	public Sequence getSequence() {
+		return sequence;
 	}
 
-	public void setStatements(ArrayList<Statement> statements) {
-		this.statements = statements;
+	public void setSequence(Sequence sequence) {
+		this.sequence = sequence;
 	}
 
-	public int getStatementIndex() {
-		return statementIndex;
+	public Sequence getInitialSequence() {
+		return initialSequence;
 	}
 
-	public void setStatementIndex(int statementIndex) {
-		this.statementIndex = statementIndex;
-	}
-	
-	public void incrStatementIndex() {
-		this.statementIndex++;
+	public void setInitialSequence(Sequence initialSequence) {
+		this.initialSequence = initialSequence;
 	}
 
 }

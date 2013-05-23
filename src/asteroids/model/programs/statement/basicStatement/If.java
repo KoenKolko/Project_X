@@ -36,6 +36,11 @@ public class If extends BasicStatement {
 	}
 
 	public void setCondition(Expression condition) {
+		// sysout
+		if (condition == null)
+			System.out.println("null");
+		else System.out.println("fml");
+		
 		if (condition == null || !(condition instanceof BooleanLiteral))
 			throw new IllegalArgumentException();
 		this.condition = condition;

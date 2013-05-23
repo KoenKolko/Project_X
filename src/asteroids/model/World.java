@@ -15,6 +15,7 @@ public class World {
 	private static double MIN_SIZE = 0;
 	private static double MAX_SIZE = Double.MAX_VALUE;
 	private static double TIME_FOR_COMMANDS = 0.2;
+	private double programTime = 0;
 	private Vector dimensions;
 	private ArrayList<SpaceObject> allObjects = new ArrayList<SpaceObject>();
 
@@ -82,7 +83,7 @@ public class World {
 			throw new IllegalArgumentException();
 		boolean valid = true;
 		object.setWorld(this); 
-		
+
 		for (SpaceObject p : getObjects())
 		{
 			if (object instanceof Bullet) 
@@ -94,7 +95,7 @@ public class World {
 					valid = false;
 				}
 			}
-			
+
 			else
 			{
 				if (object.overlap(p))
@@ -119,22 +120,21 @@ public class World {
 	public void moveAllObjects (double time) {
 		for(SpaceObject object : getSpaceObjects()) object.move(time);
 	}
-	
-	public void executeAllPrograms (double time) {
-		int timesToExecute = (int) (time/TIME_FOR_COMMANDS);
+
+	public void executeAllPrograms () {
 		for(Ship ship : getShips()) 
 			if (ship.getProgram() != null)
-				for (int i = 0; i < timesToExecute; i++)
-					ship.getProgram().executeNextCommand();
+				ship.getProgram().executeNextCommand();
 	}
 
 
 	// Defensively
 	public void evolve(double dt, CollisionListener collisionListener) {
 
+
 		if (!isValidEvolveTime(dt))
 			throw new IllegalArgumentException();
-		
+
 		Comparator<Collision> comparator = new CollisionComparitor();
 		PriorityQueue<Collision> pq = new PriorityQueue<Collision>(2, comparator);
 		for(SpaceObject p : getSpaceObjects())
@@ -176,13 +176,14 @@ public class World {
 			}
 			nextCollision = pqLocal.poll();
 			nextCollisionTime = nextCollision.getTime();
-			
-			executeAllPrograms(nextCollisionTime);
+
+			checkProgramTime(nextCollisionTime);
+
 		}
 
 
 		moveAllObjects(dt);
-		executeAllPrograms(dt);
+		checkProgramTime(dt);
 	}
 
 
@@ -371,11 +372,27 @@ public class World {
 
 		return currentPos;
 	}
-	
+
 	public boolean isValidEvolveTime (double time) {
 		if (Double.isNaN(time) || time == Double.POSITIVE_INFINITY || Double.compare(time, 0) < 0)
 			return false;
 		return true;
+	}
+
+	private void checkProgramTime(double time) {
+		double newTime = getProgramTime() + time;
+		int xTimeExecute = (int) (newTime / TIME_FOR_COMMANDS);
+		for (int i = 0; i < xTimeExecute; i++)
+			executeAllPrograms();
+		setProgramTime(newTime % TIME_FOR_COMMANDS);
+	}
+
+	public double getProgramTime() {
+		return programTime;
+	}
+
+	public void setProgramTime(double programTime) {
+		this.programTime = programTime;
 	}
 
 

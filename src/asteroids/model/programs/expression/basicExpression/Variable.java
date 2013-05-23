@@ -1,23 +1,35 @@
 package asteroids.model.programs.expression.basicExpression;
 
 import asteroids.model.programs.expression.BasicExpression;
+import asteroids.model.programs.expression.Expression;
 
 public class Variable extends BasicExpression{
 
-	private String value;
+	private String string;
+	private Expression value = null;
+	
 	public Variable(int line, int column, String string) {
 		super(line, column);
-		setValue(string);
+		setString(string);
 	}
 	
 	public String toString() {
-		return getValue();
+		return getString();
 	}
 	
-	public String getValue() {
-		return value;
+	public Expression getValue() {
+		return this.value;
 	}
-	public void setValue(String value) {
+
+	public String getString() {
+		return string;
+	}
+
+	public void setString(String string) {
+		this.string = string;
+	}
+
+	public void setValue(Expression value) {
 		this.value = value;
 	}
 	

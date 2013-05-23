@@ -320,17 +320,23 @@ public class Facade implements IFacade {
 	    } catch(RecognitionException e) {
 	      return ParseOutcome.failure(e.getMessage());
 	    }
+		
 	}
 
 	@Override
 	public ParseOutcome loadProgramFromStream(InputStream stream)
 			throws IOException {
 		String string = "";
-		while (stream.available() != 0)
-			string += stream.read();
+		int charNumber = 0;
+		while (charNumber != -1)
+		{
+			charNumber = stream.read();
+			string += Character.toString((char) charNumber);
+		}
 		stream.close();
+		System.out.println(string);
 		return parseProgram(string);
-		
+	
 	}
 
 	@Override
@@ -359,5 +365,6 @@ public class Facade implements IFacade {
 		((Ship)ship).setProgram((Program)program);
 		
 	}	
+	
 
 }

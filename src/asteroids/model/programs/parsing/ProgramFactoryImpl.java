@@ -2,12 +2,16 @@ package asteroids.model.programs.parsing;
 
 import java.util.List;
 
+import com.sun.org.apache.xpath.internal.operations.Variable;
+
 import asteroids.model.programs.Type;
 import asteroids.model.programs.expression.*;
 import asteroids.model.programs.expression.basicExpression.*;
 import asteroids.model.programs.expression.booleanExpression.*;
 import asteroids.model.programs.expression.doubleExpression.*;
 import asteroids.model.programs.statement.Statement;
+import asteroids.model.programs.statement.actionStatement.*;
+import asteroids.model.programs.statement.basicStatement.*;
 
 public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement, Type> {
 
@@ -38,14 +42,12 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Expression createNull(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		return new EntityLiteral(line, column, null);
 	}
 
 	@Override
 	public Expression createSelf(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		return new EntityLiteral(line, column, null);
 	}
 
 	@Override
@@ -75,8 +77,7 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Expression createVariable(int line, int column, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return new asteroids.model.programs.expression.basicExpression.Variable(line, column, name);
 	}
 
 	@Override
@@ -160,68 +161,58 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Statement createEnableThruster(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		return new EnableThruster(line, column);
 	}
 
 	@Override
 	public Statement createDisableThruster(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DisableThruster(line, column);
 	}
 
 	@Override
 	public Statement createFire(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Fire(line, column);
 	}
 
 	@Override
 	public Statement createTurn(int line, int column, Expression angle) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Turn(line, column, angle);
 	}
 
 	@Override
 	public Statement createAssignment(int line, int column, String variable, Expression rhs) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Assignment(line, column, variable, rhs);
 	}
 
 	@Override
 	public Statement createIf(int line, int column, Expression condition, Statement then, Statement otherwise) {
-		// TODO Auto-generated method stub
-		return null;
+		return new If(line, column, condition, then, otherwise);
 	}
 
 	@Override
 	public Statement createWhile(int line, int column, Expression condition, Statement body) {
-		// TODO Auto-generated method stub
-		return null;
+		return new While(line, column, condition, body);
 	}
 
 	@Override
 	public Statement createForeach(int line, int column, ForeachType type, String variableName, Statement body) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("foreach");
+		return new Foreach(line, column, type, variableName, body);
 	}
 
 	@Override
 	public Statement createSkip(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Skip(line, column);
 	}
 
 	@Override
 	public Statement createSequence(int line, int column, List<Statement> statements) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Sequence(line, column, statements);
 	}
 
 	@Override
 	public Statement createPrint(int line, int column, Expression e) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Print(line, column, e);
 	}
 
 	@Override
