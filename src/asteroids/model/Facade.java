@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -24,6 +26,8 @@ import asteroids.model.programs.statement.Statement;
 
 @SuppressWarnings("rawtypes")
 public class Facade implements IFacade {
+	
+	private enum type { DOUBLE, BOOLEAN, ENTITY, NULL} 
 
 	@Override
 	public Object createWorld(double width, double height) {
@@ -353,7 +357,8 @@ public class Facade implements IFacade {
 
 	@Override
 	public TypeCheckOutcome typeCheckProgram(Object program) {
-		// TODO Auto-generated method stub
+		
+		Map<String, type> values = new HashMap<String, type>();
 		return null;
 	}
 

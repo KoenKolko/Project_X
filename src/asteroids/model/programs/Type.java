@@ -1,5 +1,10 @@
 package asteroids.model.programs;
 
-public class Type {
+import asteroids.model.programs.expression.Expression;
+
+public abstract class Type {
+	
+	public abstract boolean checkType (Expression e);
+	
 
 }

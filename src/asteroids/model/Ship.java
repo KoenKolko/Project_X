@@ -23,6 +23,7 @@ public class Ship extends SpaceObject {
 	private static int MAX_BULLETS_IN_WORLD = 3;
 	private int bulletsInWorldCounter = 0;
 	private Program program = null;
+	private Program oldProgram = null;
 	
 	/**
 	 * Creates a new ship with the given parameters.
@@ -218,8 +219,19 @@ public class Ship extends SpaceObject {
 
 
 	public void setProgram(Program program) {
+		setOldProgram(getProgram());
 		this.program = program;
 		Program.setShip(this);
+	}
+
+
+	public Program getOldProgram() {
+		return oldProgram;
+	}
+
+
+	public void setOldProgram(Program oldProgram) {
+		this.oldProgram = oldProgram;
 	}
 }
 

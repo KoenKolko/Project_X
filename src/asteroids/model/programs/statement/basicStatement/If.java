@@ -1,5 +1,6 @@
 package asteroids.model.programs.statement.basicStatement;
 
+import asteroids.model.programs.Program;
 import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.statement.BasicStatement;
 import asteroids.model.programs.statement.Statement;
@@ -8,6 +9,8 @@ public class If extends BasicStatement {
 	
 	private Expression condition;
 	private Statement then, otherwise;
+	private Boolean thenValue, otherwiseValue;
+	
 
 	public If(int line, int column, Expression condition, Statement then, Statement otherwise) {
 		super(line, column);
@@ -22,7 +25,9 @@ public class If extends BasicStatement {
 
 	@Override
 	public void execute() {
-		if ( checkBoolean(getCondition()) )
+		if (!Program.getPaused())
+			setThenValue(checkBoolean(getCondition()) );
+		if (getThenValue())
 			getThen().execute();
 		else if (getOtherwise() != null)
 			getOtherwise().execute();
@@ -53,6 +58,22 @@ public class If extends BasicStatement {
 
 	public void setOtherwise(Statement otherwise) {
 		this.otherwise = otherwise;
+	}
+
+	public Boolean getThenValue() {
+		return thenValue;
+	}
+
+	public void setThenValue(Boolean thenValue) {
+		this.thenValue = thenValue;
+	}
+
+	public Boolean getOtherwiseValue() {
+		return otherwiseValue;
+	}
+
+	public void setOtherwiseValue(Boolean otherwiseValue) {
+		this.otherwiseValue = otherwiseValue;
 	}
 
 

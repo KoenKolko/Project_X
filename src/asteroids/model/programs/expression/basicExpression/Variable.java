@@ -14,7 +14,7 @@ public class Variable extends BasicExpression{
 	}
 	
 	public String toString() {
-		return getString();
+		return getValue().toString();
 	}
 	
 	public Expression getValue() {

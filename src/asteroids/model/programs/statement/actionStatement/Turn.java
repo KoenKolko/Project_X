@@ -24,6 +24,8 @@ public class Turn extends ActionStatement {
 		double angle;
 		if (e instanceof DoubleLiteral)
 			angle = ((DoubleLiteral) e).getValue();
+		else if (e instanceof DoubleExpression)
+			angle = ((DoubleExpression) e).getValue();
 		else if (e instanceof Variable)
 		{
 			Expression expression = ((Variable) e).getValue();

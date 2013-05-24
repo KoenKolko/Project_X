@@ -37,6 +37,7 @@ public class Foreach extends BasicStatement {
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), s));
 				getBody().execute();
 			}
+			break;
 				
 		case ASTEROID:
 			for (Asteroid a : world.getAsteroids())
@@ -44,18 +45,21 @@ public class Foreach extends BasicStatement {
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), a));
 				getBody().execute();
 			}
+			break;
 		case BULLET:
 			for (Bullet b : world.getBullets())
 			{
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), b));
 				getBody().execute();
 			}
+			break;
 		case ANY:
 			for (SpaceObject s : world.getSpaceObjects())
 			{
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), s));
 				getBody().execute();
 			}
+			break;
 		}
 
 	}
