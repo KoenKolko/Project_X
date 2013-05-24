@@ -24,5 +24,5 @@ public abstract class BooleanExpression extends ComposedExpression{
 	}
 	
 	public abstract Boolean getValue();
-
+	
 }

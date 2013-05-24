@@ -1,7 +1,6 @@
 package asteroids.model.programs.expression.doubleExpression;
 
 import asteroids.model.programs.expression.DoubleExpression;
-import asteroids.model.programs.expression.basicExpression.*;
 import asteroids.model.programs.expression.Expression;
 
 public class Subtraction extends DoubleExpression {
@@ -11,11 +10,7 @@ public class Subtraction extends DoubleExpression {
 	}
 	
 	public double getValue() {
-		if (!(getE1() instanceof DoubleLiteral) || !(getE2() instanceof DoubleLiteral))
-			throw new IllegalArgumentException();
-		DoubleLiteral e1 = (DoubleLiteral)getE1();
-		DoubleLiteral e2 = (DoubleLiteral)getE2();
-		return e1.getValue() - e2.getValue();
+		return checkDouble(getE1()) - checkDouble(getE2());
 	}
 
 }

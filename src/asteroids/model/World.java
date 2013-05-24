@@ -155,6 +155,7 @@ public class World {
 
 
 			moveAllObjects(nextCollisionTime);
+			checkProgramTime(nextCollisionTime);
 
 			nextCollision.resolve();
 			//collisionListener.objectCollision(entity1, entity2, x, y);
@@ -177,7 +178,7 @@ public class World {
 			nextCollision = pqLocal.poll();
 			nextCollisionTime = nextCollision.getTime();
 
-			checkProgramTime(nextCollisionTime);
+			
 
 		}
 

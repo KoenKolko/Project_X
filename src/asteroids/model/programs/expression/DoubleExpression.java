@@ -1,7 +1,6 @@
 package asteroids.model.programs.expression;
 
 import asteroids.model.programs.expression.basicExpression.DoubleLiteral;
-
 public abstract class DoubleExpression extends ComposedExpression {
 	
 	public DoubleExpression(int line, int column, Expression e1, Expression e2) {
@@ -10,6 +9,10 @@ public abstract class DoubleExpression extends ComposedExpression {
 
 	public DoubleExpression(int line, int column, Expression e1) {
 		super(line, column, e1);
+	}
+	
+	public DoubleExpression(int line, int column) {
+		super(line, column, null);
 	}
 	
 	public Expression getLiteral() {
@@ -21,5 +24,6 @@ public abstract class DoubleExpression extends ComposedExpression {
 	}
 	
 	public abstract double getValue();
+	
 
 }

@@ -2,10 +2,8 @@ package asteroids.model.programs.parsing;
 
 import java.util.List;
 
-import com.sun.org.apache.xpath.internal.operations.Variable;
-
 import asteroids.model.programs.Type;
-import asteroids.model.programs.expression.*;
+import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.expression.basicExpression.*;
 import asteroids.model.programs.expression.booleanExpression.*;
 import asteroids.model.programs.expression.doubleExpression.*;
@@ -42,12 +40,12 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Expression createNull(int line, int column) {
-		return new EntityLiteral(line, column, null);
+		return new Null(line, column);
 	}
 
 	@Override
 	public Expression createSelf(int line, int column) {
-		return new EntityLiteral(line, column, null);
+		return new Self(line, column);
 	}
 
 	@Override
@@ -127,15 +125,11 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Expression createDivision(int line, int column, Expression e1, Expression e2) {
-		if (!(e1 instanceof Expression) || !(e2 instanceof Expression))
-			throw new IllegalArgumentException();
 		return new Division(line, column, ((Expression)e1), ((Expression)e2));
 	}
 
 	@Override
 	public Expression createSqrt(int line, int column, Expression e) {
-		if (!(e instanceof Expression))
-			throw new IllegalArgumentException();
 		return new Sqrt(line, column, ((Expression)e));
 	}
 
@@ -147,15 +141,11 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Expression createSin(int line, int column, Expression e) {
-		if (!(e instanceof Expression))
-			throw new IllegalArgumentException();
 		return new Sin(line, column, ((Expression)e));
 	}
 
 	@Override
 	public Expression createCos(int line, int column, Expression e) {
-		if (!(e instanceof Expression))
-			throw new IllegalArgumentException();
 		return new Cos(line, column, ((Expression)e));
 	}
 
@@ -196,7 +186,6 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Statement createForeach(int line, int column, ForeachType type, String variableName, Statement body) {
-		System.out.println("foreach");
 		return new Foreach(line, column, type, variableName, body);
 	}
 

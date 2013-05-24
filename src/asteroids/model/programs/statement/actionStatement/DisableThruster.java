@@ -1,7 +1,6 @@
 package asteroids.model.programs.statement.actionStatement;
 
-
-import asteroids.model.Ship;
+import asteroids.model.programs.Program;
 import asteroids.model.programs.statement.ActionStatement;
 
 public class DisableThruster extends ActionStatement {
@@ -12,10 +11,10 @@ public class DisableThruster extends ActionStatement {
 	}
 
 	@Override
-	public void execute(Ship ship) {
-		if (ship == null)
+	public void execute() {
+		if (Program.ship == null)
 			throw new RuntimeException();
-		ship.setThruster(false);
+		Program.ship.setThruster(false);
 		
 	}
 

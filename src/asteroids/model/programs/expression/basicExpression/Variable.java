@@ -1,12 +1,12 @@
 package asteroids.model.programs.expression.basicExpression;
 
+import asteroids.model.programs.Program;
 import asteroids.model.programs.expression.BasicExpression;
 import asteroids.model.programs.expression.Expression;
 
 public class Variable extends BasicExpression{
 
 	private String string;
-	private Expression value = null;
 	
 	public Variable(int line, int column, String string) {
 		super(line, column);
@@ -18,7 +18,8 @@ public class Variable extends BasicExpression{
 	}
 	
 	public Expression getValue() {
-		return this.value;
+		Program program = Program.ship.getProgram();
+		return program.getValues().get(getString());
 	}
 
 	public String getString() {
@@ -27,10 +28,6 @@ public class Variable extends BasicExpression{
 
 	public void setString(String string) {
 		this.string = string;
-	}
-
-	public void setValue(Expression value) {
-		this.value = value;
 	}
 	
 

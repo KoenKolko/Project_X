@@ -2,7 +2,6 @@ package asteroids.model.programs.expression.doubleExpression;
 
 import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.expression.DoubleExpression;
-import asteroids.model.programs.expression.basicExpression.DoubleLiteral;
 
 public class Sqrt extends DoubleExpression {
 
@@ -11,10 +10,7 @@ public class Sqrt extends DoubleExpression {
 	}
 	
 	public double getValue() {
-		if (!(getE1() instanceof DoubleLiteral))
-			throw new IllegalArgumentException();
-		DoubleLiteral e = (DoubleLiteral)getE1();
-		return Math.sqrt(e.getValue());
+		return Math.sqrt(checkDouble(getE1()));
 	}
 
 }

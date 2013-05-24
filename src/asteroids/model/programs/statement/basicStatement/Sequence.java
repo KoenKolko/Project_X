@@ -2,7 +2,6 @@ package asteroids.model.programs.statement.basicStatement;
 
 import java.util.List;
 
-import asteroids.model.Ship;
 import asteroids.model.programs.statement.BasicStatement;
 import asteroids.model.programs.statement.Statement;
 
@@ -17,9 +16,9 @@ public class Sequence extends BasicStatement {
 	}
 
 	@Override
-	public void execute(Ship ship) {
+	public void execute() {
 		for (Statement s : getStatements())
-			s.execute(ship);
+			s.execute();
 	}
 
 	public List<Statement> getStatements() {

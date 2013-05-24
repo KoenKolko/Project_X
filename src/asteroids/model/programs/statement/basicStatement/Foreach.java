@@ -1,6 +1,5 @@
 package asteroids.model.programs.statement.basicStatement;
 
-import javax.swing.text.html.parser.Entity;
 
 import asteroids.model.Asteroid;
 import asteroids.model.Bullet;
@@ -27,35 +26,35 @@ public class Foreach extends BasicStatement {
 	}
 
 	@Override
-	public void execute(Ship ship) {
-		World world = ship.getWorld();
-		Program program = ship.getProgram();
+	public void execute() {
+		World world = Program.ship.getWorld();
+		Program program = Program.ship.getProgram();
 		switch (getType())
 		{
 		case SHIP:
 			for (Ship s : world.getShips())
 			{
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), s));
-				getBody().execute(ship);
+				getBody().execute();
 			}
 				
 		case ASTEROID:
 			for (Asteroid a : world.getAsteroids())
 			{
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), a));
-				getBody().execute(ship);
+				getBody().execute();
 			}
 		case BULLET:
 			for (Bullet b : world.getBullets())
 			{
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), b));
-				getBody().execute(ship);
+				getBody().execute();
 			}
 		case ANY:
 			for (SpaceObject s : world.getSpaceObjects())
 			{
 				program.getValues().put(getVariableName(), new EntityLiteral(getLine(), getColumn(), s));
-				getBody().execute(ship);
+				getBody().execute();
 			}
 		}
 

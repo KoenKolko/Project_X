@@ -1,11 +1,16 @@
 package asteroids.model.programs.expression;
 
+import asteroids.model.programs.expression.basicExpression.BooleanLiteral;
+import asteroids.model.programs.expression.basicExpression.DoubleLiteral;
+import asteroids.model.programs.expression.basicExpression.Variable;
+
+
 public abstract class ComposedExpression extends Expression {
 	
 	protected Expression e1, e2;
 	
 	public ComposedExpression(int line, int column, Expression e1, Expression e2) {
-		super(line, column);
+		super(line, column);		
 		setE1(e1);
 		setE2(e2);
 		
@@ -33,5 +38,6 @@ public abstract class ComposedExpression extends Expression {
 	public void setE2(Expression e2) {
 		this.e2 = e2;
 	}
+	
 
 }

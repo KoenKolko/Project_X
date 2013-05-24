@@ -1,6 +1,5 @@
 package asteroids.model.programs.statement;
 
-import asteroids.model.Ship;
 
 public abstract class BasicStatement extends Statement {
 
@@ -8,6 +7,6 @@ public abstract class BasicStatement extends Statement {
 		super(line, column);
 	}
 	
-	public abstract void execute(Ship ship);
+	public abstract void execute();
 
 }

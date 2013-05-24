@@ -1,6 +1,5 @@
 package asteroids.model.programs.statement.basicStatement;
 
-import asteroids.model.Ship;
 import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.statement.BasicStatement;
 
@@ -14,11 +13,9 @@ public class Print extends BasicStatement {
 	}
 
 	@Override
-	public void execute(Ship ship) {
+	public void execute() {
 		System.out.println(getExpression().toString());
 	}
-	
-	public void execute() { this.execute(null); }
 
 	public Expression getExpression() {
 		return expression;

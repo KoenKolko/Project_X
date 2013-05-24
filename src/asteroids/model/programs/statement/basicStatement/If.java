@@ -1,8 +1,6 @@
 package asteroids.model.programs.statement.basicStatement;
 
-import asteroids.model.Ship;
 import asteroids.model.programs.expression.Expression;
-import asteroids.model.programs.expression.basicExpression.BooleanLiteral;
 import asteroids.model.programs.statement.BasicStatement;
 import asteroids.model.programs.statement.Statement;
 
@@ -23,11 +21,11 @@ public class If extends BasicStatement {
 	}
 
 	@Override
-	public void execute(Ship ship) {
-		if ( ( (BooleanLiteral) getCondition()).getValue() )
-			getThen().execute(ship);
+	public void execute() {
+		if ( checkBoolean(getCondition()) )
+			getThen().execute();
 		else if (getOtherwise() != null)
-			getOtherwise().execute(ship);
+			getOtherwise().execute();
 	}
 	
 
@@ -36,13 +34,6 @@ public class If extends BasicStatement {
 	}
 
 	public void setCondition(Expression condition) {
-		// sysout
-		if (condition == null)
-			System.out.println("null");
-		else System.out.println("fml");
-		
-		if (condition == null || !(condition instanceof BooleanLiteral))
-			throw new IllegalArgumentException();
 		this.condition = condition;
 	}
 

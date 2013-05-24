@@ -219,6 +219,7 @@ public class Ship extends SpaceObject {
 
 	public void setProgram(Program program) {
 		this.program = program;
+		Program.setShip(this);
 	}
 }
 

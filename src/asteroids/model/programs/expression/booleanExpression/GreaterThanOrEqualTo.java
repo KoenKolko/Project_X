@@ -2,7 +2,6 @@ package asteroids.model.programs.expression.booleanExpression;
 
 import asteroids.model.programs.expression.BooleanExpression;
 import asteroids.model.programs.expression.Expression;
-import asteroids.model.programs.expression.basicExpression.DoubleLiteral;
 
 public class GreaterThanOrEqualTo extends BooleanExpression {
 
@@ -11,11 +10,7 @@ public class GreaterThanOrEqualTo extends BooleanExpression {
 	}
 	
 	public Boolean getValue() {
-		if (!(getE1() instanceof DoubleLiteral) || !(getE2() instanceof DoubleLiteral))
-			throw new IllegalArgumentException();
-		DoubleLiteral e1 = (DoubleLiteral)getE1();
-		DoubleLiteral e2 = (DoubleLiteral)getE2();
-		return e1.getValue() >= e2.getValue();
+		return checkDouble(getE1()) >= checkDouble(getE2());
 	}
 
 }

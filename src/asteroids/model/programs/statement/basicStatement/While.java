@@ -1,8 +1,6 @@
 package asteroids.model.programs.statement.basicStatement;
 
-import asteroids.model.Ship;
 import asteroids.model.programs.expression.Expression;
-import asteroids.model.programs.expression.basicExpression.BooleanLiteral;
 import asteroids.model.programs.statement.BasicStatement;
 import asteroids.model.programs.statement.Statement;
 
@@ -18,9 +16,9 @@ public class While extends BasicStatement {
 	}
 
 	@Override
-	public void execute(Ship ship) {
-		while (( (BooleanLiteral) getCondition()).getValue())
-			getBody().execute(ship);
+	public void execute() {
+		while (checkBoolean(getCondition()))
+			getBody().execute();
 		
 	}
 
@@ -29,8 +27,6 @@ public class While extends BasicStatement {
 	}
 
 	public void setCondition(Expression condition) {
-		if (condition == null || !(condition instanceof BooleanLiteral))
-			throw new IllegalArgumentException();
 		this.condition = condition;
 	}
 
