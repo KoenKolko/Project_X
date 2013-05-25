@@ -17,17 +17,21 @@ import asteroids.CollisionListener;
 import asteroids.IFacade;
 import asteroids.ModelException;
 import asteroids.Vector;
+import asteroids.model.programs.BooleanType;
+import asteroids.model.programs.DoubleType;
 import asteroids.model.programs.Program;
 import asteroids.model.programs.Type;
 import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.parsing.ProgramFactoryImpl;
 import asteroids.model.programs.parsing.ProgramParser;
+import asteroids.model.programs.statement.ActionStatement;
 import asteroids.model.programs.statement.Statement;
+import asteroids.model.programs.statement.actionStatement.Turn;
+import asteroids.model.programs.statement.basicStatement.*;
 
 @SuppressWarnings("rawtypes")
 public class Facade implements IFacade {
-	
-	private enum type { DOUBLE, BOOLEAN, ENTITY, NULL} 
+
 
 	@Override
 	public Object createWorld(double width, double height) {
@@ -54,7 +58,7 @@ public class Facade implements IFacade {
 	public Set getAsteroids(Object world) {
 		return ((World) world).getAsteroids();
 	}
-	
+
 	@Override
 	public Set getBullets(Object world) {
 		return ((World) world).getBullets();
@@ -84,7 +88,7 @@ public class Facade implements IFacade {
 	public void evolve(Object world, double dt,
 			CollisionListener collisionListener) {
 		((World) world).evolve(dt, collisionListener);
-		
+
 	}
 
 	@Override
@@ -312,19 +316,19 @@ public class Facade implements IFacade {
 	@Override
 	public ParseOutcome parseProgram(String text) {
 		ProgramFactoryImpl factory = new ProgramFactoryImpl();
-	    ProgramParser<Expression, Statement, Type> parser = new ProgramParser<>(factory);
-	    try {
-	        parser.parse(text);
-	        List<String> errors = parser.getErrors();
-	        if(! errors.isEmpty()) {
-	          return ParseOutcome.failure(errors.get(0));
-	        } else {
-	          return ParseOutcome.success(new Program(parser.getGlobals(), parser.getStatement())); 
-	        }
-	    } catch(RecognitionException e) {
-	      return ParseOutcome.failure(e.getMessage());
-	    }
-		
+		ProgramParser<Expression, Statement, Type> parser = new ProgramParser<>(factory);
+		try {
+			parser.parse(text);
+			List<String> errors = parser.getErrors();
+			if(! errors.isEmpty()) {
+				return ParseOutcome.failure(errors.get(0));
+			} else {
+				return ParseOutcome.success(new Program(parser.getGlobals(), parser.getStatement())); 
+			}
+		} catch(RecognitionException e) {
+			return ParseOutcome.failure(e.getMessage());
+		}
+
 	}
 
 	@Override
@@ -340,7 +344,7 @@ public class Facade implements IFacade {
 		stream.close();
 		System.out.println(string);
 		return parseProgram(string);
-	
+
 	}
 
 	@Override
@@ -351,15 +355,85 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isTypeCheckingSupported() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public TypeCheckOutcome typeCheckProgram(Object program) {
+		Program.setTypeCheckMode(true);
+		Sequence s = ((Program)program).getSequence();
+
+		while(s.getStatements().size() == 2)
+		{
+			if (!checkType(s.getStatements().get(0)))
+			{
+				Program.setTypeCheckMode(false);
+				return TypeCheckOutcome.failure("Invalid program!");
+			}
+			s = (Sequence)s.getStatements().get(1);
+		}
+		Program.setTypeCheckMode(false);
+		return TypeCheckOutcome.success();
+	}
+
+	private Boolean checkType(Statement s)	 {
+		if (s == null)
+			return true;
+
+		if (s instanceof Sequence)
+		{
+			for (Statement statement : ((Sequence)s).getStatements())
+				if (!checkType(statement))
+					return false;
+		}
+		else if (s instanceof Turn)
+			return DoubleType.checkTypeStatic(((Turn)s).getE());
+		else if (s instanceof If)
+			return BooleanType.checkTypeStatic(((If)s).getCondition()) && checkType(((If)s).getThen()) && checkType(((If)s).getOtherwise());
 		
-		Map<String, type> values = new HashMap<String, type>();
-		return null;
+		else if (s instanceof While) 
+			return BooleanType.checkTypeStatic(((While)s).getCondition()) && 
+					checkType(((While)s).getBody());
+		else if (s instanceof Foreach)
+			return checkType(((Foreach)s).getBody()) && actionStatementCheckForeach(((Foreach)s).getBody());
+		else if (s instanceof Assignment) 
+			return Program.getGlobals().get(((Assignment)s).getString()).checkType(((Assignment)s).getExpression());
+		
+		return true;
+	}
+
+	private Boolean actionStatementCheckForeach (Statement s) {
+		if (s == null)
+			return true;
+		if (!(s instanceof Sequence))
+			throw new IllegalArgumentException();
+
+		for (Statement statement : ((Sequence)s).getStatements())
+		{
+			if (ActionStatement.class.isAssignableFrom(statement.getClass()))
+				return false;
+			else if (statement instanceof While)
+			{
+				if (!actionStatementCheckForeach(((While)statement).getBody()))
+					return false;
+			}
+			else if (statement instanceof If)
+			{
+				if (!actionStatementCheckForeach(((If)statement).getThen()) || !actionStatementCheckForeach(((If)statement).getOtherwise()))
+						return false;
+			}
+			else if (statement instanceof Foreach)
+			{
+				if (!actionStatementCheckForeach(((Foreach)statement).getBody()))
+					return false;
+			}
+			else if (statement instanceof Sequence)
+			{
+				if (!actionStatementCheckForeach(statement))
+					return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -368,8 +442,8 @@ public class Facade implements IFacade {
 			throw new IllegalArgumentException();
 		((Program)program).setShip((Ship)ship);
 		((Ship)ship).setProgram((Program)program);
-		
+
 	}	
-	
+
 
 }

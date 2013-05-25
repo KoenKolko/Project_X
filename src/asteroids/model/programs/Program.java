@@ -13,14 +13,18 @@ import asteroids.model.programs.statement.basicStatement.Sequence;
 public class Program {
 
 	private Map<String, Expression> values 	= new HashMap<String, Expression>();
+	private static Map<String, Type> globals;
 	public static Ship ship;
 	private Sequence sequence	 			= null;
 	public static Boolean paused 			= false;
+	public static Boolean typeCheckMode		= false;
 
 	public Program (Map<String, Type> globals, Statement statement) {
 		if (!(statement instanceof Sequence))
 			throw new IllegalArgumentException();
 		setSequence((Sequence)statement);
+		setGlobals(globals);
+		Program.setPaused(false);
 	}
 
 	public void executeNextCommand() {
@@ -33,17 +37,6 @@ public class Program {
 			else {
 				List<Statement> statements = getSequence().getStatements();
 				statements.get(0).execute();
-				//				if (statements.get(0) instanceof DisableThruster)
-				//					done = true;
-				//				if (statements.get(0) instanceof EnableThruster)
-				//					done = true;
-				//				if (statements.get(0) instanceof Fire)
-				//					done = true;
-				//				if (statements.get(0) instanceof Turn)
-				//					done = true;
-				//				if (statements.get(0) instanceof Skip)
-				//					done = true;
-				
 				if (getPaused())
 					break;
 				if (!(statements.get(1) instanceof Sequence))
@@ -87,4 +80,21 @@ public class Program {
 		Program.paused = paused;
 	}
 
+	public static Map<String, Type> getGlobals() {
+		return globals;
+	}
+
+	public static void setGlobals(Map<String, Type> globals) {
+		Program.globals = globals;
+	}
+
+	public static Boolean getTypeCheckMode() {
+		return typeCheckMode;
+	}
+
+	public static void setTypeCheckMode(Boolean typeCheckMode) {
+		Program.typeCheckMode = typeCheckMode;
+	}
+
+	
 }

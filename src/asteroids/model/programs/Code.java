@@ -7,6 +7,8 @@ import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.expression.basicExpression.BooleanLiteral;
 import asteroids.model.programs.expression.basicExpression.DoubleLiteral;
 import asteroids.model.programs.expression.basicExpression.EntityLiteral;
+import asteroids.model.programs.expression.basicExpression.Null;
+import asteroids.model.programs.expression.basicExpression.Self;
 import asteroids.model.programs.expression.basicExpression.Variable;
 
 public abstract class Code {
@@ -79,12 +81,17 @@ public abstract class Code {
 		Boolean found = false;
 		while (!found){
 			found = true;
-			if (e instanceof EntityLiteral)
+			if (e instanceof EntityLiteral || e instanceof Null || e instanceof Self)
 				value = ((EntityLiteral)e).getValue();
 			else if (e instanceof Variable)
 			{
+				if (Program.getTypeCheckMode())
+					value = null;
+				else 
+				{
 				e = (((Variable)e).getValue());
 				found = false;
+				}
 			}
 			else throw new RuntimeException();
 

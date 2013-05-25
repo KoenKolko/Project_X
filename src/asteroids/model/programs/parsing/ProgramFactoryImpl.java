@@ -2,6 +2,9 @@ package asteroids.model.programs.parsing;
 
 import java.util.List;
 
+import asteroids.model.programs.BooleanType;
+import asteroids.model.programs.DoubleType;
+import asteroids.model.programs.EntityType;
 import asteroids.model.programs.Type;
 import asteroids.model.programs.expression.Expression;
 import asteroids.model.programs.expression.basicExpression.*;
@@ -206,20 +209,17 @@ public class ProgramFactoryImpl implements ProgramFactory<Expression, Statement,
 
 	@Override
 	public Type createDoubleType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DoubleType();
 	}
 
 	@Override
 	public Type createBooleanType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BooleanType();
 	}
 
 	@Override
 	public Type createEntityType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new EntityType();
 	}
 	
 

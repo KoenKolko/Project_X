@@ -13,7 +13,7 @@ public class Self extends EntityLiteral{
 
 	@Override
 	public String toString() {
-		return "Ship";
+		return "Self";
 	}
 	
 	public SpaceObject getValue() {

@@ -1,8 +1,5 @@
 package asteroids.model.programs.expression;
 
-import asteroids.model.programs.expression.basicExpression.BooleanLiteral;
-import asteroids.model.programs.expression.basicExpression.DoubleLiteral;
-import asteroids.model.programs.expression.basicExpression.Variable;
 
 
 public abstract class ComposedExpression extends Expression {

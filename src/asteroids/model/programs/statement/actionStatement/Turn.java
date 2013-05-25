@@ -13,7 +13,6 @@ public class Turn extends ActionStatement {
 
 	public Turn(int line, int column, Expression e) {
 		super(line, column);
-		System.out.println(e.getClass());
 		setE(e);
 	}
 
