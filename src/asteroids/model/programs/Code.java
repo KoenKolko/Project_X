@@ -36,6 +36,7 @@ public abstract class Code {
 		this.column = column;
 	}
 	
+	// Returns the double-value of an Expression
 	public double checkDouble(Expression e) {
 		double value = 0;
 		Boolean found = false;
@@ -56,6 +57,7 @@ public abstract class Code {
 		return value;
 	}
 	
+	// Returns the Boolean-value of an Expression
 	public Boolean checkBoolean(Expression e) {
 		Boolean value = false;
 		Boolean found = false;
@@ -76,6 +78,7 @@ public abstract class Code {
 		return value;
 	}
 	
+	// Returns the SpaceObject of an Expression.
 	public SpaceObject checkEntity(Expression e) {
 		SpaceObject value = null;
 		Boolean found = false;

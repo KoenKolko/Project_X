@@ -20,10 +20,10 @@ public class Ship extends SpaceObject {
 	private double angle;									// The angle of the ship (radian)
 	private boolean thruster;								// If thruster is on --> True, else --> False
 	private static double THRUSTER_FORCE = 1.1E18;			// The force/s of the thruster.
-	private static int MAX_BULLETS_IN_WORLD = 3;
-	private int bulletsInWorldCounter = 0;
-	private Program program = null;
-	private Program oldProgram = null;
+	private static int MAX_BULLETS_IN_WORLD = 3;			// Max amount of bullets of ship in a world.
+	private int bulletsInWorldCounter = 0;					// current amount of bullets in a world of this ship.
+	private Program program = null;							// The current Program of the ship.
+	private Program oldProgram = null;						// A backup of the previous Program in case of loss. 
 	
 	/**
 	 * Creates a new ship with the given parameters.

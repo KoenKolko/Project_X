@@ -12,12 +12,12 @@ import asteroids.model.programs.statement.basicStatement.Sequence;
 
 public class Program {
 
-	private Map<String, Expression> values 	= new HashMap<String, Expression>();
-	private static Map<String, Type> globals;
-	public static Ship ship;
-	private Sequence sequence	 			= null;
-	public static Boolean paused 			= false;
-	public static Boolean typeCheckMode		= false;
+	private Map<String, Expression> values 	= new HashMap<String, Expression>();	// A map with all the values.
+	private static Map<String, Type> globals;										// A map of all the globals. Used for typechecking.
+	public static Ship ship;														// Ship that uses the Program.
+	private Sequence sequence	 			= null;									// The sequence with the next intstructions of the Program.
+	public static Boolean paused 			= false;								// True, if program has been paused during a loop due to an occurence of an actionstatement.
+	public static Boolean typeCheckMode		= false;								// True, if Facade is typechecking the Program.
 
 	public Program (Map<String, Type> globals, Statement statement) {
 		if (!(statement instanceof Sequence))

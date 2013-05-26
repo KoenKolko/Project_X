@@ -7,7 +7,6 @@ public class Fire extends ActionStatement {
 
 	public Fire(int line, int column) {
 		super(line, column);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

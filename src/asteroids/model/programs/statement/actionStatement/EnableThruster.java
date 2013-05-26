@@ -7,7 +7,6 @@ public class EnableThruster extends ActionStatement{
 
 	public EnableThruster(int line, int column) {
 		super(line, column);
-		
 	}
 	
 	@Override

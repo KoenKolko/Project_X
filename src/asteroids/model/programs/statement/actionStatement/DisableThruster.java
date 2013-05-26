@@ -7,7 +7,6 @@ public class DisableThruster extends ActionStatement {
 
 	public DisableThruster(int line, int column) {
 		super(line, column);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

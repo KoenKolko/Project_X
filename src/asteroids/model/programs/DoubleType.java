@@ -11,7 +11,11 @@ public class DoubleType extends Type {
 		if (e == null)
 			return true;
 		if (e instanceof Variable)
+		{
+			if (!Program.getGlobals().containsKey(((Variable)e).getString()))
+				return false;
 			return Program.getGlobals().get(((Variable)e).getString()) instanceof DoubleType;
+		}
 		else if (e instanceof DoubleExpression)
 			return checkTypeStatic( ((DoubleExpression)e).getE1() ) && checkTypeStatic( ((DoubleExpression)e).getE2() );
 		else if (e instanceof DoubleLiteral)

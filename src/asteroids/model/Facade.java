@@ -1,13 +1,9 @@
 package asteroids.model;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -397,7 +393,11 @@ public class Facade implements IFacade {
 		else if (s instanceof Foreach)
 			return checkType(((Foreach)s).getBody()) && actionStatementCheckForeach(((Foreach)s).getBody());
 		else if (s instanceof Assignment) 
+		{
+			if (!Program.getGlobals().containsKey(((Assignment)s).getString()))
+				return false;
 			return Program.getGlobals().get(((Assignment)s).getString()).checkType(((Assignment)s).getExpression());
+		}
 		
 		return true;
 	}
@@ -406,7 +406,7 @@ public class Facade implements IFacade {
 		if (s == null)
 			return true;
 		if (!(s instanceof Sequence))
-			throw new IllegalArgumentException();
+			throw new ModelException("An error has occurred.");
 
 		for (Statement statement : ((Sequence)s).getStatements())
 		{
@@ -439,8 +439,7 @@ public class Facade implements IFacade {
 	@Override
 	public void setShipProgram(Object ship, Object program) {
 		if (!(ship instanceof Ship) || !(program instanceof Program))
-			throw new IllegalArgumentException();
-		((Program)program).setShip((Ship)ship);
+			throw new ModelException("An error has occurred.");
 		((Ship)ship).setProgram((Program)program);
 
 	}	

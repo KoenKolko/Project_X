@@ -14,20 +14,28 @@ public class BooleanType extends Type {
 		if (e == null)
 			return true;
 		if (e instanceof Variable)
+		{
+			if (!Program.getGlobals().containsKey(((Variable)e).getString()))
+				return false;
 			return Program.getGlobals().get(((Variable)e).getString()) instanceof BooleanType;
+		}
+
 		else if (e instanceof BooleanExpression)
 		{
 			Expression e1 = ((BooleanExpression)e).getE1();
 			Expression e2 = ((BooleanExpression)e).getE2();
 			if (e1 instanceof Variable && e2 instanceof Variable)
+			{
+				try{
 
-				if (Program.getGlobals().get(((Variable)e1).getString()) instanceof DoubleType) 
-					return DoubleType.checkTypeStatic(e1) && DoubleType.checkTypeStatic(e2);
-				else if (Program.getGlobals().get(((Variable)e1).getString()) instanceof EntityType)
-					return EntityType.checkTypeStatic(e1) && EntityType.checkTypeStatic(e2);
-				else return checkTypeStatic( e1 ) && checkTypeStatic( e2 );
-
-
+					if (Program.getGlobals().get(((Variable)e1).getString()) instanceof DoubleType) 
+						return DoubleType.checkTypeStatic(e1) && DoubleType.checkTypeStatic(e2);
+					else if (Program.getGlobals().get(((Variable)e1).getString()) instanceof EntityType)
+						return EntityType.checkTypeStatic(e1) && EntityType.checkTypeStatic(e2);
+					else return checkTypeStatic( e1 ) && checkTypeStatic( e2 );
+				}
+				catch (NullPointerException exception) {return false;}
+			}
 			else if ( (DoubleExpression.class.isAssignableFrom(e1.getClass()) || DoubleLiteral.class.isAssignableFrom(e1.getClass())) 
 					|| (DoubleExpression.class.isAssignableFrom(e2.getClass()) || DoubleLiteral.class.isAssignableFrom(e2.getClass())))
 				return DoubleType.checkTypeStatic(e1) && DoubleType.checkTypeStatic(e2);
@@ -38,8 +46,6 @@ public class BooleanType extends Type {
 		}
 		else if (e instanceof BooleanLiteral)
 			return true;
-
-
 		return false;
 	}
 

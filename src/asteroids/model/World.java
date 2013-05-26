@@ -121,13 +121,6 @@ public class World {
 		for(SpaceObject object : getSpaceObjects()) object.move(time);
 	}
 
-	public void executeAllPrograms () {
-		for(Ship ship : getShips()) 
-			if (ship.getProgram() != null)
-				ship.getProgram().executeNextCommand();
-	}
-
-
 	// Defensively
 	public void evolve(double dt, CollisionListener collisionListener) {
 
@@ -158,7 +151,6 @@ public class World {
 			checkProgramTime(nextCollisionTime);
 
 			nextCollision.resolve();
-			//collisionListener.objectCollision(entity1, entity2, x, y);
 
 
 			dt -= nextCollisionTime;
@@ -188,7 +180,35 @@ public class World {
 	}
 
 
-	// Optimized version of evolve: alpha
+	public boolean isValidEvolveTime (double time) {
+		if (Double.isNaN(time) || time == Double.POSITIVE_INFINITY || Double.compare(time, 0) < 0)
+			return false;
+		return true;
+	}
+
+	private void checkProgramTime(double time) {
+		double newTime = getProgramTime() + time;
+		int xTimeExecute = (int) (newTime / TIME_FOR_COMMANDS);
+		for (int i = 0; i < xTimeExecute; i++)
+			executeAllPrograms();
+		setProgramTime(newTime % TIME_FOR_COMMANDS);
+	}
+
+	public void executeAllPrograms () {
+		for(Ship ship : getShips()) 
+			if (ship.getProgram() != null)
+				ship.getProgram().executeNextCommand();
+	}
+
+	public double getProgramTime() {
+		return programTime;
+	}
+
+	public void setProgramTime(double programTime) {
+		this.programTime = programTime;
+	}
+
+	// Optimized version of evolve: not finished...
 	public void evolve2(double dt, CollisionListener collisionListener) {
 
 		ArrayList<ArrayList<Collision>> 	collisions 	= createCollisionArray();								// Create a 2D ArrayList of Collisions.
@@ -248,6 +268,7 @@ public class World {
 
 	}
 
+	// Part of optimized version of evolve.
 	private ArrayList<ArrayList<Collision>> createCollisionArray() {
 
 		ArrayList<ArrayList<Collision>> 	collisions 		= 	new ArrayList<ArrayList<Collision>>();	// 2D ArrayList with all the collisions.
@@ -288,6 +309,7 @@ public class World {
 
 	}
 
+	// Part of optimized version of evolve.
 	private void resolveCollision (Collision collision, double timePassed) {
 
 		SpaceObject entity1 = collision.getEntity1();
@@ -335,8 +357,8 @@ public class World {
 		}
 	}
 
+	// Part of optimized version of evolve.
 	private ArrayList<Collision> createCollisionListForEntity(SpaceObject object, double timePassed) {
-		// zit een fout :)
 		ArrayList<Collision> temp = new ArrayList<Collision>();
 
 		int minTimePos = 0;
@@ -361,6 +383,7 @@ public class World {
 		return temp;
 	}
 
+	// Part of optimized version of evolve.
 	private int positionEntity (SpaceObject object, ArrayList<ArrayList<Collision>> array) {
 		int currentPos = 0;
 		boolean found = false;
@@ -372,28 +395,6 @@ public class World {
 		}
 
 		return currentPos;
-	}
-
-	public boolean isValidEvolveTime (double time) {
-		if (Double.isNaN(time) || time == Double.POSITIVE_INFINITY || Double.compare(time, 0) < 0)
-			return false;
-		return true;
-	}
-
-	private void checkProgramTime(double time) {
-		double newTime = getProgramTime() + time;
-		int xTimeExecute = (int) (newTime / TIME_FOR_COMMANDS);
-		for (int i = 0; i < xTimeExecute; i++)
-			executeAllPrograms();
-		setProgramTime(newTime % TIME_FOR_COMMANDS);
-	}
-
-	public double getProgramTime() {
-		return programTime;
-	}
-
-	public void setProgramTime(double programTime) {
-		this.programTime = programTime;
 	}
 
 
